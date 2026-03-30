@@ -1,0 +1,7 @@
+# Shared app dependencies
+-r backend/requirements.txt
+-r frontend/requirements.txt
+- r Qwen3/requirements.txt
+
+# Hugging Face asset bootstrap
+huggingface_hub>=0.30.0

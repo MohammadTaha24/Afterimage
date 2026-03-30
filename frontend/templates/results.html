@@ -1,0 +1,571 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display:ital@0;1&display=swap');
+
+:root {
+    --bg:           #f0f4f7;
+    --white:        #ffffff;
+    --navy:         #0d2b45;
+    --navy-light:   #2e5f85;
+    --cyan:         #2eb8d4;
+    --cyan-light:   #e8f7fb;
+    --cyan-border:  #c8eaf3;
+    --text-head:    #0d2b45;
+    --text-body:    #3a5570;
+    --text-muted:   #7a9ab5;
+    --border:       #dde8ef;
+    --border-light: #eef4f7;
+    --shadow-sm:    0 1px 4px rgba(13,43,69,.06), 0 2px 12px rgba(13,43,69,.04);
+    --shadow-md:    0 4px 16px rgba(13,43,69,.08), 0 1px 4px rgba(13,43,69,.05);
+    --shadow-lg:    0 8px 32px rgba(13,43,69,.10), 0 2px 8px rgba(13,43,69,.06);
+
+    --s-none:    #16a870;
+    --s-none-bg: #edfaf4;
+    --s-mild:    #5aaa28;
+    --s-mild-bg: #f2faeb;
+    --s-mod:     #d4910a;
+    --s-mod-bg:  #fef7e8;
+    --s-sev:     #d4560a;
+    --s-sev-bg:  #fef2ea;
+    --s-prolif:  #cc2222;
+    --s-prolif-bg: #fdeaea;
+}
+
+html, body,
+[data-testid="stAppViewContainer"],
+[data-testid="stApp"] {
+    background: var(--bg) !important;
+    color: var(--text-body) !important;
+    font-family: 'DM Sans', sans-serif !important;
+    font-size: 15px !important;
+}
+
+[data-testid="stHeader"] {
+    background: transparent !important;
+}
+
+[data-testid="stToolbar"] {
+    display: none !important;
+}
+
+footer, #MainMenu {
+    display: none !important;
+}
+
+.block-container {
+    max-width: 680px !important;
+    padding: 0 1.5rem 4rem !important;
+}
+
+/* Explanation blocks */
+.af-explanation {
+    margin-top: 1rem;
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: #fafcfe;
+}
+
+.af-explanation-title {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 0 0 0.4rem 0;
+}
+
+.af-explanation-text {
+    font-size: 0.88rem;
+    color: var(--text-body);
+    line-height: 1.55;
+    margin: 0;
+}
+
+.af-flag {
+    margin-top: 0.75rem;
+    padding: 0.9rem 1rem;
+    border: 1px solid #fde2e2;
+    border-left: 3px solid #cc2222;
+    border-radius: 10px;
+    background: #fff6f6;
+}
+
+/* Nav */
+.af-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--white);
+    border-radius: 0 0 18px 18px;
+    padding: 1.1rem 1.5rem;
+    margin: 0 -1.5rem 0;
+    box-shadow: var(--shadow-sm);
+    border-bottom: 1px solid var(--border);
+}
+
+.af-nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.af-nav-brand:hover .af-brand-name {
+    color: var(--cyan);
+}
+
+.af-logo {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+    background: var(--navy);
+    border-radius: 10px;
+    padding: 4px;
+    transition: opacity 0.15s;
+}
+
+.af-nav-brand:hover .af-logo {
+    opacity: 0.85;
+}
+
+.af-brand-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin: 0;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    transition: color 0.15s;
+}
+
+.af-brand-sub {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin: 0.15rem 0 0;
+}
+
+.af-nav-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.af-nav-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--cyan-light);
+    border: 1px solid var(--cyan-border);
+    border-radius: 999px;
+    padding: 0.3rem 0.85rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--navy-light);
+}
+
+.af-nav-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--cyan);
+}
+
+/* Breadcrumb */
+.af-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+.af-breadcrumb-sep {
+    color: var(--border);
+}
+
+.af-breadcrumb-active {
+    color: var(--navy);
+    font-weight: 600;
+}
+
+/* Disclaimer */
+.af-disclaimer {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7rem;
+    background: #fffbea;
+    border: 1px solid #f0d878;
+    border-left: 3px solid #d4a80a;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    margin: 1.4rem 0 0;
+}
+
+.af-disclaimer p {
+    font-size: 0.8rem;
+    color: #7a5c00;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.af-disclaimer strong {
+    font-weight: 600;
+    color: #5a4200;
+}
+
+.af-disclaimer-icon {
+    font-size: 0.85rem;
+    color: #b8860a;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+/* Page title */
+.af-title {
+    text-align: center;
+    padding: 2rem 0 1.6rem;
+}
+
+.af-title h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.4rem;
+    font-weight: 400;
+    color: var(--text-head);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin: 0 0 0.3rem;
+}
+
+.af-title h1 em {
+    font-style: italic;
+    color: var(--cyan);
+}
+
+/* Section label */
+.af-section {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 0 0 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.af-section::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+}
+
+/* Result card */
+.af-result {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    margin-bottom: 1.25rem;
+    animation: slideup 0.35s cubic-bezier(.22,1,.36,1) both;
+}
+
+@keyframes slideup {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.af-result-bar {
+    background: var(--navy);
+    padding: 0.9rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.af-result-bar-label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.45);
+}
+
+.af-result-bar-meta {
+    font-size: 0.68rem;
+    color: rgba(255,255,255,.30);
+}
+
+.af-result-body {
+    padding: 2rem 1.8rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1.6rem;
+}
+
+.af-result-main {
+    flex: 1;
+}
+
+.af-result-eyebrow {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+}
+
+.af-result-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.8rem;
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 0 0 0.4rem;
+}
+
+.af-result-fullname {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 1.2rem;
+}
+
+.af-guidance {
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    font-size: 0.88rem;
+    font-weight: 500;
+    line-height: 1.55;
+    border-left: 3px solid;
+}
+
+.af-result-side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.6rem;
+    flex-shrink: 0;
+    padding-top: 0.2rem;
+}
+
+.af-badge {
+    border-radius: 999px;
+    padding: 0.4rem 1.1rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    border: 1.5px solid;
+}
+
+.af-model-used {
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.28rem 0.65rem;
+    text-align: right;
+}
+
+/* Severity tokens */
+.sev-none {
+    --c: var(--s-none);
+    --cbg: var(--s-none-bg);
+}
+
+.sev-mild {
+    --c: var(--s-mild);
+    --cbg: var(--s-mild-bg);
+}
+
+.sev-mod {
+    --c: var(--s-mod);
+    --cbg: var(--s-mod-bg);
+}
+
+.sev-sev {
+    --c: var(--s-sev);
+    --cbg: var(--s-sev-bg);
+}
+
+.sev-prolif {
+    --c: var(--s-prolif);
+    --cbg: var(--s-prolif-bg);
+}
+
+.af-result-name {
+    color: var(--c);
+}
+
+.af-guidance {
+    color: var(--c);
+    background: var(--cbg);
+    border-color: var(--c);
+}
+
+.af-badge {
+    color: var(--c);
+    background: var(--cbg);
+    border-color: var(--c);
+}
+
+/* Analysed image card */
+.af-image-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+}
+
+.af-image-card-header {
+    padding: 0.72rem 1.2rem;
+    border-bottom: 1px solid var(--border-light);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.af-image-card-title {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-head);
+}
+
+.af-image-card-meta {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+.af-image-card-footer {
+    display: flex;
+    gap: 1.5rem;
+    padding: 0.72rem 1.2rem;
+    border-top: 1px solid var(--border-light);
+    background: var(--bg);
+}
+
+.af-image-card-footer span {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+.af-image-card-footer strong {
+    color: var(--text-body);
+    font-weight: 600;
+}
+
+/* Image */
+[data-testid="stImage"],
+[data-testid="stImage"] > div,
+[data-testid="stImage"] > div > div,
+[data-testid="stImage"] > div > div > div {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    background: #0a0a0a;
+}
+
+[data-testid="stImage"] img {
+    border-radius: 0 !important;
+    max-height: 420px !important;
+    width: auto !important;
+    max-width: 100% !important;
+    object-fit: contain !important;
+    display: block !important;
+    margin: 0 auto !important;
+}
+
+/* Ghost button */
+.af-btn-ghost [data-testid="stButton"] > button {
+    background: var(--white) !important;
+    border: 1.5px solid var(--border) !important;
+    color: var(--text-body) !important;
+    box-shadow: var(--shadow-sm) !important;
+    width: 100%;
+    font-family: 'DM Sans', sans-serif !important;
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+    padding: 0.88rem 2rem !important;
+    border-radius: 12px !important;
+    transition: all 0.18s ease !important;
+}
+
+.af-btn-ghost [data-testid="stButton"] > button:hover {
+    border-color: var(--cyan) !important;
+    color: var(--navy) !important;
+    background: var(--cyan-light) !important;
+    transform: none !important;
+}
+
+[data-testid="stToolbar"] {
+    display: none !important;
+}
+</style>
+
+<div class="af-nav">
+    <a href="/" class="af-nav-brand" title="Home">
+        $logo_tag
+        <div>
+            <p class="af-brand-name">Afterimage</p>
+            <p class="af-brand-sub">AI-powered retinal screening</p>
+        </div>
+    </a>
+    <div class="af-nav-right">
+        <div class="af-breadcrumb">
+            <span>Upload</span>
+            <span class="af-breadcrumb-sep">></span>
+            <span class="af-breadcrumb-active">Results</span>
+        </div>
+        <div class="af-nav-pill">
+            <div class="af-nav-dot"></div>
+            DR Screening
+        </div>
+    </div>
+</div>
+
+<div class="af-disclaimer">
+    <span class="af-disclaimer-icon">!</span>
+    <p><strong>Screening assistance only.</strong>
+    Results must be reviewed by a qualified healthcare professional before any clinical decision is made.</p>
+</div>
+
+<div class="af-title">
+    <h1>Analysis <em>Results</em></h1>
+</div>
+
+<div class="af-section">Diagnostic Grade</div>
+
+<div class="af-result $sev_class">
+    <div class="af-result-bar">
+        <span class="af-result-bar-label">Classification Result</span>
+        <span class="af-result-bar-meta">$ts</span>
+    </div>
+    <div class="af-result-body">
+        <div class="af-result-main">
+            <p class="af-result-eyebrow">DR Severity Grade</p>
+            <p class="af-result-name">$short</p>
+            <p class="af-result-fullname">$full</p>
+            <div class="af-guidance">$guidance</div>
+            <div class="af-explanation">
+                <p class="af-explanation-title">What this means</p>
+                <p class="af-explanation-text">$meaning</p>
+            </div>
+            $flag_block
+        </div>
+        <div class="af-result-side">
+            <span class="af-badge">$grade</span>
+            <span class="af-model-used">$model_name</span>
+        </div>
+    </div>
+</div>

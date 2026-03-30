@@ -1,0 +1,54 @@
+{
+  "created_at": "2026-03-12T19:05:14.782681",
+  "model_name": "unsloth/Qwen3-VL-8B-Instruct-unsloth-bnb-4bit",
+  "train_csv": "C:\\Users\\Mohammad\\Downloads\\DR_Aptos_Only_512_CLAHE\\aptos_existing_split_exports\\train_split.csv",
+  "val_csv": "C:\\Users\\Mohammad\\Downloads\\DR_Aptos_Only_512_CLAHE\\aptos_existing_split_exports\\val_split.csv",
+  "test_csv": "C:\\Users\\Mohammad\\Downloads\\DR_Aptos_Only_512_CLAHE\\aptos_existing_split_exports\\test_split.csv",
+  "image_dir": "C:\\Users\\Mohammad\\Downloads\\DR_Aptos_Only_512_CLAHE\\images",
+  "ext": ".png",
+  "img_size": "512",
+  "lr": 0.0005,
+  "epochs_requested": 50,
+  "batch_size_per_device": 4,
+  "grad_accum": 2,
+  "effective_batch_size": 8,
+  "best_epoch": 4.0,
+  "best_step": 1468,
+  "best_eval_loss": 0.007985194213688374,
+  "best_checkpoint_dir": "C:\\Users\\Mohammad\\Downloads\\DR_Aptos_Only_512_CLAHE\\aptos_existing_split_exports\\temp_training_output\\checkpoint-1468",
+  "output_dir": "C:\\Users\\Mohammad\\Downloads\\DR_Aptos_Only_512_CLAHE\\aptos_existing_split_exports\\temp_training_output",
+  "final_run_dir": "C:\\Users\\Mohammad\\Downloads\\DR_Aptos_Only_512_CLAHE\\aptos_existing_split_exports\\runs\\lr0.0005_epoch4_batchsize8",
+  "final_lora_dir": "C:\\Users\\Mohammad\\Downloads\\DR_Aptos_Only_512_CLAHE\\aptos_existing_split_exports\\runs\\lr0.0005_epoch4_batchsize8\\best_lora",
+  "history": [
+    {
+      "step": 367,
+      "epoch": 1.0,
+      "eval_loss": 0.008570999838411808
+    },
+    {
+      "step": 734,
+      "epoch": 2.0,
+      "eval_loss": 0.008710251189768314
+    },
+    {
+      "step": 1101,
+      "epoch": 3.0,
+      "eval_loss": 0.008035893552005291
+    },
+    {
+      "step": 1468,
+      "epoch": 4.0,
+      "eval_loss": 0.007985194213688374
+    },
+    {
+      "step": 1835,
+      "epoch": 5.0,
+      "eval_loss": 0.01963726617395878
+    },
+    {
+      "step": 2202,
+      "epoch": 6.0,
+      "eval_loss": 0.020580081269145012
+    }
+  ]
+}

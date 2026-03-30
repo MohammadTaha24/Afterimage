@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+
+structure.txt
+
+processed_image_cache/
+unprocessed_image_cache/
+unsloth_compiled_cache/
+
+RetiZero/best_retizero_dr.pth
+Qwen3/lr0.0005_epoch4_batchsize8/best_lora/
+
+.DS_Store

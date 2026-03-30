@@ -1,0 +1,382 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display:ital@0;1&display=swap');
+
+:root {
+    --bg:           #f0f4f7;
+    --white:        #ffffff;
+    --navy:         #0d2b45;
+    --navy-light:   #2e5f85;
+    --cyan:         #2eb8d4;
+    --cyan-light:   #e8f7fb;
+    --cyan-border:  #c8eaf3;
+    --text-head:    #0d2b45;
+    --text-body:    #3a5570;
+    --text-muted:   #7a9ab5;
+    --border:       #dde8ef;
+    --border-light: #eef4f7;
+    --shadow-sm:    0 1px 4px rgba(13,43,69,.06), 0 2px 12px rgba(13,43,69,.04);
+    --shadow-md:    0 4px 16px rgba(13,43,69,.08), 0 1px 4px rgba(13,43,69,.05);
+}
+
+html, body,
+[data-testid="stAppViewContainer"],
+[data-testid="stApp"] {
+    background: var(--bg) !important;
+    color: var(--text-body) !important;
+    font-family: 'DM Sans', sans-serif !important;
+    font-size: 15px !important;
+}
+[data-testid="stHeader"]  { background: transparent !important; }
+[data-testid="stToolbar"] { display: none !important; }
+footer, #MainMenu         { display: none !important; }
+
+.block-container {
+    max-width: 680px !important;
+    padding: 0 1.5rem 4rem !important;
+}
+
+/* ── Nav ── */
+.af-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--white);
+    border-radius: 0 0 18px 18px;
+    padding: 1.1rem 1.5rem;
+    margin: 0 -1.5rem 0;
+    box-shadow: var(--shadow-sm);
+    border-bottom: 1px solid var(--border);
+}
+.af-nav-brand {
+    display: flex; align-items: center; gap: 0.85rem;
+    text-decoration: none; cursor: pointer;
+}
+.af-nav-brand:hover .af-brand-name { color: var(--cyan); }
+.af-logo {
+    width: 42px; height: 42px; object-fit: contain;
+    background: var(--navy); border-radius: 10px; padding: 4px;
+    transition: opacity .15s;
+}
+.af-nav-brand:hover .af-logo { opacity: 0.85; }
+.af-brand-name {
+    font-size: 1rem; font-weight: 700; color: var(--navy);
+    margin: 0; line-height: 1; letter-spacing: -0.01em; transition: color .15s;
+}
+.af-brand-sub { font-size: 0.7rem; color: var(--text-muted); margin: 0.15rem 0 0; }
+.af-nav-pill {
+    display: flex; align-items: center; gap: 0.4rem;
+    background: var(--cyan-light); border: 1px solid var(--cyan-border);
+    border-radius: 999px; padding: 0.3rem 0.85rem;
+    font-size: 0.7rem; font-weight: 600; color: var(--navy-light);
+}
+.af-nav-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); }
+
+/* ── Disclaimer ── */
+.af-disclaimer {
+    display: flex; align-items: flex-start; gap: 0.7rem;
+    background: #fffbea; border: 1px solid #f0d878;
+    border-left: 3px solid #d4a80a; border-radius: 8px;
+    padding: 0.75rem 1rem; margin: 1.4rem 0 0;
+}
+.af-disclaimer p { font-size: 0.8rem; color: #7a5c00; line-height: 1.5; margin: 0; }
+.af-disclaimer strong { font-weight: 600; color: #5a4200; }
+.af-disclaimer-icon { font-size: 0.85rem; color: #b8860a; flex-shrink: 0; margin-top: 1px; }
+
+/* ── Page title ── */
+.af-title { text-align: center; padding: 2rem 0 1.6rem; }
+.af-title h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.4rem; font-weight: 400; color: var(--text-head);
+    letter-spacing: -0.02em; line-height: 1.2; margin: 0 0 0.3rem;
+}
+.af-title h1 em { font-style: italic; color: var(--cyan); }
+.af-title p { font-size: 0.92rem; color: var(--text-muted); margin: 0; }
+
+/* ── Section label ── */
+.af-section {
+    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--text-muted);
+    margin: 0 0 0.75rem;
+    display: flex; align-items: center; gap: 0.6rem;
+}
+.af-section::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ── Model description block ── */
+.af-model-meta {
+    margin-top: 0.55rem;
+    padding: 0.1rem 0 0;
+}
+.af-model-meta p {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* ── Selectbox ── */
+[data-testid="stSelectbox"] label {
+    display: none !important;
+}
+
+[data-testid="stSelectbox"] {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+[data-testid="stSelectbox"] > div {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+[data-testid="stSelectbox"] [data-baseweb="select"] {
+    margin: 0 !important;
+}
+
+[data-testid="stSelectbox"] [data-baseweb="select"] > div {
+    min-height: 52px !important;
+    background: var(--white) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 12px !important;
+    box-shadow: var(--shadow-sm) !important;
+    font-family: 'DM Sans', sans-serif !important;
+    font-size: 0.95rem !important;
+    font-weight: 500 !important;
+    color: var(--text-head) !important;
+    padding: 0 0.35rem !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+[data-testid="stSelectbox"] [data-baseweb="select"] > div:hover {
+    border-color: var(--cyan) !important;
+}
+
+[data-testid="stSelectbox"] [data-baseweb="select"] input {
+    cursor: pointer !important;
+}
+
+[data-testid="stSelectbox"] svg {
+    color: var(--navy-light) !important;
+}
+
+/* ── File uploader ── */
+[data-testid="stFileUploader"] {
+    background: var(--white) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 14px !important; padding: 1.1rem !important;
+    box-shadow: var(--shadow-sm) !important;
+    transition: border-color .2s, box-shadow .2s;
+}
+[data-testid="stFileUploader"]:hover {
+    border-color: var(--cyan) !important;
+    box-shadow: var(--shadow-md), 0 0 0 3px var(--cyan-light) !important;
+}
+[data-testid="stFileUploaderDropzone"] {
+    background: var(--bg) !important;
+    border: 1.5px dashed var(--border) !important;
+    border-radius: 10px !important;
+}
+[data-testid="stFileUploaderDropzone"]:hover {
+    border-color: var(--cyan) !important;
+    background: var(--cyan-light) !important;
+}
+[data-testid="stFileUploaderDropzone"] p {
+    font-family: 'DM Sans', sans-serif !important;
+    font-size: 0.92rem !important; font-weight: 500 !important;
+    color: var(--text-body) !important;
+}
+[data-testid="stFileUploaderDropzone"] span {
+    font-family: 'DM Sans', sans-serif !important;
+    font-size: 0.8rem !important; color: var(--text-muted) !important;
+}
+[data-testid="stFileUploaderDropzoneInstructions"] svg { color: var(--cyan) !important; }
+[data-testid="stFileUploaderDropzone"] button {
+    background: var(--navy) !important; border: none !important;
+    color: #fff !important; font-family: 'DM Sans', sans-serif !important;
+    font-size: 0.82rem !important; font-weight: 600 !important;
+    border-radius: 8px !important; padding: 0.42rem 1.2rem !important;
+}
+[data-testid="stFileUploaderDropzone"] button:hover { background: var(--navy-light) !important; }
+[data-testid="stFileUploaderFile"] {
+    background: var(--bg) !important;
+    border: 1px solid var(--border) !important; border-radius: 8px !important;
+}
+[data-testid="stFileUploaderFileName"] {
+    font-family: 'DM Sans', sans-serif !important;
+    font-size: 0.88rem !important; font-weight: 500 !important;
+    color: var(--text-body) !important;
+}
+
+/* ── Selectbox ── */
+/* ── Selectbox ── */
+[data-testid="stSelectbox"] label {
+    display: none !important;
+}
+
+[data-testid="stSelectbox"] {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+[data-testid="stSelectbox"] > div {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+[data-testid="stSelectbox"] [data-baseweb="select"] {
+    margin: 0 !important;
+}
+
+[data-testid="stSelectbox"] [data-baseweb="select"] > div {
+    min-height: 52px !important;
+    background: var(--white) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 12px !important;
+    box-shadow: var(--shadow-sm) !important;
+    font-family: 'DM Sans', sans-serif !important;
+    font-size: 0.95rem !important;
+    font-weight: 500 !important;
+    color: var(--text-head) !important;
+    padding: 0 0.35rem !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+[data-testid="stSelectbox"] [data-baseweb="select"] > div:hover {
+    border-color: var(--cyan) !important;
+}
+
+[data-testid="stSelectbox"] [data-baseweb="select"] input {
+    cursor: pointer !important;
+}
+
+[data-testid="stSelectbox"] svg {
+    color: var(--navy-light) !important;
+}
+
+/* hide unwanted empty container above select */
+[data-testid="stSelectbox"] > div > div:first-child:empty {
+    display: none !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
+/* prevent stray white block */
+[data-testid="stSelectbox"] div[role="combobox"] {
+    background: transparent !important;
+}
+
+/* ── Image (centred) ── */
+[data-testid="stImage"],
+[data-testid="stImage"] > div,
+[data-testid="stImage"] > div > div,
+[data-testid="stImage"] > div > div > div {
+    display: flex !important; justify-content: center !important;
+    align-items: center !important; width: 100% !important;
+    background: #0a0a0a;
+}
+[data-testid="stImage"] img {
+    border-radius: 0 !important; max-height: 420px !important;
+    width: auto !important; max-width: 100% !important;
+    object-fit: contain !important; display: block !important;
+    margin: 0 auto !important;
+}
+
+/* ── Preview card ── */
+.af-preview-card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 14px; overflow: hidden; box-shadow: var(--shadow-md);
+}
+.af-preview-header {
+    padding: 0.75rem 1.2rem; border-bottom: 1px solid var(--border-light);
+    display: flex; justify-content: space-between; align-items: center;
+}
+.af-preview-header-title { font-size: 0.82rem; font-weight: 600; color: var(--text-head); }
+.af-preview-header-meta  { font-size: 0.72rem; color: var(--text-muted); }
+.af-preview-footer {
+    display: flex; gap: 1.5rem; padding: 0.72rem 1.2rem;
+    border-top: 1px solid var(--border-light); background: var(--bg);
+}
+.af-preview-footer span   { font-size: 0.72rem; color: var(--text-muted); }
+.af-preview-footer strong { color: var(--text-body); font-weight: 600; }
+
+/* ── Primary button ── */
+[data-testid="stButton"] > button {
+    width: 100%; background: var(--navy) !important;
+    border: none !important; color: #fff !important;
+    font-family: 'DM Sans', sans-serif !important;
+    font-size: 0.95rem !important; font-weight: 600 !important;
+    padding: 0.88rem 2rem !important; border-radius: 12px !important;
+    box-shadow: 0 4px 14px rgba(13,43,69,.25) !important;
+    transition: all 0.18s ease !important;
+}
+[data-testid="stButton"] > button:hover {
+    background: var(--navy-light) !important;
+    box-shadow: 0 6px 20px rgba(13,43,69,.30) !important;
+    transform: translateY(-1px) !important;
+}
+[data-testid="stButton"] > button:active { transform: translateY(0) !important; }
+
+/* ── Ghost button ── */
+.af-btn-ghost [data-testid="stButton"] > button {
+    background: var(--white) !important;
+    border: 1.5px solid var(--border) !important;
+    color: var(--text-body) !important;
+    box-shadow: var(--shadow-sm) !important;
+}
+.af-btn-ghost [data-testid="stButton"] > button:hover {
+    border-color: var(--cyan) !important;
+    color: var(--navy) !important;
+    background: var(--cyan-light) !important;
+    transform: none !important;
+    box-shadow: var(--shadow-sm) !important;
+}
+
+/* ── Spinner ── */
+[data-testid="stSpinner"] > div > div { border-top-color: var(--navy) !important; }
+
+/* ── Error ── */
+.af-error {
+    background: #fff5f5; border: 1px solid #ffd5d5;
+    border-left: 3px solid #cc2222; border-radius: 10px;
+    padding: 0.95rem 1.2rem;
+    font-size: 0.88rem; font-weight: 500; color: #9a3030;
+}
+</style>
+
+<!-- NAV — clicking logo navigates home -->
+<div class="af-nav">
+    <a href="/" class="af-nav-brand" title="Home">
+        $logo_tag
+        <div>
+            <p class="af-brand-name">Afterimage</p>
+            <p class="af-brand-sub">AI-powered retinal screening</p>
+        </div>
+    </a>
+    <div class="af-nav-pill">
+        <div class="af-nav-dot"></div>
+        DR Screening
+    </div>
+</div>
+
+<!-- DISCLAIMER -->
+<div class="af-disclaimer">
+    <span class="af-disclaimer-icon">⚠</span>
+    <p><strong>Screening assistance only.</strong>
+    Results must be reviewed by a qualified healthcare professional before any clinical decision is made.</p>
+</div>
+
+<!-- TITLE -->
+<div class="af-title">
+    <h1>Diabetic Retinopathy<br><em>Screening</em></h1>
+    <p>Select a model, upload a retinal fundus image, and run analysis.</p>
+</div>
