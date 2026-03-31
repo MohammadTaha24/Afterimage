@@ -1,5 +1,19 @@
 # Afterimage – Diabetic Retinopathy AI System
 
+
+## Prerequisites
+
+Before starting, ensure you have the following:
+
+- Anaconda installed
+- Python 3.11 environment
+
+### Create environment (recommended)
+
+conda create -n afterimage_env python=3.11 -y
+conda activate afterimage_env
+
+
 ## Overview
 
 Afterimage is an AI-powered system for diabetic retinopathy classification using:
