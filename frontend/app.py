@@ -51,11 +51,128 @@ DEFAULTS = {
     "pending_file_type": None,
     "pending_img_size": None,
     "pending_img_kb": None,
+    "show_explanation_modal": False,
 }
 for k, v in DEFAULTS.items():
     if k not in st.session_state:
         st.session_state[k] = v
 
+
+def show_explanation_modal(short: str, meaning: str, flag: str | None) -> None:
+    flag_html = ""
+    if flag:
+        flag_html = (
+            '<div class="af-modal-block af-modal-flag">'
+            '<p class="af-modal-label">Why this may have been flagged</p>'
+            f'<p class="af-modal-text">{flag}</p>'
+            '</div>'
+        )
+
+    st.markdown(
+        f"""
+        <style>
+        .af-modal-overlay {{
+            position: fixed;
+            inset: 0;
+            background: rgba(13, 43, 69, 0.38);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 999999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }}
+
+        .af-modal-card {{
+            width: min(720px, 96vw);
+            max-height: 85vh;
+            overflow-y: auto;
+            background: #ffffff;
+            border: 1px solid #dde8ef;
+            border-radius: 18px;
+            box-shadow: 0 12px 40px rgba(13, 43, 69, 0.20);
+            padding: 1.35rem 1.35rem 1.1rem;
+        }}
+
+        .af-modal-header {{
+            margin-bottom: 0.9rem;
+        }}
+
+        .af-modal-title {{
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0d2b45;
+            margin: 0 0 0.25rem 0;
+        }}
+
+        .af-modal-subtitle {{
+            font-size: 0.9rem;
+            color: #6f879d;
+            margin: 0;
+        }}
+
+        .af-modal-block {{
+            margin-top: 0.8rem;
+            padding: 0.95rem 1rem;
+            border-radius: 12px;
+            border: 1px solid #dde8ef;
+            background: #fafcfe;
+        }}
+
+        .af-modal-flag {{
+            background: #fff6f6;
+            border: 1px solid #fde2e2;
+            border-left: 3px solid #cc2222;
+        }}
+
+        .af-modal-label {{
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #7a9ab5;
+            margin: 0 0 0.45rem 0;
+        }}
+
+        .af-modal-text {{
+            font-size: 0.92rem;
+            line-height: 1.65;
+            color: #3a5570;
+            margin: 0;
+        }}
+
+        .af-modal-note {{
+            margin-top: 0.9rem;
+            font-size: 0.82rem;
+            color: #7a9ab5;
+            line-height: 1.5;
+        }}
+        </style>
+
+        <div class="af-modal-overlay">
+            <div class="af-modal-card">
+                <div class="af-modal-header">
+                    <p class="af-modal-title">Explanation for {short}</p>
+                    <p class="af-modal-subtitle">This information is for screening support only.</p>
+                </div>
+
+                <div class="af-modal-block">
+                    <p class="af-modal-label">What this means</p>
+                    <p class="af-modal-text">{meaning}</p>
+                </div>
+
+                {flag_html}
+
+                <p class="af-modal-note">
+                    This explanation is intended to help interpret the screening category.
+                    It should not replace assessment by a qualified eye care professional.
+                </p>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 def logo_tag() -> str:
     if LOGO_PATH.exists():
@@ -861,105 +978,110 @@ def page_upload():
 #         go("upload")
 #     st.markdown("</div>", unsafe_allow_html=True)
 
-
 def page_results():
     label = st.session_state.label
-    ts = st.session_state.ts
+    ts    = st.session_state.ts
 
     entry = SEVERITY.get(label, {
-        "sev_class": "sev-none",
-        "short": label,
-        "full": label,
-        "guidance": "",
-        "meaning": "",
-        "flag": None,
+        "sev_class":  "sev-none",
+        "short":      label,
+        "full":       label,
+        "guidance":   "",
+        "meaning":    "",
+        "flag":       None,
     })
 
-    sev_class = entry["sev_class"]
-    short = entry["short"]
-    full = entry["full"]
-    guidance = entry["guidance"]
-    meaning = entry["meaning"]
-    flag = entry["flag"]
-
+    sev_class  = entry["sev_class"]
+    short      = entry["short"]
+    full       = entry["full"]
+    guidance   = entry["guidance"]
+    meaning    = entry["meaning"]
+    flag       = entry["flag"]
     grade_label = f"Grade {st.session_state.grade}" if st.session_state.grade is not None else "-"
 
-    flag_block = (
-        '<div class="af-flag">'
-        '<p class="af-explanation-title">Why this may have been flagged</p>'
-        f'<p class="af-explanation-text">{flag}</p>'
-        '</div>'
-        if flag else ""
-    )
-
+    # ── Render nav + disclaimer + title + result card from template ───────────
     render(
         "results.html",
-        logo_tag=logo_tag(),
-        sev_class=sev_class,
-        short=short,
-        full=full,
-        guidance=guidance,
-        meaning=meaning,
-        flag_block=flag_block,
-        grade=grade_label,
-        ts=ts,
-        model_name=st.session_state.model_name,
+        logo_tag   = logo_tag(),
+        sev_class  = sev_class,
+        short      = short,
+        full       = full,
+        guidance   = guidance,
+        grade      = grade_label,
+        ts         = ts,
+        model_name = st.session_state.model_name,
+        # NO meaning=, NO flag_block= here
     )
 
+    # ── Explanation section (rendered by Streamlit, NOT the template) ─────────
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown('<div class="af-section">What This Means</div>', unsafe_allow_html=True)
+    st.markdown(
+        f'<p style="font-size:0.9rem;color:var(--text-body);line-height:1.65;'
+        f'background:var(--white);border:1px solid var(--border);border-radius:12px;'
+        f'padding:1.1rem 1.3rem;box-shadow:var(--shadow-sm);">{meaning}</p>',
+        unsafe_allow_html=True,
+    )
+
+    grade_num = int(st.session_state.grade) if st.session_state.grade is not None else 0
+
+    if grade_num != 0 and flag:
+        st.markdown(
+            f'<div style="margin-top:0.75rem;background:#fef7e8;border:1px solid #f0d878;'
+            f'border-left:3px solid #d4a80a;border-radius:10px;padding:0.9rem 1.1rem;'
+            f'font-size:0.85rem;color:#7a5c00;line-height:1.6;">'
+            f'<strong>Why this may have been flagged</strong><br>{flag}</div>',
+            unsafe_allow_html=True,
+        )
+
+    # ── Analysed image ─────────────────────────────────────────────────────────
     if st.session_state.img_bytes:
         name = st.session_state.img_name
         w, h = st.session_state.img_size
-        kb = st.session_state.img_kb
-        fmt = name.rsplit(".", 1)[-1].upper() if "." in name else "-"
+        kb   = st.session_state.img_kb
+        fmt  = name.rsplit(".", 1)[-1].upper() if "." in name else "-"
 
         st.markdown("<br>", unsafe_allow_html=True)
         st.markdown('<div class="af-section">Analysed Image</div>', unsafe_allow_html=True)
-
         st.markdown(
             f"""<div class="af-image-card">
-<div class="af-image-card-header">
-<span class="af-image-card-title">{name}</span>
-<span class="af-image-card-meta">Analysed {ts}</span>
-</div>""",
+                <div class="af-image-card-header">
+                    <span class="af-image-card-title">{name}</span>
+                    <span class="af-image-card-meta">Analysed {ts}</span>
+                </div>""",
             unsafe_allow_html=True,
         )
-
         st.image(Image.open(io.BytesIO(st.session_state.img_bytes)), use_container_width=True)
-
         st.markdown(
             f"""<div class="af-image-card-footer">
-<span><strong>Resolution</strong> {w} x {h} px</span>
-<span><strong>Format</strong> {fmt}</span>
-<span><strong>Size</strong> {kb} KB</span>
-</div>
-</div>""",
+                    <span><strong>Resolution</strong> {w} x {h} px</span>
+                    <span><strong>Format</strong> {fmt}</span>
+                    <span><strong>Size</strong> {kb} KB</span>
+                </div>
+            </div>""",
             unsafe_allow_html=True,
         )
 
+    # ── Back button ────────────────────────────────────────────────────────────
     st.markdown("<br>", unsafe_allow_html=True)
     st.markdown('<div class="af-btn-ghost">', unsafe_allow_html=True)
-
     if st.button("<- Analyse Another Image", use_container_width=True):
         keep_loaded = {
-            "loaded_model_key": st.session_state.loaded_model_key,
-            "load_state": st.session_state.load_state,
-            "load_progress": st.session_state.load_progress,
-            "load_message": st.session_state.load_message,
-            "load_started_at": st.session_state.load_started_at,
-            "loading_model_key": st.session_state.loading_model_key,
-            "load_error": st.session_state.load_error,
-            "selected_model_key": st.session_state.selected_model_key,
+            "loaded_model_key":     st.session_state.loaded_model_key,
+            "load_state":           st.session_state.load_state,
+            "load_progress":        st.session_state.load_progress,
+            "load_message":         st.session_state.load_message,
+            "load_started_at":      st.session_state.load_started_at,
+            "loading_model_key":    st.session_state.loading_model_key,
+            "load_error":           st.session_state.load_error,
+            "selected_model_key":   st.session_state.selected_model_key,
             "selected_model_display": st.session_state.selected_model_display,
         }
-
         for k, v in DEFAULTS.items():
             st.session_state[k] = v
-
         for k, v in keep_loaded.items():
             st.session_state[k] = v
-
         go("upload")
-
     st.markdown("</div>", unsafe_allow_html=True)
 
 if st.session_state.page == "results" and st.session_state.label:

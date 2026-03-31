@@ -18,15 +18,15 @@
     --shadow-md:    0 4px 16px rgba(13,43,69,.08), 0 1px 4px rgba(13,43,69,.05);
     --shadow-lg:    0 8px 32px rgba(13,43,69,.10), 0 2px 8px rgba(13,43,69,.06);
 
-    --s-none:    #16a870;
-    --s-none-bg: #edfaf4;
-    --s-mild:    #5aaa28;
-    --s-mild-bg: #f2faeb;
-    --s-mod:     #d4910a;
-    --s-mod-bg:  #fef7e8;
-    --s-sev:     #d4560a;
-    --s-sev-bg:  #fef2ea;
-    --s-prolif:  #cc2222;
+    --s-none:      #16a870;
+    --s-none-bg:   #edfaf4;
+    --s-mild:      #5aaa28;
+    --s-mild-bg:   #f2faeb;
+    --s-mod:       #d4910a;
+    --s-mod-bg:    #fef7e8;
+    --s-sev:       #d4560a;
+    --s-sev-bg:    #fef2ea;
+    --s-prolif:    #cc2222;
     --s-prolif-bg: #fdeaea;
 }
 
@@ -56,41 +56,6 @@ footer, #MainMenu {
     padding: 0 1.5rem 4rem !important;
 }
 
-/* Explanation blocks */
-.af-explanation {
-    margin-top: 1rem;
-    padding: 0.9rem 1rem;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    background: #fafcfe;
-}
-
-.af-explanation-title {
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin: 0 0 0.4rem 0;
-}
-
-.af-explanation-text {
-    font-size: 0.88rem;
-    color: var(--text-body);
-    line-height: 1.55;
-    margin: 0;
-}
-
-.af-flag {
-    margin-top: 0.75rem;
-    padding: 0.9rem 1rem;
-    border: 1px solid #fde2e2;
-    border-left: 3px solid #cc2222;
-    border-radius: 10px;
-    background: #fff6f6;
-}
-
-/* Nav */
 .af-nav {
     display: flex;
     align-items: center;
@@ -122,7 +87,7 @@ footer, #MainMenu {
     background: var(--navy);
     border-radius: 10px;
     padding: 4px;
-    transition: opacity 0.15s;
+    transition: opacity .15s;
 }
 
 .af-nav-brand:hover .af-logo {
@@ -136,7 +101,7 @@ footer, #MainMenu {
     margin: 0;
     line-height: 1;
     letter-spacing: -0.01em;
-    transition: color 0.15s;
+    transition: color .15s;
 }
 
 .af-brand-sub {
@@ -171,7 +136,6 @@ footer, #MainMenu {
     background: var(--cyan);
 }
 
-/* Breadcrumb */
 .af-breadcrumb {
     display: flex;
     align-items: center;
@@ -189,7 +153,6 @@ footer, #MainMenu {
     font-weight: 600;
 }
 
-/* Disclaimer */
 .af-disclaimer {
     display: flex;
     align-items: flex-start;
@@ -221,7 +184,6 @@ footer, #MainMenu {
     margin-top: 1px;
 }
 
-/* Page title */
 .af-title {
     text-align: center;
     padding: 2rem 0 1.6rem;
@@ -242,7 +204,6 @@ footer, #MainMenu {
     color: var(--cyan);
 }
 
-/* Section label */
 .af-section {
     font-size: 0.68rem;
     font-weight: 700;
@@ -262,7 +223,6 @@ footer, #MainMenu {
     background: var(--border);
 }
 
-/* Result card */
 .af-result {
     background: var(--white);
     border: 1px solid var(--border);
@@ -270,18 +230,6 @@ footer, #MainMenu {
     overflow: hidden;
     box-shadow: var(--shadow-lg);
     margin-bottom: 1.25rem;
-    animation: slideup 0.35s cubic-bezier(.22,1,.36,1) both;
-}
-
-@keyframes slideup {
-    from {
-        opacity: 0;
-        transform: translateY(14px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
 }
 
 .af-result-bar {
@@ -376,7 +324,6 @@ footer, #MainMenu {
     text-align: right;
 }
 
-/* Severity tokens */
 .sev-none {
     --c: var(--s-none);
     --cbg: var(--s-none-bg);
@@ -418,7 +365,6 @@ footer, #MainMenu {
     border-color: var(--c);
 }
 
-/* Analysed image card */
 .af-image-card {
     background: var(--white);
     border: 1px solid var(--border);
@@ -464,7 +410,6 @@ footer, #MainMenu {
     font-weight: 600;
 }
 
-/* Image */
 [data-testid="stImage"],
 [data-testid="stImage"] > div,
 [data-testid="stImage"] > div > div,
@@ -486,7 +431,6 @@ footer, #MainMenu {
     margin: 0 auto !important;
 }
 
-/* Ghost button */
 .af-btn-ghost [data-testid="stButton"] > button {
     background: var(--white) !important;
     border: 1.5px solid var(--border) !important;
@@ -547,25 +491,22 @@ footer, #MainMenu {
 <div class="af-section">Diagnostic Grade</div>
 
 <div class="af-result $sev_class">
-    <div class="af-result-bar">
-        <span class="af-result-bar-label">Classification Result</span>
-        <span class="af-result-bar-meta">$ts</span>
-    </div>
-    <div class="af-result-body">
-        <div class="af-result-main">
-            <p class="af-result-eyebrow">DR Severity Grade</p>
-            <p class="af-result-name">$short</p>
-            <p class="af-result-fullname">$full</p>
-            <div class="af-guidance">$guidance</div>
-            <div class="af-explanation">
-                <p class="af-explanation-title">What this means</p>
-                <p class="af-explanation-text">$meaning</p>
-            </div>
-            $flag_block
-        </div>
-        <div class="af-result-side">
-            <span class="af-badge">$grade</span>
-            <span class="af-model-used">$model_name</span>
-        </div>
-    </div>
+<div class="af-result-bar">
+<span class="af-result-bar-label">Classification Result</span>
+<span class="af-result-bar-meta">$ts</span>
+</div>
+
+<div class="af-result-body">
+<div class="af-result-main">
+<p class="af-result-eyebrow">DR Severity Grade</p>
+<p class="af-result-name">$short</p>
+<p class="af-result-fullname">$full</p>
+<div class="af-guidance">$guidance</div>
+</div>
+
+<div class="af-result-side">
+<span class="af-badge">$grade</span>
+<span class="af-model-used">$model_name</span>
+</div>
+</div>
 </div>
