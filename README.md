@@ -96,7 +96,6 @@ unsloth/Qwen3-VL-8B-Instruct-unsloth-bnb-4bit
 
 ## Important Notes
 
-- Do NOT commit tokens or model weights
 - First run may take time due to downloads
 - GPU recommended
 
