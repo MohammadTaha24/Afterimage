@@ -4,8 +4,8 @@
 
 Afterimage is an AI-powered system for diabetic retinopathy classification using:
 
-- RetiZero CNN model
-- Qwen3-VL Vision-Language Model with LoRA fine-tuning
+- RetiZero Contrastive Vision-Language model
+- Qwen3-VL GenAI Vision-Language Model with LoRA fine-tuning
 - FastAPI backend
 - Streamlit frontend
 
