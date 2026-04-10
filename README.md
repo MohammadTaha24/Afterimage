@@ -115,14 +115,12 @@ The Afterimage system requires two concurrent terminal sessions. Ensure the back
 
 ## 10. Use the Application
 
-1. Start the backend.
-2. Start the frontend.
-3. Open the Streamlit interface.
-4. Select the target model from the dropdown menu.
-5. Click `Confirm and Load Model`.
-6. Wait for the selected model to finish loading.
-7. Upload a retinal image.
-8. Run analysis.
+1. Select the target model from the dropdown menu.
+2. Click `Confirm and Load Model`.
+3. Wait for the selected model to finish loading.
+4. Upload a retinal image.
+5. Run analysis.
+
 
 Selecting a target model and clicking `Confirm and Load Model` unlocks the image upload interface.
 
