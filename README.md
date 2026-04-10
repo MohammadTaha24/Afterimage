@@ -1,115 +1,99 @@
-# Afterimage – Diabetic Retinopathy AI System
+# Afterimage User Manual
 
 ## Prerequisites
 
-Before starting, ensure you have the following:
+Ensure Anaconda is installed and Python 3.11 is available.
 
-- Anaconda installed
-- Python 3.11 available
-- An NVIDIA CUDA-capable GPU
-- Minimum 12 GB VRAM recommended for running the system properly
+- NVIDIA CUDA capable GPU with at least 16GB of VRAM
 - Stable internet connection
+- Hugging Face account and access token
 
 ## Create Environment
-
-It is recommended to create a fresh Anaconda environment before setup.
 
 ```bash
 conda create -n afterimage_env python=3.11 -y
 conda activate afterimage_env
 ```
 
-## Overview
-
-Afterimage is an AI-powered diabetic retinopathy classification system built for research, experimentation, and prototyping in medical image analysis.
-
-It uses:
-
-- RetiZero contrastive vision-language model
-- Qwen3-VL generative vision-language model with LoRA fine-tuning
-- FastAPI backend
-- Streamlit frontend
-
-## Repository Structure
-
-```text
-Afterimage/
-│
-├── backend/                  # FastAPI backend
-├── frontend/                 # Streamlit frontend
-├── RetiZero/                 # RetiZero model weights (downloaded)
-├── Qwen3/                    # Qwen3 LoRA adapter (downloaded)
-├── download_model_assets.py  # Model download script
-├── requirements.txt
-└── README.md
-```
-
-## Setup Instructions
-
-### 1. Clone the Repository
+## 1. Clone Repository
 
 ```bash
 git clone https://github.com/MohammadTaha24/Afterimage.git
 cd Afterimage
 ```
 
-### 2. Install PyTorch
+## 2. Install PyTorch
 
-Install the latest PyTorch version that matches your system from the official PyTorch website:
+Install the latest PyTorch version based on your system:
 
 https://pytorch.org/get-started/locally/
 
-For NVIDIA GPUs, the manual currently uses:
+As of April 2026 for NVIDIA GPUs:
 
 ```bash
 pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cu130
 ```
 
-### 3. Install Project Dependencies
+## 3. Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Install Unsloth
+## 4. Install Unsloth
 
 ```bash
 pip install unsloth unsloth_zoo
 ```
 
-### 5. Reinstall PyTorch
+## 5. Install PyTorch Again
 
-After installing the other packages, PyTorch may default back to CPU in some cases. Reinstall the latest GPU-enabled PyTorch version again.
+This is not a mistake.
 
-Use the official PyTorch website if needed:
+After installing the other packages, PyTorch may default to CPU as the device. Re-install the latest PyTorch version based on your system:
 
 https://pytorch.org/get-started/locally/
 
-For NVIDIA GPUs, the manual currently uses:
+As of April 2026 for NVIDIA GPUs:
 
 ```bash
 pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cu130
 ```
 
-### 6. Authenticate with Hugging Face
+## 6. Hugging Face Authentication
 
-Create or log in to your Hugging Face account, generate an access token, and then run:
+Create or log in to a Hugging Face account, then create an access token.
+
+Run the following command:
 
 ```bash
 hf auth login
 ```
 
-When prompted, paste your Hugging Face token.
+When prompted, enter the token from the Hugging Face website.
 
-### 7. Download Model Assets
+Basic flow:
+
+- Settings
+- Access Tokens
+- Create new token
+- Copy token
+- Paste token into the terminal after running `hf auth login`
+
+## 7. Download Model Assets
 
 ```bash
 python download_model_assets.py --clear-qwen3-target
 ```
 
-### 8. Run the Backend
+This downloads the required model files, including:
 
-Open a **new Anaconda Prompt**, then run:
+- `RetiZero/best_retizero_dr.pth`
+- `Qwen3/lr0.0005_epoch4_batchsize8/best_lora/`
+
+## 8. Run Backend
+
+Open a new Anaconda Prompt:
 
 ```bash
 cd Afterimage
@@ -117,9 +101,9 @@ conda activate afterimage_env
 uvicorn backend.main:app --host 127.0.0.1 --port 9000
 ```
 
-### 9. Run the Frontend
+## 9. Run Frontend
 
-Open **another Anaconda Prompt**, then run:
+Open another Anaconda Prompt:
 
 ```bash
 cd Afterimage
@@ -127,24 +111,95 @@ conda activate afterimage_env
 streamlit run frontend\app.py
 ```
 
-## Access the Application
+The Afterimage system requires two concurrent terminal sessions. Ensure the backend server is fully initialized before interacting with the Streamlit frontend.
 
-- Backend: http://127.0.0.1:9000
-- Frontend: opens automatically through Streamlit
+## 10. Use the Application
+
+1. Start the backend.
+2. Start the frontend.
+3. Open the Streamlit interface.
+4. Select the target model from the dropdown menu.
+5. Click `Confirm and Load Model`.
+6. Wait for the selected model to finish loading.
+7. Upload a retinal image.
+8. Run analysis.
+
+Selecting a target model and clicking `Confirm and Load Model` unlocks the image upload interface.
+
+## System Overview
+
+Afterimage is a diabetic retinopathy screening system built with:
+
+- FastAPI backend
+- Streamlit frontend
+- RetiZero
+- Qwen3-VL with LoRA adapters
+
+## Main Repository Structure
+
+```text
+Afterimage/
+|
+|-- backend/
+|-- frontend/
+|-- Qwen3/
+|-- RetiZero/
+|-- finetuning/
+|-- processed_image_cache/
+|-- unprocessed_image_cache/
+|-- unsloth_compiled_cache/
+|-- download_model_assets.py
+|-- requirements.txt
+|-- README.md
+|-- newREADME.md
+|-- structure.txt
+```
+
+Useful subfolders:
+
+- `Qwen3/lr0.0005_epoch4_batchsize8/` contains the local Qwen3 run folder and `best_lora/`
+- `RetiZero/RetiZero/` contains the bundled upstream RetiZero codebase
+- `backend/prev`, `frontend/prev`, `Qwen3/prev`, and `RetiZero/prev` contain earlier versions of key files
 
 ## Models Used
 
-### Base Model
-`unsloth/Qwen3-VL-8B-Instruct-unsloth-bnb-4bit`
+### RetiZero
 
-## Important Notes
+- Checkpoint path: `RetiZero/best_retizero_dr.pth`
+- Inference server: `RetiZero/inference_server.py`
+- Preprocessing: crop ROI, square pad, resize to `224x224`, no CLAHE
 
-- The base Qwen3-VL model is automatically downloaded on first run.
-- A CUDA-capable NVIDIA GPU is required for proper performance.
-- A minimum of 12 GB VRAM is recommended.
-- The first run may take longer because required assets are downloaded.
-- A stable internet connection is required during setup and first-time downloads.
+### Qwen3-VL
+
+- Base model: `unsloth/Qwen3-VL-8B-Instruct-unsloth-bnb-4bit`
+- Adapter path: `Qwen3/lr0.0005_epoch4_batchsize8/best_lora/`
+- Preprocessing: crop ROI, square pad, resize to `512x512`, apply CLAHE
+
+## Additional Project Material
+
+The repository also includes training and research material:
+
+- Qwen3 training and evaluation scripts under `finetuning/Qwen3/`
+- RetiZero training notebooks under `finetuning/RetiZero/`
+- Preprocessing notebooks under `finetuning/preprocessing/`
+- The bundled `RetiZero/RetiZero/` research codebase
+
+## Access
+
+- Backend: `http://127.0.0.1:9000`
+- Frontend: usually `http://localhost:8501`
+
+## Notes
+
+- The base model `unsloth/Qwen3-VL-8B-Instruct-unsloth-bnb-4bit` is auto-downloaded on first run
+- NVIDIA CUDA capable GPU is required for proper performance
+- Stable internet connection is required
+- The backend starts the selected model server on demand
+- Raw uploads are written to `unprocessed_image_cache/`
+- Preprocessed outputs are written to `processed_image_cache/`
 
 ## Disclaimer
 
 This project is intended for research and educational purposes only.
+
+Results must be reviewed by a qualified healthcare professional before any clinical decision is made.
