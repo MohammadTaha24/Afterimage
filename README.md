@@ -138,14 +138,14 @@ Afterimage is a diabetic retinopathy screening system built with:
 ```text
 Afterimage/
 |
-|-- backend/
-|-- frontend/
-|-- Qwen3/
-|-- RetiZero/
-|-- finetuning/
-|-- processed_image_cache/
-|-- unprocessed_image_cache/
-|-- unsloth_compiled_cache/
+|-- backend/                   # FastAPI backend that orchestrates model loading, preprocessing, caching, and inference requests
+|-- frontend/                  # Streamlit frontend for selecting a model, uploading retinal images, and viewing results
+|-- Qwen3/                     # Qwen3-VL inference server, preprocessing code, and local LoRA adapter files
+|-- RetiZero/                  # RetiZero inference code, pretrained weights, preprocessing, and bundled upstream project files
+|-- finetuning/                # Training, evaluation, and preprocessing notebooks/scripts for the Qwen3 and RetiZero workflows
+|-- processed_image_cache/     # Stores preprocessed images generated before running inference
+|-- unprocessed_image_cache/   # Stores original uploaded retinal images before preprocessing
+|-- unsloth_compiled_cache/    # Auto-generated Unsloth compilation cache used during model execution
 |-- download_model_assets.py
 |-- requirements.txt
 |-- README.md
