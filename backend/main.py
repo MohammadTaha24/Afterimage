@@ -391,6 +391,11 @@ async def model_prepare(model: str = Form(...)):
         "message": runtime.message,
     }
 
+def _safe_delete(path: Path) -> None:
+    try:
+        path.unlink(missing_ok=True)
+    except Exception as exc:
+        log.warning("Could not delete %s: %s", path, exc)
 
 @app.post("/predict")
 async def predict(file: UploadFile = File(...), model: str = Form(...)):
@@ -408,27 +413,38 @@ async def predict(file: UploadFile = File(...), model: str = Form(...)):
     except ValueError as exc:
         return _err(400, str(exc))
 
+    # --- Save raw ---
     uid = uuid.uuid4().hex
     raw_suffix = Path(file.filename or "upload.png").suffix.lower() or ".png"
     raw_path = CACHE_RAW / f"{uid}{raw_suffix}"
     raw_path.write_bytes(raw)
 
+    # --- Preprocess (keep raw on failure) ---
     try:
         processed_bytes = _preprocess_bytes(model, raw)
     except Exception as exc:
         return _err(500, f"Preprocessing failed: {exc}")
 
+    # --- Save processed, then delete raw ---
     processed_path = CACHE_PROCESSED / f"{uid}.png"
     processed_path.write_bytes(processed_bytes)
+    _safe_delete(raw_path)
 
+    # --- Run inference, then delete processed ---
+    inference_reached = False
     try:
         async with httpx.AsyncClient(timeout=180.0) as client:
             resp = await client.post(
                 f"{runtime.url}/predict",
                 files={"file": ("processed.png", processed_bytes, "image/png")},
             )
+        inference_reached = True
     except httpx.HTTPError as exc:
+        # Keep processed file: we don't know if inference ran.
         return _err(503, f"Failed to contact {MODEL_NAMES[model]}: {exc}")
+    finally:
+        if inference_reached:
+            _safe_delete(processed_path)
 
     if resp.status_code != 200:
         return _err(500, f"Inference server error ({resp.status_code}): {resp.text}")
@@ -447,6 +463,62 @@ async def predict(file: UploadFile = File(...), model: str = Form(...)):
         "grade": grade,
         "model": MODEL_NAMES[model],
     }
+
+# @app.post("/predict")
+# async def predict(file: UploadFile = File(...), model: str = Form(...)):
+#     if model not in runtimes:
+#         return _err(400, f"Unknown model '{model}'. Choose 'retizero' or 'qwen3vl'.")
+
+#     runtime = runtimes[model]
+#     if runtime.state != "ready":
+#         return _err(409, f"{MODEL_NAMES[model]} is not ready. Load it first.")
+
+#     raw = await file.read()
+
+#     try:
+#         _validate_image(file.filename or "", file.content_type or "", raw)
+#     except ValueError as exc:
+#         return _err(400, str(exc))
+
+#     uid = uuid.uuid4().hex
+#     raw_suffix = Path(file.filename or "upload.png").suffix.lower() or ".png"
+#     raw_path = CACHE_RAW / f"{uid}{raw_suffix}"
+#     raw_path.write_bytes(raw)
+
+#     try:
+#         processed_bytes = _preprocess_bytes(model, raw)
+#     except Exception as exc:
+#         return _err(500, f"Preprocessing failed: {exc}")
+
+#     processed_path = CACHE_PROCESSED / f"{uid}.png"
+#     processed_path.write_bytes(processed_bytes)
+
+#     try:
+#         async with httpx.AsyncClient(timeout=180.0) as client:
+#             resp = await client.post(
+#                 f"{runtime.url}/predict",
+#                 files={"file": ("processed.png", processed_bytes, "image/png")},
+#             )
+#     except httpx.HTTPError as exc:
+#         return _err(503, f"Failed to contact {MODEL_NAMES[model]}: {exc}")
+
+#     if resp.status_code != 200:
+#         return _err(500, f"Inference server error ({resp.status_code}): {resp.text}")
+
+#     try:
+#         payload = resp.json()
+#         grade = int(payload["grade"])
+#     except Exception as exc:
+#         return _err(500, f"Invalid inference payload: {exc}")
+
+#     if grade not in GRADE_LABELS:
+#         return _err(500, f"Grade {grade} is out of range [0-4].")
+
+#     return {
+#         "label": GRADE_LABELS[grade],
+#         "grade": grade,
+#         "model": MODEL_NAMES[model],
+#     }
 
 
 @app.post("/model/unload")

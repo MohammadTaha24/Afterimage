@@ -1,0 +1,3 @@
+Backend first: uvicorn backend.main:app --host 127.0.0.1 --port 9000
+
+Frontend second: streamlit run frontend\app.py
