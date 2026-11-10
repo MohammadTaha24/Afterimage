@@ -1,12 +1,13 @@
 import io
 import logging
-import queue
+import os
 import re
 import subprocess
 import sys
 import threading
 import time
 import uuid
+from collections import deque
 from pathlib import Path
 from typing import Dict, Optional
 
@@ -24,6 +25,7 @@ sys.path.insert(0, str(PROJECT_ROOT / "RetiZero"))
 
 from preprocess_qwen import preprocess_qwen_array
 from preprocess_retizero import preprocess_retizero_array
+from model_assets import QWEN3_LORA_TARGET, RETIZERO_TARGET, require_file, validate_lora
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s  %(message)s")
 log = logging.getLogger("afterimage")
@@ -73,28 +75,6 @@ MODEL_COMMANDS = {
     ],
 }
 
-MODEL_ASSET_HINTS = {
-    "retizero": {
-        "paths": [
-            PROJECT_ROOT / "RetiZero" / "best_retizero_dr.pth",
-        ],
-        "hint": (
-            "Run `python download_model_assets.py --retizero-repo <repo> --qwen3-repo <repo>` "
-            "to restore the missing Hugging Face assets."
-        ),
-    },
-    "qwen3vl": {
-        "paths": [
-            PROJECT_ROOT / "Qwen3" / "lr0.0005_epoch4_batchsize8" / "best_lora" / "adapter_config.json",
-            PROJECT_ROOT / "Qwen3" / "lr0.0005_epoch4_batchsize8" / "best_lora" / "adapter_model.safetensors",
-        ],
-        "hint": (
-            "Run `python download_model_assets.py --retizero-repo <repo> --qwen3-repo <repo>` "
-            "to restore the missing Hugging Face assets."
-        ),
-    },
-}
-
 ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png"}
 ALLOWED_CONTENT_TYPES = {"image/jpeg", "image/png"}
 
@@ -114,10 +94,11 @@ class ModelRuntime:
         self.progress = 0
         self.message = "Not loaded"
         self.last_error: Optional[str] = None
-        self.stdout_lines: "queue.Queue[str]" = queue.Queue()
+        self.stdout_lines: "deque[str]" = deque(maxlen=80)
         self._reader_thread: Optional[threading.Thread] = None
         self._health_thread: Optional[threading.Thread] = None
         self._lock = threading.Lock()
+        self._stop_event = threading.Event()
 
     @property
     def url(self) -> str:
@@ -188,79 +169,90 @@ def _validate_image(file_name: str, content_type: str, raw: bytes) -> None:
         raise ValueError(f"Image could not be decoded: {exc}") from exc
 
 
-def _read_process_output(runtime: ModelRuntime) -> None:
-    assert runtime.process is not None
-    assert runtime.process.stdout is not None
+def _read_process_output(runtime: ModelRuntime, process: subprocess.Popen, stop_event: threading.Event) -> None:
+    assert process.stdout is not None
 
     try:
-        for raw_line in iter(runtime.process.stdout.readline, ""):
+        for raw_line in iter(process.stdout.readline, ""):
+            if stop_event.is_set() or runtime.process is not process:
+                return
             line = raw_line.strip()
             if not line:
                 continue
 
-            runtime.stdout_lines.put(line)
+            runtime.stdout_lines.append(line)
             log.info("[%s] %s", runtime.model_key, line)
 
             match = PROGRESS_RE.search(line)
-            if match:
+            if match and runtime.state == "loading":
                 pct = int(match.group(1))
                 msg = match.group(2).strip()
                 runtime.set_status("loading", pct, msg)
     except Exception as exc:
+        if stop_event.is_set() or runtime.process is not process:
+            return
         runtime.last_error = f"Failed while reading process output: {exc}"
         runtime.set_status("error", runtime.progress, runtime.last_error)
         return
 
-    rc = runtime.process.poll() if runtime.process else None
-    if runtime.state != "ready":
-        runtime.last_error = f"Process exited with code {rc}"
-        runtime.set_status("error", runtime.progress, runtime.last_error)
+    if stop_event.is_set() or runtime.process is not process:
+        return
+    rc = process.wait()
+    detail = next((line for line in reversed(runtime.stdout_lines)
+                   if "Error:" in line or "Exception:" in line), "See backend log for details.")
+    runtime.last_error = f"Process exited with code {rc}. {detail}"
+    runtime.set_status("error", runtime.progress, runtime.last_error)
 
 
-def _background_health_monitor(model: str) -> None:
+def _background_health_monitor(model: str, process: subprocess.Popen, stop_event: threading.Event) -> None:
     runtime = runtimes[model]
     health_url = f"{runtime.url}/health"
-    deadline = time.time() + MODEL_READY_TIMEOUT_SECONDS
+    deadline = time.monotonic() + MODEL_READY_TIMEOUT_SECONDS
 
-    while time.time() < deadline:
-        if not runtime.is_running():
-            if runtime.state != "ready":
-                runtime.last_error = runtime.last_error or "Model process exited unexpectedly"
-                runtime.set_status("error", runtime.progress, runtime.last_error)
+    while time.monotonic() < deadline:
+        if stop_event.is_set() or runtime.process is not process:
+            return
+        if process.poll() is not None or runtime.state == "error":
             return
 
         try:
             resp = httpx.get(health_url, timeout=5.0)
-            if resp.status_code == 200:
+            if resp.status_code == 200 and not stop_event.is_set() and runtime.process is process:
                 runtime.set_status("ready", 100, "Model ready")
                 runtime.last_error = None
                 return
         except Exception:
             pass
 
-        time.sleep(HEALTHCHECK_INTERVAL_SECONDS)
+        if stop_event.wait(HEALTHCHECK_INTERVAL_SECONDS):
+            return
 
+    if stop_event.is_set() or runtime.process is not process:
+        return
+    # Do not leave a timed-out process holding GPU memory or writing into a full pipe.
+    _stop_runtime(runtime)
     runtime.last_error = "Timed out waiting for model health check"
     runtime.set_status("error", runtime.progress, runtime.last_error)
 
 
 def _stop_runtime(runtime: ModelRuntime) -> None:
-    if not runtime.is_running():
-        runtime.process = None
-        runtime.set_status("stopped", 0, "Not loaded")
-        runtime.last_error = None
-        return
-
+    runtime._stop_event.set()
+    process = runtime.process
     try:
-        runtime.process.terminate()
-        runtime.process.wait(timeout=PROCESS_TERMINATE_TIMEOUT_SECONDS)
-    except Exception:
-        try:
-            runtime.process.kill()
-        except Exception:
-            pass
+        if process is not None and process.poll() is None:
+            process.terminate()
+            try:
+                process.wait(timeout=PROCESS_TERMINATE_TIMEOUT_SECONDS)
+            except subprocess.TimeoutExpired:
+                process.kill()
+                process.wait(timeout=PROCESS_TERMINATE_TIMEOUT_SECONDS)
     finally:
         runtime.process = None
+        for thread in (runtime._reader_thread, runtime._health_thread):
+            if thread and thread is not threading.current_thread():
+                thread.join(timeout=6)
+        if process is not None and process.stdout is not None:
+            process.stdout.close()
         runtime.set_status("stopped", 0, "Not loaded")
         runtime.last_error = None
 
@@ -286,16 +278,15 @@ def _preprocess_bytes(model: str, raw: bytes) -> bytes:
 
 
 def _assert_model_assets_present(model: str) -> None:
-    spec = MODEL_ASSET_HINTS.get(model)
-    if not spec:
-        return
-
-    missing = [path for path in spec["paths"] if not path.exists()]
-    if not missing:
-        return
-
-    missing_text = ", ".join(str(path.relative_to(PROJECT_ROOT)) for path in missing)
-    raise FileNotFoundError(f"Missing required files for {MODEL_NAMES[model]}: {missing_text}. {spec['hint']}")
+    try:
+        if model == "retizero":
+            require_file(RETIZERO_TARGET)
+        else:
+            validate_lora(QWEN3_LORA_TARGET)
+    except ValueError as exc:
+        raise FileNotFoundError(
+            f"Invalid assets for {MODEL_NAMES[model]}: {exc}. Run `python download_model_assets.py`."
+        ) from exc
 
 
 def _start_runtime(model: str) -> None:
@@ -307,16 +298,19 @@ def _start_runtime(model: str) -> None:
     with global_lock:
         target = runtimes[model]
 
+        _assert_model_assets_present(model)
+
         if active_model and active_model != model:
             _stop_runtime(runtimes[active_model])
 
-        if target.is_running():
+        if target.is_running() and target.state in {"loading", "ready"}:
             return
-
-        _assert_model_assets_present(model)
+        _stop_runtime(target)
 
         target.set_status("loading", 1, "Starting model process")
         target.last_error = None
+        target.stdout_lines.clear()
+        target._stop_event = threading.Event()
 
         process = subprocess.Popen(
             MODEL_COMMANDS[model],
@@ -326,13 +320,17 @@ def _start_runtime(model: str) -> None:
             stdin=subprocess.DEVNULL,
             text=True,
             bufsize=1,
-            universal_newlines=True,
+            # Model servers print UTF-8 (emoji banners, tqdm bar glyphs). Without this the
+            # reader decodes with the Windows locale (cp1252) and dies on bytes like 0x8d.
+            encoding="utf-8",
+            errors="replace",
+            env={**os.environ, "PYTHONIOENCODING": "utf-8"},
         )
         target.process = process
 
         reader = threading.Thread(
             target=_read_process_output,
-            args=(target,),
+            args=(target, process, target._stop_event),
             daemon=True,
             name=f"{model}-stdout-reader",
         )
@@ -341,7 +339,7 @@ def _start_runtime(model: str) -> None:
 
         health_thread = threading.Thread(
             target=_background_health_monitor,
-            args=(model,),
+            args=(model, process, target._stop_event),
             daemon=True,
             name=f"{model}-health-monitor",
         )
@@ -368,15 +366,14 @@ def model_status():
 
 
 @app.post("/model/prepare")
-async def model_prepare(model: str = Form(...)):
+def model_prepare(model: str = Form(...)):
     if model not in runtimes:
         return _err(400, f"Unknown model '{model}'. Choose 'retizero' or 'qwen3vl'.")
 
     runtime = runtimes[model]
 
     try:
-        if not runtime.is_running():
-            _start_runtime(model)
+        _start_runtime(model)
     except Exception as exc:
         runtime.last_error = str(exc)
         runtime.set_status("error", runtime.progress, str(exc))
@@ -403,7 +400,7 @@ async def predict(file: UploadFile = File(...), model: str = Form(...)):
         return _err(400, f"Unknown model '{model}'. Choose 'retizero' or 'qwen3vl'.")
 
     runtime = runtimes[model]
-    if runtime.state != "ready":
+    if runtime.state != "ready" or not runtime.is_running():
         return _err(409, f"{MODEL_NAMES[model]} is not ready. Load it first.")
 
     raw = await file.read()
@@ -522,17 +519,17 @@ async def predict(file: UploadFile = File(...), model: str = Form(...)):
 
 
 @app.post("/model/unload")
-async def model_unload(model: str = Form(...)):
+def model_unload(model: str = Form(...)):
     global active_model
 
     if model not in runtimes:
         return _err(400, f"Unknown model '{model}'.")
 
     runtime = runtimes[model]
-    _stop_runtime(runtime)
-
-    if active_model == model:
-        active_model = None
+    with global_lock:
+        _stop_runtime(runtime)
+        if active_model == model:
+            active_model = None
 
     return {
         "ok": True,

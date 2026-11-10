@@ -34,6 +34,8 @@ DR_LABELS: Dict[int, str] = {
 
 PROJECT_DIR = Path(__file__).resolve().parent
 REPO_DIR = PROJECT_DIR / "RetiZero"
+sys.path.insert(0, str(PROJECT_DIR.parent))
+from model_assets import DEFAULT_RETIZERO_TEXT_MODEL
 
 if not REPO_DIR.exists():
     raise RuntimeError(f"Expected nested RetiZero repo at: {REPO_DIR}")
@@ -59,7 +61,10 @@ def emit_progress(percent: int, message: str) -> None:
 class RetiZeroInference(nn.Module):
     def __init__(self, num_classes: int = 5) -> None:
         super().__init__()
-        self.retizero = CLIPRModel(vision_type="lora", from_checkpoint=False, R=8)
+        self.retizero = CLIPRModel(
+            vision_type="lora", from_checkpoint=False, R=8,
+            bert_type=DEFAULT_RETIZERO_TEXT_MODEL,
+        )
         self.img_encoder = self.retizero.vision_model.model
         self.classifier = nn.Linear(1024, num_classes)
 

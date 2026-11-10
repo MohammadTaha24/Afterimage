@@ -2,33 +2,31 @@ import argparse
 import logging
 import shutil
 import sys
+import tempfile
 from pathlib import Path
 from typing import Iterable
 
 from huggingface_hub import hf_hub_download, snapshot_download
+from huggingface_hub.errors import LocalEntryNotFoundError
 
-
-PROJECT_ROOT = Path(__file__).resolve().parent
-
-RETIZERO_TARGET = PROJECT_ROOT / "RetiZero" / "best_retizero_dr.pth"
-QWEN3_LORA_TARGET = PROJECT_ROOT / "Qwen3" / "lr0.0005_epoch4_batchsize8" / "best_lora"
+from model_assets import (
+    AssetValidationError,
+    DEFAULT_QWEN3_BASE_MODEL,
+    DEFAULT_RETIZERO_TEXT_MODEL,
+    QWEN3_LORA_TARGET,
+    RETIZERO_TARGET,
+    validate_lora,
+    validate_snapshot,
+)
 
 DEFAULT_RETIZERO_REPO = "moht24/retizero-dr-model"
 DEFAULT_RETIZERO_FILE = "best_retizero_dr.pth"
 
 DEFAULT_QWEN3_REPO = "moht24/qwen3-vl-dr-lora"
 DEFAULT_QWEN3_SUBDIR = "best_lora"
-DEFAULT_QWEN3_BASE_MODEL = "unsloth/Qwen3-VL-8B-Instruct-unsloth-bnb-4bit"
 
 # Strict expectations for this project.
 REQUIRED_RETIZERO_FILENAME = "best_retizero_dr.pth"
-REQUIRED_QWEN3_REQUIRED_FILES = {
-    "adapter_config.json",
-}
-REQUIRED_QWEN3_WEIGHT_CANDIDATES = (
-    "adapter_model.safetensors",
-    "adapter_model.bin",
-)
 
 LOGGER = logging.getLogger("download_model_assets")
 
@@ -71,6 +69,34 @@ def parse_args() -> argparse.Namespace:
         "--qwen3-subdir",
         default=DEFAULT_QWEN3_SUBDIR,
         help=f"Folder inside the Qwen3 repo containing the LoRA files (default: {DEFAULT_QWEN3_SUBDIR})",
+    )
+    parser.add_argument(
+        "--qwen3-base-repo",
+        default=DEFAULT_QWEN3_BASE_MODEL,
+        help=(
+            "Hugging Face repo id for the Qwen3-VL base model, stored in the standard "
+            f"Hugging Face cache (default: {DEFAULT_QWEN3_BASE_MODEL})"
+        ),
+    )
+    parser.add_argument(
+        "--retizero-text-repo",
+        default=DEFAULT_RETIZERO_TEXT_MODEL,
+        help=f"RetiZero text encoder cached for startup (default: {DEFAULT_RETIZERO_TEXT_MODEL})",
+    )
+    parser.add_argument(
+        "--skip-retizero-text",
+        action="store_true",
+        help="Skip Bio_ClinicalBERT; RetiZero may need internet on first load.",
+    )
+    parser.add_argument(
+        "--skip-qwen3-base",
+        action="store_true",
+        help="Do not download the Qwen3-VL base model (it is then fetched on first load instead).",
+    )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Re-download every asset even if it is already present locally.",
     )
     parser.add_argument(
         "--token",
@@ -123,38 +149,24 @@ def validate_retizero_filename(filename: str) -> None:
 
 
 def validate_qwen3_contents(source_dir: Path) -> None:
-    validate_directory_exists(source_dir, "Qwen3 LoRA source directory")
-
-    missing = [name for name in REQUIRED_QWEN3_REQUIRED_FILES if not (source_dir / name).is_file()]
-    if missing:
-        raise AssetDownloadError(
-            "The Qwen3 LoRA folder is missing required file(s): "
-            + ", ".join(sorted(missing))
-        )
-
-    found_weight_file = None
-    for candidate in REQUIRED_QWEN3_WEIGHT_CANDIDATES:
-        candidate_path = source_dir / candidate
-        if candidate_path.is_file():
-            found_weight_file = candidate_path
-            break
-
-    if found_weight_file is None:
-        raise AssetDownloadError(
-            "The Qwen3 LoRA folder must contain one of these weight files: "
-            + ", ".join(REQUIRED_QWEN3_WEIGHT_CANDIDATES)
-        )
-
-    if found_weight_file.stat().st_size == 0:
-        raise AssetDownloadError(f"Qwen3 LoRA weight file is empty: {found_weight_file}")
-
+    try:
+        validate_lora(source_dir)
+    except AssetValidationError as exc:
+        raise AssetDownloadError(str(exc)) from exc
     LOGGER.debug("Validated Qwen3 LoRA source directory: %s", source_dir)
 
 
 def safe_copy_file(src: Path, dst: Path) -> None:
     validate_file_exists(src, "Source file")
     ensure_parent(dst)
-    shutil.copy2(src, dst)
+    # An interrupted copy must not leave a non-empty final file that gets skipped.
+    with tempfile.NamedTemporaryFile(dir=dst.parent, prefix=f".{dst.name}.", suffix=".partial", delete=False) as temp:
+        staging = Path(temp.name)
+    try:
+        shutil.copy2(src, staging)
+        staging.replace(dst)
+    finally:
+        staging.unlink(missing_ok=True)
     validate_file_exists(dst, "Copied file")
 
 
@@ -177,13 +189,80 @@ def safe_copy_tree(src_dir: Path, dst_dir: Path, clear_first: bool) -> None:
         if item.is_dir():
             shutil.copytree(item, dst_item, dirs_exist_ok=True)
         else:
-            shutil.copy2(item, dst_item)
+            safe_copy_file(item, dst_item)
 
     validate_directory_exists(dst_dir, "Copied target directory")
 
 
-def download_retizero(repo_id: str, filename: str, token: str | None) -> None:
+def retizero_is_present() -> bool:
+    return RETIZERO_TARGET.is_file() and RETIZERO_TARGET.stat().st_size > 0
+
+
+def qwen3_lora_is_present() -> bool:
+    try:
+        validate_qwen3_contents(QWEN3_LORA_TARGET)
+    except AssetDownloadError:
+        return False
+    return True
+
+
+def find_cached_model(repo_id: str, kind: str) -> Path | None:
+    """Inspect the current local snapshot without contacting Hugging Face."""
+    # A local directory override is supported by the servers as well as setup.
+    local_path = Path(repo_id).expanduser()
+    try:
+        snapshot_dir = local_path if local_path.is_dir() else Path(
+            snapshot_download(repo_id=repo_id, local_files_only=True)
+        )
+    except LocalEntryNotFoundError:
+        return None
+    try:
+        validate_snapshot(snapshot_dir, kind)
+        return snapshot_dir
+    except AssetValidationError as exc:
+        LOGGER.debug("Incomplete cached snapshot: %s", exc)
+        return None
+
+
+def find_cached_qwen3_base(repo_id: str) -> Path | None:
+    return find_cached_model(repo_id, "qwen3")
+
+
+def download_qwen3_base(repo_id: str, token: str | None, force: bool) -> None:
+    download_cached_model(repo_id, "qwen3", token, force)
+
+
+def download_cached_model(repo_id: str, kind: str, token: str | None, force: bool) -> None:
+    label = "Qwen3 base model" if kind == "qwen3" else "RetiZero text encoder"
+    if Path(repo_id).expanduser().is_dir():
+        validate_snapshot(Path(repo_id).expanduser(), kind)
+        LOGGER.info("%s supplied as a local directory: %s", label, repo_id)
+        return
+    if not force:
+        cached = find_cached_model(repo_id, kind)
+        if cached is not None:
+            LOGGER.info("%s %s already downloaded (%s), skipping.", label, repo_id, cached)
+            return
+
+    LOGGER.info("Downloading %s %s; large models can take several minutes", label, repo_id)
+    snapshot_dir = Path(
+        snapshot_download(
+            repo_id=repo_id,
+            token=token,
+            force_download=force,
+        )
+    )
+
+    validate_snapshot(snapshot_dir, kind)
+    LOGGER.info("%s available in the Hugging Face cache: %s", label, snapshot_dir)
+
+
+def download_retizero(repo_id: str, filename: str, token: str | None, force: bool) -> None:
     validate_retizero_filename(filename)
+
+    if not force and retizero_is_present():
+        LOGGER.info("RetiZero weights already present at %s, skipping.", RETIZERO_TARGET)
+        return
 
     LOGGER.info("Downloading RetiZero weights from %s:%s", repo_id, filename)
     cached_path = Path(
@@ -191,6 +270,7 @@ def download_retizero(repo_id: str, filename: str, token: str | None) -> None:
             repo_id=repo_id,
             filename=filename,
             token=token,
+            force_download=force,
         )
     )
 
@@ -219,7 +299,14 @@ def normalize_subdir(subdir: str) -> str:
     return normalized
 
 
-def download_qwen3_lora(repo_id: str, subdir: str, token: str | None, clear_first: bool) -> None:
+def download_qwen3_lora(
+    repo_id: str, subdir: str, token: str | None, clear_first: bool, force: bool
+) -> None:
+    # --clear-qwen3-target explicitly asks for a fresh copy, so it also bypasses the skip.
+    if not (force or clear_first) and qwen3_lora_is_present():
+        LOGGER.info("Qwen3 LoRA already present at %s, skipping.", QWEN3_LORA_TARGET)
+        return
+
     normalized_subdir = normalize_subdir(subdir)
     allow_patterns = None if not normalized_subdir else [f"{normalized_subdir}/*"]
 
@@ -231,6 +318,7 @@ def download_qwen3_lora(repo_id: str, subdir: str, token: str | None, clear_firs
             repo_id=repo_id,
             allow_patterns=allow_patterns,
             token=token,
+            force_download=force,
         )
     )
 
@@ -243,15 +331,19 @@ def download_qwen3_lora(repo_id: str, subdir: str, token: str | None, clear_firs
     LOGGER.info("Saved Qwen3 LoRA files to %s", QWEN3_LORA_TARGET)
 
 
-def print_summary() -> None:
-    LOGGER.info("Model asset download complete.")
+def print_summary(args: argparse.Namespace) -> None:
+    LOGGER.info("Model asset setup complete.")
     LOGGER.info("RetiZero checkpoint path: %s", RETIZERO_TARGET)
     LOGGER.info("Qwen3 LoRA path         : %s", QWEN3_LORA_TARGET)
-    LOGGER.info(
-        "Base Qwen3 model is not downloaded by this script. "
-        "It should be loaded separately by model id: %s",
-        DEFAULT_QWEN3_BASE_MODEL,
-    )
+    LOGGER.info("RetiZero text encoder   : %s%s", args.retizero_text_repo,
+                " (skipped)" if args.skip_retizero_text else " (Hugging Face cache)")
+    if args.skip_qwen3_base:
+        LOGGER.info(
+            "Qwen3 base model download was skipped; it will be fetched on first load by model id: %s",
+            args.qwen3_base_repo,
+        )
+    else:
+        LOGGER.info("Qwen3 base model        : %s (Hugging Face cache)", args.qwen3_base_repo)
 
 
 def main() -> int:
@@ -259,14 +351,19 @@ def main() -> int:
     configure_logging(args.verbose)
 
     try:
-        download_retizero(args.retizero_repo, args.retizero_file, args.token)
+        download_retizero(args.retizero_repo, args.retizero_file, args.token, args.force)
         download_qwen3_lora(
             args.qwen3_repo,
             args.qwen3_subdir,
             args.token,
             args.clear_qwen3_target,
+            args.force,
         )
-        print_summary()
+        if not args.skip_qwen3_base:
+            download_qwen3_base(args.qwen3_base_repo, args.token, args.force)
+        if not args.skip_retizero_text:
+            download_cached_model(args.retizero_text_repo, "retizero-text", args.token, args.force)
+        print_summary(args)
         return 0
     except KeyboardInterrupt:
         LOGGER.error("Operation cancelled by user.")

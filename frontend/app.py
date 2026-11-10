@@ -562,7 +562,7 @@ def request_model_load(model_key: str) -> bool:
         resp = requests.post(
             BACKEND_PREPARE_URL,
             data={"model": model_key},
-            timeout=5,
+            timeout=60,
         )
         resp.raise_for_status()
     except Exception as exc:

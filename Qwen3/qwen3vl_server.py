@@ -36,6 +36,9 @@ from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.responses import JSONResponse
 import uvicorn
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from model_assets import DEFAULT_QWEN3_BASE_MODEL
+
 os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
 
 # ---------------------------------------------------------------------------
@@ -199,7 +202,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--base_model",
         type=str,
-        default="unsloth/Qwen3-VL-8B-Instruct-unsloth-bnb-4bit",
+        default=DEFAULT_QWEN3_BASE_MODEL,
         help="HuggingFace model ID or local path for the base model",
     )
     parser.add_argument(
@@ -265,6 +268,11 @@ async def lifespan(app: FastAPI):
     lora_dir = resolve_lora_dir(args.run_path)
 
     emit_progress(20, "Importing Qwen dependencies")
+    if not torch.cuda.is_available():
+        raise RuntimeError("Qwen3-VL requires CUDA. Run `python check_environment.py` from the repo root.")
+    # Import pandas on its own before Unsloth's optional import probes. If a binary
+    # import fails, report that first exception instead of a later partial-import error.
+    import pandas
     from unsloth import FastVisionModel
     from peft import PeftModel
 
