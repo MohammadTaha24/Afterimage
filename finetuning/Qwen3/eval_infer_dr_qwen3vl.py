@@ -10,6 +10,7 @@ from typing import Optional, Tuple, List
 import numpy as np
 import pandas as pd
 import torch
+from PIL import Image
 
 from datasets import Dataset
 from unsloth import FastVisionModel
@@ -83,6 +84,8 @@ def load_test_csv(csv_path: str, image_dir: str, ext: str) -> Dataset:
     image_dir_p = Path(image_dir)
 
     df = pd.read_csv(csv_path, dtype=str)
+    if "image_path" in df.columns and "file_path" not in df.columns:
+        df["file_path"] = df["image_path"]
 
     # ---- schema mapping (supports multiple CSV formats) ----
     # id field:
@@ -90,9 +93,11 @@ def load_test_csv(csv_path: str, image_dir: str, ext: str) -> Dataset:
         df["id_code"] = df["id_code"].astype(str)
     elif "filename" in df.columns:
         df["id_code"] = df["filename"].astype(str).map(lambda s: Path(str(s)).stem)
+    elif "file_path" in df.columns:
+        df["id_code"] = df["file_path"].astype(str).map(lambda s: Path(str(s)).stem)
     else:
         raise ValueError(
-            f"CSV missing id column. Expected 'id_code' or 'filename'. Found: {list(df.columns)}"
+            f"CSV missing id column. Expected id_code/filename/image_path/file_path. Found: {list(df.columns)}"
         )
 
     # label field:
@@ -102,9 +107,11 @@ def load_test_csv(csv_path: str, image_dir: str, ext: str) -> Dataset:
         df["diagnosis"] = df["dr_grade"].astype(int)
     elif "grade" in df.columns:
         df["diagnosis"] = df["grade"].astype(int)
+    elif "label" in df.columns:
+        df["diagnosis"] = df["label"].astype(int)
     else:
         raise ValueError(
-            f"CSV missing label column. Expected 'diagnosis' or 'dr_grade' (or 'grade'). Found: {list(df.columns)}"
+            f"CSV missing label column. Expected diagnosis/dr_grade/grade/label. Found: {list(df.columns)}"
         )
 
     # ---- resolve image paths ----
@@ -142,11 +149,12 @@ def load_test_csv(csv_path: str, image_dir: str, ext: str) -> Dataset:
 
     df["image_path"] = df.apply(_resolve, axis=1)
 
-    exists_mask = df["image_path"].apply(os.path.exists)
+    exists_mask = df["image_path"].apply(os.path.isfile)
     missing = int((~exists_mask).sum())
     if missing:
-        print(f"[WARN] Missing images in {Path(csv_path).name}: {missing}. Dropping them.", flush=True)
-    df = df[exists_mask].reset_index(drop=True)
+        raise FileNotFoundError(f"Missing {missing} images in {csv_path}; refusing to silently drop rows.")
+    if not df["diagnosis"].between(0, 4).all():
+        raise ValueError(f"Labels must be integers in 0..4: {csv_path}")
 
     if len(df) == 0:
         raise ValueError(
@@ -167,39 +175,26 @@ def predict_one(model, tokenizer, img_path: str, max_new_tokens: int, temperatur
             {"type": "text", "text": INSTRUCTION},
         ]}
     ]
-    input_text = tokenizer.apply_chat_template(messages, add_generation_prompt=True)
+    input_text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+    # Resize the pixels explicitly; unsupported processor kwargs can otherwise be
+    # ignored. The processor still applies its model-specific patch alignment.
+    with Image.open(img_path) as source:
+        img = source.convert("RGB").resize((w, h), Image.Resampling.LANCZOS)
+    inputs = tokenizer(
+        images=img, text=input_text, add_special_tokens=False, return_tensors="pt",
+    ).to("cuda")
 
-    tokenizer_kwargs = dict(add_special_tokens=False, return_tensors="pt")
-
-    tried = False
-    for extra in (
-        {"image_size": (h, w)},
-        {"size": {"height": h, "width": w}},
-        {"image_sizes": [(h, w)]},
-    ):
-        try:
-            inputs = tokenizer(img_path, input_text, **tokenizer_kwargs, **extra).to("cuda")
-            tried = True
-            break
-        except TypeError:
-            continue
-
-    if not tried:
-        inputs = tokenizer(img_path, input_text, **tokenizer_kwargs).to("cuda")
-
-    for k, v in inputs.items():
-        if torch.is_tensor(v):
-            print(f"{k}: device={v.device}, dtype={v.dtype}, shape={tuple(v.shape)}", flush=True)
-
-
+    generation_kwargs = dict(do_sample=temperature > 0)
+    if temperature > 0:
+        generation_kwargs.update(temperature=temperature, min_p=min_p)
     out = model.generate(
         **inputs,
         max_new_tokens=max_new_tokens,
-        temperature=temperature,
-        min_p=min_p,
         use_cache=True,
+        **generation_kwargs,
     )
-    return tokenizer.decode(out[0], skip_special_tokens=False)
+    # Parse only the generated answer, never the prompt or its example format.
+    return tokenizer.decode(out[0, inputs["input_ids"].shape[1]:], skip_special_tokens=True)
 
 
 def parse_pred_label(gen_text: str) -> Optional[int]:
@@ -279,9 +274,6 @@ def main():
     model = PeftModel.from_pretrained(model, args.lora_dir)
     FastVisionModel.for_inference(model)
 
-    print("[INFO] Attaching LoRA adapters...", flush=True)
-    model = PeftModel.from_pretrained(model, args.lora_dir)
-    FastVisionModel.for_inference(model)
     model.eval()
 
     print("Device:", next(model.parameters()).device, flush=True)
@@ -331,7 +323,7 @@ def main():
     y_pred_arr = np.array(y_pred, dtype=int)
 
     acc = float((y_true_arr == y_pred_arr).mean())
-    qwk = float(cohen_kappa_score(y_true_arr, y_pred_arr, weights="quadratic")) if SKLEARN_OK else qwk_numpy(y_true_arr, y_pred_arr, 5)
+    qwk = float(cohen_kappa_score(y_true_arr, y_pred_arr, labels=[0, 1, 2, 3, 4], weights="quadratic")) if SKLEARN_OK else qwk_numpy(y_true_arr, y_pred_arr, 5)
 
     if SKLEARN_OK:
         cm = confusion_matrix(y_true_arr, y_pred_arr, labels=[0, 1, 2, 3, 4])

@@ -12,6 +12,7 @@ import pandas as pd
 import unsloth
 from unsloth import FastVisionModel
 from peft import PeftModel
+from transformers import set_seed
 
 # Reuse your existing eval logic for generation + parsing + qwk fallback
 from eval_infer_dr_qwen3vl import (
@@ -108,12 +109,18 @@ def load_eval_rows(csv_path: str, image_dir: str, ext: str) -> list[dict]:
     # normalize labels
     df["__y__"] = df[label_col].astype(int)
 
-    # drop missing images
-    exists = df["__img__"].map(lambda p: Path(p).exists())
+    # Refuse incomplete evaluations instead of dropping missing images.
+    exists = df["__img__"].map(lambda p: Path(p).is_file())
     missing = int((~exists).sum())
     if missing:
-        print(f"[WARN] Missing images: {missing}. Dropping them.", flush=True)
-    df = df[exists].reset_index(drop=True)
+        raise FileNotFoundError(
+            f"Missing {missing} images; refusing to silently drop evaluation rows. "
+            f"Examples: {df.loc[~exists, '__img__'].head(5).tolist()}"
+        )
+    if df.empty:
+        raise ValueError(f"Evaluation CSV contains no rows: {csv_path}")
+    if not df["__y__"].between(0, 4).all():
+        raise ValueError(f"Labels must be integers in 0..4: {csv_path}")
 
     return [{"image_path": r["__img__"], "diagnosis": int(r["__y__"])} for _, r in df.iterrows()]
 
@@ -135,6 +142,7 @@ def main():
     p.add_argument("--image_dir", type=str, required=True)
     p.add_argument("--ext", type=str, default=".png")
     p.add_argument("--limit", type=int, default=0)
+    p.add_argument("--seed", type=int, default=42)
 
     # Generation config
     p.add_argument("--img_size", type=str, default="384")
@@ -145,6 +153,7 @@ def main():
     # Outputs
     p.add_argument("--save_preds_csv", type=str, default="")
     args = p.parse_args()
+    set_seed(args.seed)
 
     load_in_4bit = True
     if args.no_load_in_4bit:
@@ -166,6 +175,7 @@ def main():
     print(f"[INFO] Attaching LoRA from: {lora_dir}", flush=True)
     model = PeftModel.from_pretrained(model, str(lora_dir))
     FastVisionModel.for_inference(model)
+    model.eval()
 
     print(f"[INFO] Loading CSV: {data_csv}", flush=True)
     eval_rows = load_eval_rows(data_csv, args.image_dir, args.ext)
@@ -194,7 +204,8 @@ def main():
         )
 
         pred = parse_pred_label(gen)
-        if pred is None:
+        parse_ok = pred is not None
+        if not parse_ok:
             bad += 1
             pred = 0
 
@@ -205,6 +216,7 @@ def main():
             "image_path": img_path,
             "y_true": gt,
             "y_pred": pred,
+            "parse_ok": parse_ok,
             "raw_output": gen,
         })
 
@@ -216,7 +228,7 @@ def main():
 
     acc = float((y_true_arr == y_pred_arr).mean())
     if SKLEARN_OK and cohen_kappa_score is not None:
-        qwk = float(cohen_kappa_score(y_true_arr, y_pred_arr, weights="quadratic"))
+        qwk = float(cohen_kappa_score(y_true_arr, y_pred_arr, labels=[0, 1, 2, 3, 4], weights="quadratic"))
     else:
         qwk = qwk_numpy(y_true_arr, y_pred_arr, n_classes=5)
 
@@ -227,6 +239,8 @@ def main():
     print(f"Samples:    {n}")
     print(f"Bad parses: {bad}")
     print(f"Accuracy:   {acc:.4f}")
+    strict_acc = float(sum(r["parse_ok"] and r["y_true"] == r["y_pred"] for r in out_rows) / n)
+    print(f"Strict accuracy (bad parses counted wrong): {strict_acc:.4f}")
     print(f"QWK:        {qwk:.4f}")
 
     if confusion_matrix is not None:
@@ -252,7 +266,14 @@ def main():
             "samples": int(n),
             "bad_parses": int(bad),
             "accuracy": float(acc),
+            "strict_accuracy": strict_acc,
             "qwk": float(qwk),
+            "invalid_prediction_policy": "Unparsed outputs fall back to grade 0 for QWK and legacy accuracy; strict_accuracy counts them wrong.",
+            "seed": args.seed,
+            "img_size": args.img_size,
+            "max_new_tokens": args.max_new_tokens,
+            "temperature": args.temperature,
+            "min_p": args.min_p,
         }
         summary_path = out_csv.with_suffix(".summary.json")
         with open(summary_path, "w", encoding="utf-8") as f:

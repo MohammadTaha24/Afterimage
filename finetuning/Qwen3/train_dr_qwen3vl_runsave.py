@@ -11,6 +11,7 @@ import json
 import math
 import shutil
 import argparse
+import inspect
 from pathlib import Path
 from datetime import datetime
 from typing import Tuple, Optional
@@ -25,7 +26,7 @@ from trl import SFTTrainer, SFTConfig
 from transformers import EarlyStoppingCallback, TrainerCallback
 
 from collections import Counter
-from torch.utils.data import DataLoader, WeightedRandomSampler
+from torch.utils.data import WeightedRandomSampler
 
 def _print_label_distribution(name: str, ds: Dataset):
     labels = [int(x) for x in ds["label"]]
@@ -37,20 +38,23 @@ def _print_label_distribution(name: str, ds: Dataset):
     print(out.to_string(), flush=True)
 
 class BalancedSFTTrainer(SFTTrainer):
-    def get_train_dataloader(self):
-        if self.train_dataset is None:
-            raise ValueError("Trainer: training requires a train_dataset.")
+    def _get_train_sampler(self, train_dataset=None):
+        # Let Trainer construct and Accelerate-prepare the dataloader. Returning a
+        # raw DataLoader bypassed device placement in the current Transformers API.
+        dataset = self.train_dataset if train_dataset is None else train_dataset
+        if dataset is None:
+            return None
 
-        if "label" not in self.train_dataset.column_names:
+        if "label" not in dataset.column_names:
             print("[WARN] No 'label' column found in train_dataset. Falling back to default dataloader.", flush=True)
-            return super().get_train_dataloader()
+            return super()._get_train_sampler()
 
-        labels = [int(x) for x in self.train_dataset["label"]]
+        labels = [int(x) for x in dataset["label"]]
         label_counts = Counter(labels)
 
         if len(label_counts) == 0:
             print("[WARN] Empty label counts. Falling back to default dataloader.", flush=True)
-            return super().get_train_dataloader()
+            return super()._get_train_sampler()
 
         class_weights = {label: 1.0 / count for label, count in label_counts.items()}
         sample_weights = [class_weights[label] for label in labels]
@@ -66,15 +70,7 @@ class BalancedSFTTrainer(SFTTrainer):
         print(f"[INFO] Train class counts: {dict(sorted(label_counts.items()))}", flush=True)
         print(f"[INFO] Train class weights: {dict(sorted(class_weights.items()))}", flush=True)
 
-        return DataLoader(
-            self.train_dataset,
-            batch_size=self.args.per_device_train_batch_size,
-            sampler=sampler,
-            collate_fn=self.data_collator,
-            num_workers=self.args.dataloader_num_workers,
-            pin_memory=self.args.dataloader_pin_memory,
-            drop_last=self.args.dataloader_drop_last,
-        )
+        return sampler
 
 INSTRUCTION = (
     "You are a medical imaging assistant.\n"
@@ -231,12 +227,15 @@ def _load_csv_as_dataset(csv_path: str, image_dir: str, ext: str) -> Dataset:
 
     df["image_path"] = df.apply(lambda r: _resolve_image_path(image_dir_p, r, ext), axis=1)
 
-    exists_mask = df["image_path"].apply(os.path.exists)
+    exists_mask = df["image_path"].apply(os.path.isfile)
     missing = int((~exists_mask).sum())
     if missing:
-        print(f"[WARN] Missing images in {Path(csv_path).name}: {missing}. Dropping them.", flush=True)
-
-    df = df[exists_mask].reset_index(drop=True)
+        raise FileNotFoundError(
+            f"Missing {missing} images in {csv_path}; refusing to silently drop rows. "
+            f"Examples: {df.loc[~exists_mask, 'image_path'].head(5).tolist()}"
+        )
+    if not df["diagnosis"].between(0, 4).all():
+        raise ValueError(f"Labels must be integers in 0..4: {csv_path}")
 
     if len(df) == 0:
         raise ValueError(
@@ -268,15 +267,18 @@ def build_datasets(
     cache_root = Path(cache_dir) if cache_dir else None
     cache_payload = {
         "train_csv": csv_path,
+        "train_csv_md5": md5(Path(csv_path).read_bytes()).hexdigest(),
         "val_csv": str(val_csv) if val_csv else "",
+        "val_csv_md5": md5(Path(val_csv).read_bytes()).hexdigest() if val_csv else "",
         "test_csv": str(test_csv) if test_csv else "",
+        "test_csv_md5": md5(Path(test_csv).read_bytes()).hexdigest() if test_csv else "",
         "image_dir": image_dir,
         "ext": ext,
         "test_size": test_size,
         "seed": seed,
         "img_size": img_size,
         "keep_cols": keep_cols,
-        "schema_v": 4,
+        "schema_v": 5,
     }
 
     cache_path = None
@@ -374,6 +376,7 @@ def build_datasets(
 def _make_sft_config(args, num_train_epochs: int, max_steps):
     sft_kwargs = dict(
         per_device_train_batch_size=args.batch_size,
+        per_device_eval_batch_size=args.eval_batch_size,
         gradient_accumulation_steps=args.grad_accum,
         num_train_epochs=num_train_epochs,
         max_steps=max_steps if max_steps is not None else -1,
@@ -389,7 +392,7 @@ def _make_sft_config(args, num_train_epochs: int, max_steps):
         remove_unused_columns=False,
         dataset_text_field="",
         dataset_kwargs={"skip_prepare_dataset": True},
-        max_length=args.max_length,
+        max_length=args.max_length if args.max_length > 0 else None,
         save_total_limit=args.save_total_limit,
     )
 
@@ -408,20 +411,14 @@ def _make_sft_config(args, num_train_epochs: int, max_steps):
             greater_is_better=False,
         )
 
-    try:
-        tmp = dict(sft_kwargs)
-        if args.eval_strategy != "no":
-            tmp["evaluation_strategy"] = args.eval_strategy
-        if args.save_strategy != "no":
-            tmp["save_strategy"] = args.save_strategy
-        return SFTConfig(**tmp)
-    except TypeError:
-        tmp = dict(sft_kwargs)
-        if args.eval_strategy != "no":
-            tmp["eval_strategy"] = args.eval_strategy
-        if args.save_strategy != "no":
-            tmp["save_strategy"] = args.save_strategy
-        return SFTConfig(**tmp)
+    # Unsloth can warn and discard unknown arguments rather than raising
+    # TypeError. Detect the actual dataclass field so validation is not silently
+    # disabled by the old evaluation_strategy name.
+    config_fields = getattr(SFTConfig, "__dataclass_fields__", {})
+    eval_key = "eval_strategy" if "eval_strategy" in config_fields else "evaluation_strategy"
+    sft_kwargs[eval_key] = args.eval_strategy
+    sft_kwargs["save_strategy"] = args.save_strategy
+    return SFTConfig(**sft_kwargs)
 
 
 class BestEpochTrackerCallback(TrainerCallback):
@@ -524,6 +521,7 @@ def main():
     p.add_argument("--epochs", type=int, default=3)
     p.add_argument("--max_steps", type=int, default=-1)
     p.add_argument("--batch_size", type=int, default=1)
+    p.add_argument("--eval_batch_size", type=int, default=1)
     p.add_argument("--grad_accum", type=int, default=8)
     p.add_argument("--lr", type=float, default=2e-4)
     p.add_argument("--warmup_steps", type=int, default=10)
@@ -531,7 +529,8 @@ def main():
     p.add_argument("--weight_decay", type=float, default=0.001)
     p.add_argument("--scheduler", type=str, default="linear")
     p.add_argument("--optim", type=str, default="adamw_8bit")
-    p.add_argument("--max_length", type=int, default=2048)
+    p.add_argument("--max_length", type=int, default=2048,
+                   help="Token limit; use 0 to disable truncation of image tokens.")
 
     # Eval/checkpoints
     p.add_argument("--eval_strategy", type=str, default="epoch")
@@ -552,6 +551,10 @@ def main():
 
 
     args = p.parse_args()
+    if bool(args.val_csv) != bool(args.test_csv):
+        p.error("Provide both --val_csv and --test_csv to preserve explicit splits.")
+    if not torch.cuda.is_available():
+        raise RuntimeError("Qwen3-VL training requires a CUDA GPU in the active Python environment.")
 
     preproc_load_from_cache_file = True
     if args.no_preproc_load_from_cache_file:
@@ -603,6 +606,7 @@ def main():
         lora_dropout=args.lora_dropout if hasattr(args, "lora_dropout") else 0.05,
         bias="none",
         use_gradient_checkpointing=True,
+        random_state=args.seed,
     )
     FastVisionModel.for_training(model)
 
@@ -631,10 +635,20 @@ def main():
 
     sft_args = _make_sft_config(args, num_train_epochs=num_train_epochs, max_steps=max_steps)
 
+    # TRL renamed tokenizer to processing_class. Keep older notebook environments
+    # usable while supporting the installed TRL 1.15 API.
+    processor_key = (
+        "tokenizer" if "tokenizer" in inspect.signature(SFTTrainer.__init__).parameters
+        else "processing_class"
+    )
+    img_w, img_h = _parse_img_size(args.img_size)
     trainer = BalancedSFTTrainer(
         model=model,
-        tokenizer=tokenizer,
-        data_collator=UnslothVisionDataCollator(model, tokenizer),
+        **{processor_key: tokenizer},
+        data_collator=UnslothVisionDataCollator(
+            model, tokenizer, resize=(img_w, img_h),
+            max_seq_length=args.max_length if args.max_length > 0 else None,
+        ),
         train_dataset=train_ds,
         eval_dataset=val_ds if (args.eval_strategy != "no") else None,
         args=sft_args,
@@ -678,6 +692,7 @@ def main():
     print(f"[INFO] Final run dir:   {final_run_dir}", flush=True)
 
     _copy_best_checkpoint_to_final_lora(best_ckpt_dir, final_lora_dir)
+    tokenizer.save_pretrained(str(final_lora_dir))
 
     run_info = {
         "created_at": datetime.now().isoformat(),
@@ -688,10 +703,16 @@ def main():
         "image_dir": str(args.image_dir),
         "ext": args.ext,
         "img_size": args.img_size,
+        "seed": args.seed,
+        "lora_r": args.lora_r,
+        "lora_alpha": args.lora_alpha,
+        "lora_dropout": args.lora_dropout,
         "lr": args.lr,
         "epochs_requested": args.epochs,
         "batch_size_per_device": args.batch_size,
         "grad_accum": args.grad_accum,
+        "eval_batch_size": args.eval_batch_size,
+        "max_length": args.max_length if args.max_length > 0 else None,
         "effective_batch_size": effective_batch_size,
         "best_epoch": best_epoch,
         "best_step": best_step,
