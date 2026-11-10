@@ -1,12 +1,24 @@
-datasets==4.3.0
-unsloth
-unsloth_zoo
-xformers==0.0.34
-accelerate==1.12.0
-bitsandbytes==0.49.2
+# Runtime versions verified together on Windows/Python 3.11 (2026-10-28).
+# Install through the root requirements.txt so the CUDA torch pair is pinned too.
+unsloth==2026.10.10
+unsloth_zoo==2026.10.10
+transformers==5.17.0
+datasets==4.8.5
+accelerate==1.15.0
+bitsandbytes==0.50.2
+peft==0.21.2
+trl==1.15.0
 cut-cross-entropy==25.1.1
-pillow>=12.1.1
-peft
-numpy==1.26.4
-opencv-python>=4.13.0
-pillow==12.1.1
+torchao==0.18.0
+triton-windows==3.9.0.post30; sys_platform == "win32"
+# Unsloth requires this distribution. Its installed Windows CUDA kernels may be
+# incompatible; this Unsloth version falls back to PyTorch attention in that case.
+xformers==0.0.35
+sentencepiece==0.2.2
+safetensors==0.8.0
+tokenizers==0.23.3
+numpy==2.4.6
+pandas==3.0.6
+pyarrow==26.0.0
+opencv-python==5.0.0.93
+Pillow==13.0.0
