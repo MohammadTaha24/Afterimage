@@ -1,5 +1,8 @@
 __pycache__/
 *.pyc
+.verification/
+.venv*/
+*.partial
 
 structure.txt
 
@@ -11,3 +14,34 @@ RetiZero/best_retizero_dr.pth
 Qwen3/lr0.0005_epoch4_batchsize8/best_lora/
 
 .DS_Store
+
+# Local environments, credentials, and tool caches
+venv/
+env/
+.env
+.env.*
+!.env.example
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Qwen3 notebook exports, checkpoints, adapters, predictions, and logs
+/finetuning/Qwen3/artifacts/
+**/checkpoint-*/
+**/best_lora/
+*.safetensors
+*.pth
+*.pt
+adapter_model.bin
+pytorch_model*.bin
+events.out.tfevents.*
+wandb/
+
+# Experiment run output (logs, per-run caches, evaluation dumps, checkpoints)
+/experiments/artifacts/
+
+# Generated local file inventories
+/all_files_list.txt
+/file_structure.txt
+/list_all_files.txt
