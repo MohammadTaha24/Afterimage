@@ -1,0 +1,6 @@
+result_set,condition,grade,label,n_runs,sensitivity_mean,sensitivity_n_defined,specificity_mean,specificity_n_defined,precision_mean,precision_n_defined,f1_mean,f1_n_defined,auc_ovr_mean,auc_ovr_n_defined
+E,E r16 CLAHE-on (archived) 4-bit,0,No DR,1,0.9723756906,1,0.9569892473,1,0.9565217391,1,0.9643835616,1,0.996435573,1
+E,E r16 CLAHE-on (archived) 4-bit,1,Mild,1,0.5135135135,1,0.9636363636,1,0.6129032258,1,0.5588235294,1,0.9266175266,1
+E,E r16 CLAHE-on (archived) 4-bit,2,Moderate,1,0.83,1,0.872659176,1,0.7094017094,1,0.7649769585,1,0.9279026217,1
+E,E r16 CLAHE-on (archived) 4-bit,3,Severe,1,0.2631578947,1,0.9597701149,1,0.2631578947,1,0.2631578947,1,0.8873260738,1
+E,E r16 CLAHE-on (archived) 4-bit,4,Proliferative DR,1,0.4333333333,1,0.9910979228,1,0.8125,1,0.5652173913,1,0.9426310584,1

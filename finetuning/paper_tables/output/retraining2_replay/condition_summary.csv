@@ -1,0 +1,2 @@
+result_set,condition,rank,alpha_over_r,clahe,split,base,scoring_precision,n,n_runs,n_degenerate,runs_missing_a_grade,accuracy_mean,accuracy_sd,accuracy_min,accuracy_max,qwk_mean,qwk_sd,qwk_min,qwk_max,macro_auc_mean,macro_auc_sd,macro_auc_min,macro_auc_max
+E,E r16 CLAHE-on (archived) 4-bit,16,1,on (archived inputs),original_2929_366_367,4-bit,FP16,367,1,0,0,0.8065395095,,0.8065395095,0.8065395095,0.8915262317,,0.8915262317,0.8915262317,0.9361825707,,0.9361825707,0.9361825707

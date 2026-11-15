@@ -1,0 +1,2 @@
+cohort,n,accuracy,accuracy_ci_low,accuracy_ci_high,qwk,qwk_ci_low,qwk_ci_high,macro_auc,macro_auc_ci_low,macro_auc_ci_high,boot_qwk_undefined,boot_auc_undefined,scoring_precision,auc_g0,auc_g1,auc_g2,auc_g3,auc_g4
+"archived 1,057-image Messidor export (not an independently verified cohort)",1057,0.5052034059,0.4730368969,0.5345316935,0.5527754319,0.5116946746,0.5906670635,0.7731970038,0.7567700112,0.7889266663,0,0,FP16,0.7750787224,0.4019096334,0.7830508475,0.96891695,0.9370288656

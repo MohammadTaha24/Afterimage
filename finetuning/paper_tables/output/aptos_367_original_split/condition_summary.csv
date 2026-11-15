@@ -1,0 +1,3 @@
+result_set,condition,rank,alpha_over_r,clahe,split,base,scoring_precision,n,n_runs,n_degenerate,runs_missing_a_grade,accuracy_mean,accuracy_sd,accuracy_min,accuracy_max,qwk_mean,qwk_sd,qwk_min,qwk_max,macro_auc_mean,macro_auc_sd,macro_auc_min,macro_auc_max
+D,D r16 CLAHE-on 4-bit,16,1,on,original_2929_366_367,4-bit,BF16,367,3,1,1,0.6494096276,0.1671109265,0.4931880109,0.825613079,0.5647028312,0.4939682084,0,0.9166072859,0.7756292024,0.2513694415,0.486973531,0.9463203394
+D,D r16 CLAHE-off 4-bit,16,1,off,original_2929_366_367,4-bit,BF16,367,3,0,0,0.7175295186,0.06569715284,0.6485013624,0.7792915531,0.8659901723,0.03597265804,0.8270037985,0.8978962202,0.9244450262,0.01876369397,0.902785287,0.9357417855

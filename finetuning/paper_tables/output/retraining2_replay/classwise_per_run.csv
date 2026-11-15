@@ -1,0 +1,6 @@
+result_set,condition,run,grade,label,support,predicted,tp,fn,fp,tn,sensitivity,specificity,precision,f1,auc_ovr
+E,E r16 CLAHE-on (archived) 4-bit,retraining2_replay (archived run_02),0,No DR,181,184,176,5,8,178,0.9723756906,0.9569892473,0.9565217391,0.9643835616,0.996435573
+E,E r16 CLAHE-on (archived) 4-bit,retraining2_replay (archived run_02),1,Mild,37,31,19,18,12,318,0.5135135135,0.9636363636,0.6129032258,0.5588235294,0.9266175266
+E,E r16 CLAHE-on (archived) 4-bit,retraining2_replay (archived run_02),2,Moderate,100,117,83,17,34,233,0.83,0.872659176,0.7094017094,0.7649769585,0.9279026217
+E,E r16 CLAHE-on (archived) 4-bit,retraining2_replay (archived run_02),3,Severe,19,19,5,14,14,334,0.2631578947,0.9597701149,0.2631578947,0.2631578947,0.8873260738
+E,E r16 CLAHE-on (archived) 4-bit,retraining2_replay (archived run_02),4,Proliferative DR,30,16,13,17,3,334,0.4333333333,0.9910979228,0.8125,0.5652173913,0.9426310584

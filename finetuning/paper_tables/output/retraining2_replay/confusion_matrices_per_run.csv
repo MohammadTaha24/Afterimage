@@ -1,0 +1,6 @@
+result_set,condition,run,true_grade,pred_0,pred_1,pred_2,pred_3,pred_4
+E,E r16 CLAHE-on (archived) 4-bit,retraining2_replay (archived run_02),0,176,3,2,0,0
+E,E r16 CLAHE-on (archived) 4-bit,retraining2_replay (archived run_02),1,7,19,11,0,0
+E,E r16 CLAHE-on (archived) 4-bit,retraining2_replay (archived run_02),2,1,7,83,8,1
+E,E r16 CLAHE-on (archived) 4-bit,retraining2_replay (archived run_02),3,0,1,11,5,2
+E,E r16 CLAHE-on (archived) 4-bit,retraining2_replay (archived run_02),4,0,1,10,6,13

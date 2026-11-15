@@ -1,0 +1,6 @@
+cohort,grade,label,support,predicted,tp,fn,fp,tn,sensitivity,specificity,precision,f1,auc_ovr
+"archived 1,057-image Messidor export (not an independently verified cohort)",0,No DR,468,747,436,32,311,278,0.9316239316,0.4719864177,0.5836680054,0.7176954733,0.7750787224
+"archived 1,057-image Messidor export (not an independently verified cohort)",1,Mild,207,149,19,188,130,720,0.09178743961,0.8470588235,0.1275167785,0.106741573,0.4019096334
+"archived 1,057-image Messidor export (not an independently verified cohort)",2,Moderate,290,148,71,219,77,690,0.2448275862,0.8996088657,0.4797297297,0.3242009132,0.7830508475
+"archived 1,057-image Messidor export (not an independently verified cohort)",3,Severe,71,9,6,65,3,983,0.08450704225,0.9969574037,0.6666666667,0.15,0.96891695
+"archived 1,057-image Messidor export (not an independently verified cohort)",4,Proliferative DR,21,4,2,19,2,1034,0.09523809524,0.9980694981,0.5,0.16,0.9370288656
