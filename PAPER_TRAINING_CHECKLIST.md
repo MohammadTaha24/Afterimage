@@ -1,5 +1,7 @@
 # Paper training and evaluation checklist
 
+> Superseded on 15 November 2026 by [docs/paper/DELIVERABLES_CHECKLIST.md](docs/paper/DELIVERABLES_CHECKLIST.md). The run counts below are a 14 November snapshot; all 21 planned Qwen runs and the three BF16 controls have since completed.
+
 Audit date: 14 November 2026. A checked training box means a saved, verified training result exists. Final comparisons also require the specified evaluation. Keep the original-split and duplicate-excluded results in separate tables.
 
 ## Original APTOS split (367 test photos)
@@ -8,7 +10,7 @@ Audit date: 14 November 2026. A checked training box means a saved, verified tra
 - [x] Pair 1 — train rank 16, CLAHE on and off.
 - [x] Pair 2 — train rank 16, CLAHE on and off.
 - [x] Pair 3 — train rank 16, CLAHE on and off.
-- [ ] **Score Pair 1 CLAHE-on in BF16.** Rerun just **Pair 1, CLAHE on** in the reproduction notebook with the existing tags after restarting its kernel and running setup. The cell reuses the finished adapter. Then run **Compare saved scores**. All five other branches already have BF16 scores. [Reproduction notebook](finetuning/Qwen3/02_training.ipynb)
+- [ ] **Score Pair 1 CLAHE-on in BF16.** Rerun just **Pair 1, CLAHE on** in the reproduction notebook with the existing tags after restarting its kernel and running setup. The cell reuses the finished adapter. Then run **Compare saved scores**. All five other branches already have BF16 scores. [Reproduction notebook](finetuning/Qwen3/notebooks/02_training.ipynb)
 - [ ] **Deferred at your request:** three fresh historical training repeats using the archived CLAHE-on files and original launcher. Run them if the paper will claim a fresh reproduction of historical training. The saved-adapter replay verifies evaluation and the archive already has three historical repeats.
 
 | Pair | CLAHE on accuracy / QWK / AUC | CLAHE off accuracy / QWK / AUC |
