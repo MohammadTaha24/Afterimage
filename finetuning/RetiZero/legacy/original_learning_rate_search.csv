@@ -1,0 +1,26 @@
+trial,learning_rate,status,best_validation_accuracy,qwk_at_best,pruned_at_epoch
+0,0.0001,finished,0.7978142076502732,0.8510,
+1,0.00012596568097814629,finished,0.7841530054644809,0.8508,
+2,3.6627173682669185e-05,finished,0.7841530054644809,0.8595,
+3,7.68094483149829e-05,finished,0.8005464480874317,0.8705,
+4,2.7790784920934195e-05,finished,0.7978142076502732,0.8644,
+5,0.00004 (as printed),pruned,0.7923 (as printed),,12
+6,0.00001 (as printed),pruned,0.6421 (as printed),,3
+7,0.00007 (as printed),pruned,0.7432 (as printed),,3
+8,0.00001 (as printed),pruned,0.6749 (as printed),,3
+9,0.00004 (as printed),pruned,0.7596 (as printed),,3
+10,0.00019 (as printed),pruned,0.7077 (as printed),,3
+11,0.00008 (as printed),pruned,0.7377 (as printed),,3
+12,0.00007 (as printed),pruned,0.7568 (as printed),,3
+13,0.00013 (as printed),pruned,0.6503 (as printed),,3
+14,0.00011 (as printed),pruned,0.7486 (as printed),,3
+15,5.698874514475156e-05,finished,0.7896174863387978,0.8521,
+16,0.00019 (as printed),pruned,0.7240 (as printed),,3
+17,0.00002 (as printed),pruned,0.7596 (as printed),,3
+18,0.00005 (as printed),pruned,0.7240 (as printed),,3
+19,0.00011 (as printed),pruned,0.7705 (as printed),,3
+20,0.00009 (as printed),pruned,0.7705 (as printed),,3
+21,0.00003 (as printed),pruned,0.7131 (as printed),,3
+22,0.00002 (as printed),pruned,0.7322 (as printed),,3
+23,0.00006 (as printed),pruned,0.7568 (as printed),,3
+24,0.00016 (as printed),pruned,0.6721 (as printed),,3
