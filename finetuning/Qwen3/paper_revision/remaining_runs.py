@@ -87,7 +87,7 @@ def qwen_bf16(mode, seed_pair, run_tag, base, *, control_tag, offload_layers=0):
     reference = RUNS / qwen_run_name("r16_on", seed_pair, "duplicate_excluded", run_tag)
     name = bf16_run_name(seed_pair, control_tag)
     output = RUNS / name
-    entry = reproduction.QWEN / "train_bf16_control.py"
+    entry = reproduction.REVISION / "train_bf16_control.py"
     if mode == "check":
         args = ["check", "--reference-run", reference]
     elif output.exists() and (output / "pilot_configuration.json").is_file():
@@ -122,31 +122,7 @@ def bf16_shared_memory_pilot(base, run_tag, *, offload_layers=0):
         print(f"Feasibility pilot (two updates). Output: {output}", flush=True)
         reproduction.run_stage("train", ["--base-snapshot", base, "--reference-run", reference, "--output", output,
                                           "--offload-layers", offload_layers],
-                               output, script=reproduction.QWEN / "probe_bf16_training.py")
-
-
-def retizero(mode, seed_pair, control_tag, weights, weights_sha256, *, external_csv=None):
-    if mode not in {"check", "run", "external"}:
-        raise ValueError("Choose check, run or external.")
-    seed, _ = SEEDS[seed_pair]
-    entry = reproduction.QWEN / "train_retizero_control.py"
-    run = reproduction.folder("training_batches", control_tag) / f"retizero_t{seed}"
-    args = ["--repo-root", ROOT, "--dataset", DATA / "aptos_224_standard/duplicate_excluded/manifest.json",
-            "--qwen-dataset", DATA / "aptos_512/duplicate_excluded/manifest.json",
-            "--weights", weights, "--weights-sha256", weights_sha256, "--run-dir", run, "--seed", seed]
-    launch, monitor = reproduction.runtime()
-    if mode == "check":
-        launch(entry, ["check", *args], reproduction.ARTIFACTS / "checks/retizero.log")
-        return
-    if mode == "external":
-        args += ["--external-csv", external_csv, "--external-sha256", reproduction.sha(external_csv)]
-    with monitor["gpu_lock"](RUNS):
-        if mode == "external" and not run.is_dir():
-            raise FileNotFoundError(f"Train the RetiZero adapter first: {run}")
-        (run / "attempts").mkdir(parents=True, exist_ok=True)
-        if mode == "run":
-            reproduction.run_stage("train", args, run, script=entry)
-        reproduction.run_stage("evaluate", args, run, script=entry)
+                               output, script=reproduction.REVISION / "probe_bf16_training.py")
 
 
 def check_messidor(manifests):
@@ -207,12 +183,11 @@ def score_messidor_qwen(series, condition, index, manifests, run_tag, historical
     with monitor["gpu_lock"](RUNS):
         (eval_run / "attempts").mkdir(parents=True, exist_ok=True)
         reproduction.run_stage("evaluate", arguments, eval_run,
-                               script=reproduction.QWEN / "evaluate_verified_messidor.py")
+                               script=reproduction.REVISION / "evaluate_verified_messidor.py")
 
 
 def show_checklist(run_tag, historical_tag, control_tag):
     batch = reproduction.folder("training_batches", historical_tag)
-    control = reproduction.folder("training_batches", control_tag)
 
     def evaluation_status(path):
         return "scored" if path.is_file() else "pending"
@@ -239,7 +214,9 @@ def show_checklist(run_tag, historical_tag, control_tag):
     for seed_pair, (trainer, _) in SEEDS.items():
         prefix = RUNS / bf16_run_name(seed_pair, control_tag)
         print(f"BF16 base, seed pair {seed_pair}: {evaluation_status(prefix / 'score_result.json')}")
-        print(f"RetiZero, seed {trainer}: {evaluation_status(control / f'retizero_t{trainer}/evaluation/aptos_test.summary.json')}")
+        retizero = EXPERIMENTS / f"retizero_runs/retizero_01/train/matched_t{trainer}/evaluation/aptos_test.summary.json"
+        print(f"RetiZero, seed {trainer}: {evaluation_status(retizero)} "
+              "(run from finetuning/RetiZero/notebooks/02_retizero_runs.ipynb)")
         i = seed_pair
         print(f"Deferred historical repeat {i}: {evaluation_status(batch / f'historical_{i:02}/evaluation/aptos_test.summary.json')}")
 

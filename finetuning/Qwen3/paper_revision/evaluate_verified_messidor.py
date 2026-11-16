@@ -3,8 +3,14 @@
 import argparse
 import hashlib
 import json
+import sys
 from pathlib import Path
 from unittest.mock import patch
+
+# paper_reproduction.py and evaluate_clahe_bf16.py stay in finetuning/Qwen3 (hash-pinned).
+QWEN_DIR = Path(__file__).resolve().parents[1]
+if str(QWEN_DIR) not in sys.path:
+    sys.path.append(str(QWEN_DIR))
 
 import evaluate_clahe_bf16
 import paper_reproduction as original

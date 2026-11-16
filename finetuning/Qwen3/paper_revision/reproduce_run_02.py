@@ -14,6 +14,11 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from unittest.mock import patch
 
+# paper_reproduction.py and evaluate_clahe_bf16.py stay in finetuning/Qwen3 (hash-pinned).
+REVISION = Path(__file__).resolve().parent
+if str(REVISION.parent) not in sys.path:
+    sys.path.append(str(REVISION.parent))
+
 import paper_reproduction as original
 
 ROOT = original.ROOT
