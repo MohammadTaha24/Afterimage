@@ -11,7 +11,7 @@ Written 16 November 2026, after the Qwen queue `final_01` finished. This is the 
 
 ## Phase 0. Close out the finished Qwen queue
 
-- [x] Alpha 32, seed 43: scored with the FP32 fallback (`score_fp32_fallback.py`), labelled as such in the summary, with its archived Messidor job. It predicts grade 0 for every image: 50.14% on APTOS (QWK 0.0), 44.28% on Messidor. It is a collapsed run, so five of the six alpha runs at 5e-4 collapsed.
+- [x] Alpha 32, seed 43: scored with the FP32 fallback (`score_fp32_fallback.py`), labelled as such in the summary, with its archived Messidor job. It predicts grade 0 for every image: 50.14% on APTOS (QWK 0.0), 44.28% on Messidor. It is a collapsed run. Of the six alpha runs at 5e-4, three predict a single grade (alpha 8 seed 44; alpha 32 seeds 43 and 44), one predicts only grades 0 and 1 (alpha 32 seed 42, 50.97%), and two are healthy (alpha 8 seeds 42 and 43).
 - [x] Overflow recorded as a finding in `final_01\summary.md` ("FP16 scoring failures"), with the diagnosis in `.verification/final_runs/`.
 - [ ] Known record error to mention in the methods audit: `train_result.json` stores `effective_scaling` as 16 / rank (the pinned worker assumes alpha 16), so it reads 1.0 for the alpha 8 and alpha 32 runs. The adapters themselves were built with the right alpha (`adapter_constructor_arguments.json`, `adapter_config.json`).
 - [ ] Read `final_01` into `finetuning/paper_tables/build_paper_tables.py` (zero-shot, learning-rate study, alpha study, benchmark, Messidor, original-adapter audit).
