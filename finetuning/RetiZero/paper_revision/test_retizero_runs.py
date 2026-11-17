@@ -82,6 +82,73 @@ class Training(unittest.TestCase):
         self.assertTrue(torch.allclose(pieces.weight.grad, reference.weight.grad, atol=1e-6))
         self.assertTrue(torch.allclose(pieces.bias.grad, reference.bias.grad, atol=1e-6))
 
+    def tiny_step(self, bad_index=None, enabled=True):
+        torch.manual_seed(0)
+        model = torch.nn.Linear(6, 5)
+        optimizer = torch.optim.AdamW(model.parameters(), lr=0.1)
+        scaler = torch.amp.GradScaler("cpu", init_scale=1024.0, enabled=enabled)
+        images, grades = torch.randn(10, 6), torch.tensor([0, 1, 2, 3, 4] * 2)
+        if bad_index is not None:
+            images[bad_index] = float("inf")
+        before = {key: value.clone() for key, value in model.state_dict().items()}
+        value, outcome = helper.training_step(model, optimizer, scaler, images, grades,
+                                              torch.ones(5), 4, torch)
+        changed = any(not torch.equal(before[key], value_now) for key, value_now in model.state_dict().items())
+        return value, outcome, changed, optimizer, scaler
+
+    def test_a_finite_loss_steps(self):
+        value, outcome, changed, optimizer, scaler = self.tiny_step()
+        self.assertEqual(outcome, "stepped")
+        self.assertTrue(changed)
+        self.assertEqual(scaler.get_scale(), 1024.0)
+
+    def test_a_non_finite_loss_in_any_piece_skips_the_whole_step(self):
+        for bad_index in (0, 5, 9):  # first, middle and last of the three pieces
+            with self.subTest(bad_index=bad_index):
+                value, outcome, changed, optimizer, scaler = self.tiny_step(bad_index)
+                self.assertEqual(outcome, "nonfinite_loss")
+                self.assertFalse(changed)
+                self.assertEqual(optimizer.state_dict()["state"], {})  # AdamW step count untouched
+                self.assertTrue(all(p.grad is None for p in optimizer.param_groups[0]["params"]))
+                self.assertEqual(scaler.get_scale(), 512.0)  # the backoff GradScaler applied in the original
+                self.assertEqual(scaler.state_dict()["_growth_tracker"], 0)
+
+    def test_the_scaler_is_ready_for_the_next_step_after_a_skip(self):
+        torch.manual_seed(0)
+        model = torch.nn.Linear(6, 5)
+        optimizer = torch.optim.AdamW(model.parameters(), lr=0.1)
+        scaler = torch.amp.GradScaler("cpu", init_scale=1024.0)
+        images, grades = torch.randn(10, 6), torch.tensor([0, 1, 2, 3, 4] * 2)
+        bad = images.clone()
+        bad[3] = float("nan")
+        self.assertEqual(helper.training_step(model, optimizer, scaler, bad, grades, torch.ones(5), 4,
+                                              torch)[1], "nonfinite_loss")
+        self.assertEqual(helper.training_step(model, optimizer, scaler, images, grades, torch.ones(5), 4,
+                                              torch)[1], "stepped")
+        self.assertEqual(optimizer.state_dict()["state"][0]["step"].item(), 1)
+
+    def test_a_non_finite_loss_without_amp_also_skips(self):
+        value, outcome, changed, optimizer, scaler = self.tiny_step(2, enabled=False)
+        self.assertEqual(outcome, "nonfinite_loss")
+        self.assertFalse(changed)
+
+    def test_too_many_skips_in_an_epoch_stop_the_run(self):
+        helper.check_skip_rate(2, 23, 1)
+        helper.check_skip_rate(10, 100, 1)
+        with self.assertRaises(ValueError):
+            helper.check_skip_rate(3, 23, 1)
+        with self.assertRaises(ValueError):
+            helper.check_skip_rate(1, 5, 1)
+
+    def test_skip_counts_are_saved_in_history_and_the_result(self):
+        import inspect
+        source = inspect.getsource(helper.train)
+        for key in ("skipped_steps_nonfinite_loss", "skipped_steps_scaler_overflow"):
+            self.assertIn(f'"{key}": skips[', source)  # the epoch entry
+            self.assertIn(f'"{key}": sum(entry["{key}"] for entry in history)', source)  # the run total
+        # Resume restores `history` from checkpoint.pth, which is how the per-epoch counts survive it.
+        self.assertIn('"history": history', source)
+
     def test_class_weights_follow_the_original_formula(self):
         rows = [{"label": str(grade)} for grade, count in enumerate((6, 2, 4, 1, 2)) for _ in range(count)]
         weights = helper.class_weights_for(rows, torch, torch.device("cpu"))

@@ -416,6 +416,47 @@ def accumulated_backward(model, images, grades, class_weights, physical_batch, t
     return value
 
 
+# Stop if more than this share of an epoch's optimizer steps is skipped for a non-finite loss.
+NONFINITE_SKIP_LIMIT = 0.10
+
+
+def training_step(model, optimizer, scaler, images, grades, class_weights, physical_batch, torch):
+    """One optimizer step over a group. Returns (loss, outcome), outcome "stepped", "nonfinite_loss" or
+    "scaler_overflow".
+
+    The original computed its fp16 AMP loss and always called scaler.step and scaler.update. A non-finite
+    loss gives non-finite gradients, so GradScaler skipped optimizer.step, multiplied the scale by its
+    backoff factor and reset its growth tracker; training carried on. Here a non-finite loss in any piece of
+    the group skips the whole step (optimizer.step is never called, so there is no partial update) and the
+    scaler gets the same backoff: the gradients are marked as non-finite before unscale_ so the backoff
+    happens even in the unlikely case that a non-finite loss left finite gradients. "scaler_overflow" is
+    GradScaler's own skip of a finite loss with overflowing gradients, as in the original.
+    """
+    optimizer.zero_grad(set_to_none=True)
+    value = accumulated_backward(model, images, grades, class_weights, physical_batch, torch, scaler)
+    scale = scaler.get_scale()
+    if not math.isfinite(value):
+        if scaler.is_enabled():
+            gradients = [p.grad for group in optimizer.param_groups for p in group["params"] if p.grad is not None]
+            if not gradients:
+                raise ValueError("A non-finite loss produced no gradients to mark as skipped.")
+            gradients[0].view(-1)[0] = float("nan")
+            scaler.unscale_(optimizer)
+            scaler.update()
+        optimizer.zero_grad(set_to_none=True)
+        return value, "nonfinite_loss"
+    scaler.step(optimizer)
+    scaler.update()
+    return value, "scaler_overflow" if scaler.get_scale() < scale else "stepped"
+
+
+def check_skip_rate(skipped, steps, epoch):
+    """Raise once more than NONFINITE_SKIP_LIMIT of an epoch's steps were skipped for a non-finite loss."""
+    if skipped > NONFINITE_SKIP_LIMIT * steps:
+        raise ValueError(f"Epoch {epoch}: {skipped} of {steps} optimizer steps had a non-finite fp16 loss "
+                         f"(limit {NONFINITE_SKIP_LIMIT:.0%}). Training is unstable; stopping.")
+
+
 def save_weights(torch, path, value):
     temporary = path.with_name(path.name + ".partial")
     torch.save(value, temporary)
@@ -473,16 +514,20 @@ def train(run, rows, config, model, torch, *, stop_after_epoch=None):
         order_sha = hashlib.sha256("\n".join(train_rows[i]["id_code"] for i in order).encode()).hexdigest()
         batches = loader(train_rows, settings["effective_batch"], train_transform(), torch, order=order)
         torch.cuda.reset_peak_memory_stats()
-        started, running = time.perf_counter(), 0.0
+        started, running, counted = time.perf_counter(), 0.0, 0
+        skips = {"nonfinite_loss": 0, "scaler_overflow": 0}
         for step, (images, grades) in enumerate(batches, 1):
-            optimizer.zero_grad(set_to_none=True)
-            value = accumulated_backward(model, images, grades, class_weights, settings["physical_batch"],
-                                         torch, scaler)
-            if not math.isfinite(value):
-                raise ValueError(f"Non-finite training loss at epoch {epoch}, step {step}.")
-            scaler.step(optimizer)
-            scaler.update()
-            running += value * len(grades)
+            value, outcome = training_step(model, optimizer, scaler, images, grades, class_weights,
+                                           settings["physical_batch"], torch)
+            if outcome == "nonfinite_loss":
+                skips[outcome] += 1
+                print(f"Epoch {epoch}, step {step}: non-finite loss; optimizer step skipped "
+                      f"({skips[outcome]} this epoch).", flush=True)
+                check_skip_rate(skips[outcome], len(batches), epoch)
+                continue
+            if outcome == "scaler_overflow":
+                skips[outcome] += 1
+            running, counted = running + value * len(grades), counted + len(grades)
             if step == 1 or step % 5 == 0 or step == len(batches):
                 print(f"Epoch {epoch}/{epochs}, step {step}/{len(batches)}, loss {value:.5f}", flush=True)
         torch.cuda.synchronize()
@@ -495,7 +540,9 @@ def train(run, rows, config, model, torch, *, stop_after_epoch=None):
         accuracy = validation["accuracy"]
         history.append({
             "epoch": epoch, "learning_rate": learning_rate, "optimizer_steps": len(batches),
-            "train_loss": running / len(train_rows), "validation_accuracy": accuracy,
+            "skipped_steps_nonfinite_loss": skips["nonfinite_loss"],
+            "skipped_steps_scaler_overflow": skips["scaler_overflow"],
+            "train_loss": running / counted, "validation_accuracy": accuracy,
             "validation_loss": validation_loss, "validation_qwk": validation["qwk"],
             "order_sha256": order_sha, "train_seconds": train_seconds,
             "train_images_per_second": len(train_rows) / train_seconds,
@@ -527,6 +574,11 @@ def train(run, rows, config, model, torch, *, stop_after_epoch=None):
             return False
     write_json(run / "train_result.json", {
         "configuration": config, "epochs_completed": len(history), "history": history,
+        "skipped_steps_nonfinite_loss": sum(entry["skipped_steps_nonfinite_loss"] for entry in history),
+        "skipped_steps_scaler_overflow": sum(entry["skipped_steps_scaler_overflow"] for entry in history),
+        "skip_policy": ("A non-finite loss in any piece skips the whole group's optimizer step and backs off "
+                        f"the GradScaler scale; more than {NONFINITE_SKIP_LIMIT:.0%} of an epoch's steps "
+                        "skipped stops the run. train_loss averages the groups with a finite loss."),
         "best_epoch": best_epoch, "best_validation_accuracy": best,
         "checkpoint": best_name(best_epoch), "checkpoint_sha256": best_sha,
         "selection": "Highest validation accuracy; ties keep the earlier epoch.",

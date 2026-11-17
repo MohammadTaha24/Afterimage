@@ -19,6 +19,7 @@ Differences from the plan as written:
 - The pilot does not build the full original class (that needs the text model). It checks instead that the checkpoint's two stored encoder copies are identical and that the checkpoint loads with no missing or unexpected weights.
 - Memory was measured at 32 images per pass only; that fits, so no search for the largest size was run.
 - The original learning-rate search is extracted to `legacy/original_learning_rate_search.csv` (25 trials, 6 finished).
+- A non-finite fp16 loss skips the whole 128-image step with the same `GradScaler` backoff as the original, instead of stopping the run; skips are counted per epoch and in `train_result.json`, and more than 10% in one epoch stops the run (READINESS_CHECK M1). `train_loss` averages groups with a finite loss, where the original's would have been NaN.
 
 Still to do: steps 7–11 (pretrained checkpoint, pilot with it, the CLAHE and Messidor builds, the full queue, the paper tables).
 
