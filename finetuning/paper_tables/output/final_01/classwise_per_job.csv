@@ -1,0 +1,206 @@
+stage,job,cohort,condition,scoring_precision,grade,label,support,predicted,tp,fn,fp,tn,sensitivity,specificity,precision,f1,auc_ovr
+zero_shot,zeroshot_4bit__aptos361_off,aptos361_off,zero-shot 4-bit,FP16,0,No DR,181,167,150,31,17,163,0.8287292818,0.9055555556,0.8982035928,0.8620689655,0.953898097
+zero_shot,zeroshot_4bit__aptos361_off,aptos361_off,zero-shot 4-bit,FP16,1,Mild,35,3,2,33,1,325,0.05714285714,0.9969325153,0.6666666667,0.1052631579,0.7440841367
+zero_shot,zeroshot_4bit__aptos361_off,aptos361_off,zero-shot 4-bit,FP16,2,Moderate,97,58,26,71,32,232,0.2680412371,0.8787878788,0.4482758621,0.335483871,0.7214151828
+zero_shot,zeroshot_4bit__aptos361_off,aptos361_off,zero-shot 4-bit,FP16,3,Severe,18,102,7,11,95,248,0.3888888889,0.72303207,0.06862745098,0.1166666667,0.7040816327
+zero_shot,zeroshot_4bit__aptos361_off,aptos361_off,zero-shot 4-bit,FP16,4,Proliferative DR,30,31,12,18,19,312,0.4,0.9425981873,0.3870967742,0.393442623,0.8935548842
+zero_shot,zeroshot_4bit__aptos361_on,aptos361_on,zero-shot 4-bit,FP16,0,No DR,181,136,129,52,7,173,0.7127071823,0.9611111111,0.9485294118,0.8138801262,0.9574585635
+zero_shot,zeroshot_4bit__aptos361_on,aptos361_on,zero-shot 4-bit,FP16,1,Mild,35,4,2,33,2,324,0.05714285714,0.9938650307,0.5,0.1025641026,0.7041191937
+zero_shot,zeroshot_4bit__aptos361_on,aptos361_on,zero-shot 4-bit,FP16,2,Moderate,97,65,17,80,48,216,0.175257732,0.8181818182,0.2615384615,0.2098765432,0.6054748516
+zero_shot,zeroshot_4bit__aptos361_on,aptos361_on,zero-shot 4-bit,FP16,3,Severe,18,126,8,10,118,225,0.4444444444,0.6559766764,0.06349206349,0.1111111111,0.7092646582
+zero_shot,zeroshot_4bit__aptos361_on,aptos361_on,zero-shot 4-bit,FP16,4,Proliferative DR,30,30,12,18,18,313,0.4,0.9456193353,0.4,0.4,0.8864048338
+zero_shot,zeroshot_bf16__aptos361_on,aptos361_on,zero-shot BF16,FP16,0,No DR,181,152,144,37,8,172,0.7955801105,0.9555555556,0.9473684211,0.8648648649,0.9619705341
+zero_shot,zeroshot_bf16__aptos361_on,aptos361_on,zero-shot BF16,FP16,1,Mild,35,1,0,35,1,325,0,0.9969325153,0,0,0.7184925504
+zero_shot,zeroshot_bf16__aptos361_on,aptos361_on,zero-shot BF16,FP16,2,Moderate,97,62,22,75,40,224,0.2268041237,0.8484848485,0.3548387097,0.2767295597,0.635660731
+zero_shot,zeroshot_bf16__aptos361_on,aptos361_on,zero-shot BF16,FP16,3,Severe,18,53,2,16,51,292,0.1111111111,0.8513119534,0.03773584906,0.05633802817,0.6315192744
+zero_shot,zeroshot_bf16__aptos361_on,aptos361_on,zero-shot BF16,FP16,4,Proliferative DR,30,93,22,8,71,260,0.7333333333,0.7854984894,0.2365591398,0.3577235772,0.881570997
+benchmark,bf16_r16_on_p1__aptos361_on,aptos361_on,BF16 r16 CLAHE-on lr 0.0005 alpha 16,FP16,0,No DR,181,179,176,5,3,177,0.9723756906,0.9833333333,0.9832402235,0.9777777778,0.9953959484
+benchmark,bf16_r16_on_p1__aptos361_on,aptos361_on,BF16 r16 CLAHE-on lr 0.0005 alpha 16,FP16,1,Mild,35,79,29,6,50,276,0.8285714286,0.8466257669,0.3670886076,0.5087719298,0.910254163
+benchmark,bf16_r16_on_p1__aptos361_on,aptos361_on,BF16 r16 CLAHE-on lr 0.0005 alpha 16,FP16,2,Moderate,97,69,50,47,19,245,0.5154639175,0.928030303,0.7246376812,0.6024096386,0.9235004686
+benchmark,bf16_r16_on_p1__aptos361_on,aptos361_on,BF16 r16 CLAHE-on lr 0.0005 alpha 16,FP16,3,Severe,18,21,7,11,14,329,0.3888888889,0.9591836735,0.3333333333,0.358974359,0.9131843213
+benchmark,bf16_r16_on_p1__aptos361_on,aptos361_on,BF16 r16 CLAHE-on lr 0.0005 alpha 16,FP16,4,Proliferative DR,30,13,12,18,1,330,0.4,0.996978852,0.9230769231,0.5581395349,0.92306143
+benchmark,r16_on_p1__aptos361_on,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 16,FP16,0,No DR,181,258,174,7,84,96,0.9613259669,0.5333333333,0.6744186047,0.7927107062,0.9896869245
+benchmark,r16_on_p1__aptos361_on,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 16,FP16,1,Mild,35,79,21,14,58,268,0.6,0.8220858896,0.2658227848,0.3684210526,0.8699386503
+benchmark,r16_on_p1__aptos361_on,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 16,FP16,2,Moderate,97,0,0,97,0,264,0,1,,0,0.8995626367
+benchmark,r16_on_p1__aptos361_on,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 16,FP16,3,Severe,18,0,0,18,0,343,0,1,,0,0.7768059605
+benchmark,r16_on_p1__aptos361_on,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 16,FP16,4,Proliferative DR,30,24,2,28,22,309,0.06666666667,0.9335347432,0.08333333333,0.07407407407,0.7105740181
+benchmark,r16_on_p2__aptos361_on,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 16,FP16,0,No DR,181,180,175,6,5,175,0.9668508287,0.9722222222,0.9722222222,0.9695290859,0.9938919583
+benchmark,r16_on_p2__aptos361_on,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 16,FP16,1,Mild,35,37,18,17,19,307,0.5142857143,0.9417177914,0.4864864865,0.5,0.9071866784
+benchmark,r16_on_p2__aptos361_on,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 16,FP16,2,Moderate,97,120,82,15,38,226,0.8453608247,0.8560606061,0.6833333333,0.7557603687,0.934083099
+benchmark,r16_on_p2__aptos361_on,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 16,FP16,3,Severe,18,3,0,18,3,340,0,0.9912536443,0,0,0.8558471007
+benchmark,r16_on_p2__aptos361_on,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 16,FP16,4,Proliferative DR,30,21,15,15,6,325,0.5,0.9818731118,0.7142857143,0.5882352941,0.9303121853
+benchmark,r16_on_p3__aptos361_on,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 16,FP16,0,No DR,181,160,159,22,1,179,0.8784530387,0.9944444444,0.99375,0.9325513196,0.9953345611
+benchmark,r16_on_p3__aptos361_on,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 16,FP16,1,Mild,35,32,11,24,21,305,0.3142857143,0.9355828221,0.34375,0.328358209,0.9056967572
+benchmark,r16_on_p3__aptos361_on,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 16,FP16,2,Moderate,97,144,91,6,53,211,0.9381443299,0.7992424242,0.6319444444,0.755186722,0.9249062793
+benchmark,r16_on_p3__aptos361_on,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 16,FP16,3,Severe,18,22,5,13,17,326,0.2777777778,0.9504373178,0.2272727273,0.25,0.9015225138
+benchmark,r16_on_p3__aptos361_on,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 16,FP16,4,Proliferative DR,30,3,2,28,1,330,0.06666666667,0.996978852,0.6666666667,0.1212121212,0.8813695871
+benchmark,r32_on_p1__aptos361_on,aptos361_on,4-bit r32 CLAHE-on lr 0.0005 alpha 16,FP16,0,No DR,181,181,176,5,5,175,0.9723756906,0.9722222222,0.9723756906,0.9723756906,0.9961325967
+benchmark,r32_on_p1__aptos361_on,aptos361_on,4-bit r32 CLAHE-on lr 0.0005 alpha 16,FP16,1,Mild,35,90,27,8,63,263,0.7714285714,0.8067484663,0.3,0.432,0.9035933392
+benchmark,r32_on_p1__aptos361_on,aptos361_on,4-bit r32 CLAHE-on lr 0.0005 alpha 16,FP16,2,Moderate,97,49,37,60,12,252,0.381443299,0.9545454545,0.7551020408,0.5068493151,0.9251405811
+benchmark,r32_on_p1__aptos361_on,aptos361_on,4-bit r32 CLAHE-on lr 0.0005 alpha 16,FP16,3,Severe,18,18,6,12,12,331,0.3333333333,0.9650145773,0.3333333333,0.3333333333,0.902170392
+benchmark,r32_on_p1__aptos361_on,aptos361_on,4-bit r32 CLAHE-on lr 0.0005 alpha 16,FP16,4,Proliferative DR,30,23,17,13,6,325,0.5666666667,0.9818731118,0.7391304348,0.641509434,0.9434038268
+benchmark,r8_on_p3__aptos361_on,aptos361_on,4-bit r8 CLAHE-on lr 0.0005 alpha 16,FP16,0,No DR,181,169,168,13,1,179,0.9281767956,0.9944444444,0.9940828402,0.96,0.996101903
+benchmark,r8_on_p3__aptos361_on,aptos361_on,4-bit r8 CLAHE-on lr 0.0005 alpha 16,FP16,1,Mild,35,42,19,16,23,303,0.5428571429,0.9294478528,0.4523809524,0.4935064935,0.9168273444
+benchmark,r8_on_p3__aptos361_on,aptos361_on,4-bit r8 CLAHE-on lr 0.0005 alpha 16,FP16,2,Moderate,97,85,61,36,24,240,0.6288659794,0.9090909091,0.7176470588,0.6703296703,0.9163542643
+benchmark,r8_on_p3__aptos361_on,aptos361_on,4-bit r8 CLAHE-on lr 0.0005 alpha 16,FP16,3,Severe,18,47,9,9,38,305,0.5,0.889212828,0.1914893617,0.2769230769,0.894233884
+benchmark,r8_on_p3__aptos361_on,aptos361_on,4-bit r8 CLAHE-on lr 0.0005 alpha 16,FP16,4,Proliferative DR,30,18,14,16,4,327,0.4666666667,0.9879154079,0.7777777778,0.5833333333,0.9509566969
+original_adapter_audit,original_paper_adapter__aptos367_original,aptos367_original,original paper adapter (legacy best_lora),FP16,0,No DR,181,178,176,5,2,184,0.9723756906,0.9892473118,0.9887640449,0.9805013928,0.9973266797
+original_adapter_audit,original_paper_adapter__aptos367_original,aptos367_original,original paper adapter (legacy best_lora),FP16,1,Mild,37,37,25,12,12,318,0.6756756757,0.9636363636,0.6756756757,0.6756756757,0.9535626536
+original_adapter_audit,original_paper_adapter__aptos367_original,aptos367_original,original paper adapter (legacy best_lora),FP16,2,Moderate,100,89,70,30,19,248,0.7,0.9288389513,0.7865168539,0.7407407407,0.9295505618
+original_adapter_audit,original_paper_adapter__aptos367_original,aptos367_original,original paper adapter (legacy best_lora),FP16,3,Severe,19,40,11,8,29,319,0.5789473684,0.9166666667,0.275,0.3728813559,0.9042649728
+original_adapter_audit,original_paper_adapter__aptos367_original,aptos367_original,original paper adapter (legacy best_lora),FP16,4,Proliferative DR,30,23,17,13,6,331,0.5666666667,0.9821958457,0.7391304348,0.641509434,0.959347181
+messidor_archived,bf16_r16_on_p1__messidor_archived,messidor_archived,BF16 r16 CLAHE-on lr 0.0005 alpha 16,FP16,0,No DR,468,617,398,70,219,370,0.8504273504,0.6281833616,0.6450567261,0.733640553,0.7937907216
+messidor_archived,bf16_r16_on_p1__messidor_archived,messidor_archived,BF16 r16 CLAHE-on lr 0.0005 alpha 16,FP16,1,Mild,207,363,58,149,305,545,0.2801932367,0.6411764706,0.1597796143,0.2035087719,0.4388348963
+messidor_archived,bf16_r16_on_p1__messidor_archived,messidor_archived,BF16 r16 CLAHE-on lr 0.0005 alpha 16,FP16,2,Moderate,290,53,12,278,41,726,0.04137931034,0.9465449804,0.2264150943,0.06997084548,0.7977565976
+messidor_archived,bf16_r16_on_p1__messidor_archived,messidor_archived,BF16 r16 CLAHE-on lr 0.0005 alpha 16,FP16,3,Severe,71,19,13,58,6,980,0.1830985915,0.9939148073,0.6842105263,0.2888888889,0.9654601034
+messidor_archived,bf16_r16_on_p1__messidor_archived,messidor_archived,BF16 r16 CLAHE-on lr 0.0005 alpha 16,FP16,4,Proliferative DR,21,5,2,19,3,1033,0.09523809524,0.9971042471,0.4,0.1538461538,0.9003493289
+messidor_archived,bf16_r16_on_p2__messidor_archived,messidor_archived,BF16 r16 CLAHE-on lr 0.0005 alpha 16,FP16,0,No DR,468,715,438,30,277,312,0.9358974359,0.5297113752,0.6125874126,0.740490279,0.8137615544
+messidor_archived,bf16_r16_on_p2__messidor_archived,messidor_archived,BF16 r16 CLAHE-on lr 0.0005 alpha 16,FP16,1,Mild,207,208,14,193,194,656,0.06763285024,0.7717647059,0.06730769231,0.06746987952,0.4369423132
+messidor_archived,bf16_r16_on_p2__messidor_archived,messidor_archived,BF16 r16 CLAHE-on lr 0.0005 alpha 16,FP16,2,Moderate,290,66,37,253,29,738,0.1275862069,0.962190352,0.5606060606,0.2078651685,0.818639572
+messidor_archived,bf16_r16_on_p2__messidor_archived,messidor_archived,BF16 r16 CLAHE-on lr 0.0005 alpha 16,FP16,3,Severe,71,32,25,46,7,979,0.3521126761,0.9929006085,0.78125,0.4854368932,0.9652886895
+messidor_archived,bf16_r16_on_p2__messidor_archived,messidor_archived,BF16 r16 CLAHE-on lr 0.0005 alpha 16,FP16,4,Proliferative DR,21,36,11,10,25,1011,0.5238095238,0.9758687259,0.3055555556,0.3859649123,0.9327541828
+messidor_archived,bf16_r16_on_p3__messidor_archived,messidor_archived,BF16 r16 CLAHE-on lr 0.0005 alpha 16,FP16,0,No DR,468,589,393,75,196,393,0.8397435897,0.6672325976,0.6672325976,0.7436140019,0.8130831628
+messidor_archived,bf16_r16_on_p3__messidor_archived,messidor_archived,BF16 r16 CLAHE-on lr 0.0005 alpha 16,FP16,1,Mild,207,273,58,149,215,635,0.2801932367,0.7470588235,0.2124542125,0.2416666667,0.4900085251
+messidor_archived,bf16_r16_on_p3__messidor_archived,messidor_archived,BF16 r16 CLAHE-on lr 0.0005 alpha 16,FP16,2,Moderate,290,156,91,199,65,702,0.3137931034,0.9152542373,0.5833333333,0.4080717489,0.8118284404
+messidor_archived,bf16_r16_on_p3__messidor_archived,messidor_archived,BF16 r16 CLAHE-on lr 0.0005 alpha 16,FP16,3,Severe,71,36,27,44,9,977,0.3802816901,0.990872211,0.75,0.5046728972,0.9686026912
+messidor_archived,bf16_r16_on_p3__messidor_archived,messidor_archived,BF16 r16 CLAHE-on lr 0.0005 alpha 16,FP16,4,Proliferative DR,21,3,3,18,0,1036,0.1428571429,1,1,0.25,0.8986486486
+messidor_archived,r16_on_p1__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 16,FP16,0,No DR,468,887,449,19,438,151,0.9594017094,0.2563667233,0.5062006764,0.6627306273,0.7638181475
+messidor_archived,r16_on_p1__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 16,FP16,1,Mild,207,160,10,197,150,700,0.04830917874,0.8235294118,0.0625,0.05449591281,0.3677749361
+messidor_archived,r16_on_p1__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 16,FP16,2,Moderate,290,0,0,290,0,767,0,1,,0,0.7481319966
+messidor_archived,r16_on_p1__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 16,FP16,3,Severe,71,0,0,71,0,986,0,1,,0,0.927163386
+messidor_archived,r16_on_p1__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 16,FP16,4,Proliferative DR,21,10,1,20,9,1027,0.04761904762,0.9913127413,0.1,0.06451612903,0.8831127045
+messidor_archived,r16_on_p2__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 16,FP16,0,No DR,468,765,437,31,328,261,0.9337606838,0.4431239389,0.5712418301,0.7088402271,0.7467386415
+messidor_archived,r16_on_p2__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 16,FP16,1,Mild,207,158,14,193,144,706,0.06763285024,0.8305882353,0.08860759494,0.07671232877,0.3693492469
+messidor_archived,r16_on_p2__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 16,FP16,2,Moderate,290,127,52,238,75,692,0.1793103448,0.9022164276,0.4094488189,0.2494004796,0.7493413658
+messidor_archived,r16_on_p2__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 16,FP16,3,Severe,71,2,2,69,0,986,0.02816901408,1,1,0.05479452055,0.9623889381
+messidor_archived,r16_on_p2__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 16,FP16,4,Proliferative DR,21,5,4,17,1,1035,0.1904761905,0.999034749,0.8,0.3076923077,0.9239290311
+messidor_archived,r16_on_p3__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 16,FP16,0,No DR,468,537,363,105,174,415,0.7756410256,0.7045840407,0.6759776536,0.7223880597,0.7940519205
+messidor_archived,r16_on_p3__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 16,FP16,1,Mild,207,319,71,136,248,602,0.3429951691,0.7082352941,0.2225705329,0.2699619772,0.4863540779
+messidor_archived,r16_on_p3__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 16,FP16,2,Moderate,290,190,104,186,86,681,0.3586206897,0.887874837,0.5473684211,0.4333333333,0.7921233647
+messidor_archived,r16_on_p3__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 16,FP16,3,Severe,71,11,8,63,3,983,0.1126760563,0.9969574037,0.7272727273,0.1951219512,0.9588463846
+messidor_archived,r16_on_p3__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 16,FP16,4,Proliferative DR,21,0,0,21,0,1036,0,1,,0,0.8871575657
+messidor_archived,zeroshot_4bit__messidor_archived,messidor_archived,zero-shot 4-bit,FP16,0,No DR,468,578,329,139,249,340,0.702991453,0.5772495756,0.5692041522,0.6290630975,0.700822051
+messidor_archived,zeroshot_4bit__messidor_archived,messidor_archived,zero-shot 4-bit,FP16,1,Mild,207,17,1,206,16,834,0.004830917874,0.9811764706,0.05882352941,0.008928571429,0.5324580847
+messidor_archived,zeroshot_4bit__messidor_archived,messidor_archived,zero-shot 4-bit,FP16,2,Moderate,290,239,99,191,140,627,0.3413793103,0.8174706649,0.4142259414,0.3742911153,0.670031021
+messidor_archived,zeroshot_4bit__messidor_archived,messidor_archived,zero-shot 4-bit,FP16,3,Severe,71,205,53,18,152,834,0.7464788732,0.845841785,0.2585365854,0.384057971,0.8778533269
+messidor_archived,zeroshot_4bit__messidor_archived,messidor_archived,zero-shot 4-bit,FP16,4,Proliferative DR,21,18,4,17,14,1022,0.1904761905,0.9864864865,0.2222222222,0.2051282051,0.8933167862
+lr_study,r16_on_lr0p0001_t42_a3407,aptos361_on,4-bit r16 CLAHE-on lr 0.0001 alpha 16,FP16,0,No DR,181,182,178,3,4,176,0.9834254144,0.9777777778,0.978021978,0.9807162534,0.9972068754
+lr_study,r16_on_lr0p0001_t42_a3407,aptos361_on,4-bit r16 CLAHE-on lr 0.0001 alpha 16,FP16,1,Mild,35,33,20,15,13,313,0.5714285714,0.9601226994,0.6060606061,0.5882352941,0.9326906223
+lr_study,r16_on_lr0p0001_t42_a3407,aptos361_on,4-bit r16 CLAHE-on lr 0.0001 alpha 16,FP16,2,Moderate,97,59,43,54,16,248,0.4432989691,0.9393939394,0.7288135593,0.5512820513,0.9144407998
+lr_study,r16_on_lr0p0001_t42_a3407,aptos361_on,4-bit r16 CLAHE-on lr 0.0001 alpha 16,FP16,3,Severe,18,63,14,4,49,294,0.7777777778,0.8571428571,0.2222222222,0.3456790123,0.9062196307
+lr_study,r16_on_lr0p0001_t42_a3407,aptos361_on,4-bit r16 CLAHE-on lr 0.0001 alpha 16,FP16,4,Proliferative DR,30,24,16,14,8,323,0.5333333333,0.9758308157,0.6666666667,0.5925925926,0.9280966767
+lr_study,r16_on_lr0p0001_t43_a3408,aptos361_on,4-bit r16 CLAHE-on lr 0.0001 alpha 16,FP16,0,No DR,181,181,174,7,7,173,0.9613259669,0.9611111111,0.9613259669,0.9613259669,0.9937077962
+lr_study,r16_on_lr0p0001_t43_a3408,aptos361_on,4-bit r16 CLAHE-on lr 0.0001 alpha 16,FP16,1,Mild,35,65,22,13,43,283,0.6285714286,0.8680981595,0.3384615385,0.44,0.8931638913
+lr_study,r16_on_lr0p0001_t43_a3408,aptos361_on,4-bit r16 CLAHE-on lr 0.0001 alpha 16,FP16,2,Moderate,97,58,44,53,14,250,0.4536082474,0.946969697,0.7586206897,0.5677419355,0.928420806
+lr_study,r16_on_lr0p0001_t43_a3408,aptos361_on,4-bit r16 CLAHE-on lr 0.0001 alpha 16,FP16,3,Severe,18,20,4,14,16,327,0.2222222222,0.9533527697,0.2,0.2105263158,0.8772270813
+lr_study,r16_on_lr0p0001_t43_a3408,aptos361_on,4-bit r16 CLAHE-on lr 0.0001 alpha 16,FP16,4,Proliferative DR,30,37,19,11,18,313,0.6333333333,0.9456193353,0.5135135135,0.5671641791,0.9243705942
+lr_study,r16_on_lr0p0001_t44_a3409,aptos361_on,4-bit r16 CLAHE-on lr 0.0001 alpha 16,FP16,0,No DR,181,181,176,5,5,175,0.9723756906,0.9722222222,0.9723756906,0.9723756906,0.9967157766
+lr_study,r16_on_lr0p0001_t44_a3409,aptos361_on,4-bit r16 CLAHE-on lr 0.0001 alpha 16,FP16,1,Mild,35,54,22,13,32,294,0.6285714286,0.9018404908,0.4074074074,0.4943820225,0.9154250657
+lr_study,r16_on_lr0p0001_t44_a3409,aptos361_on,4-bit r16 CLAHE-on lr 0.0001 alpha 16,FP16,2,Moderate,97,81,58,39,23,241,0.5979381443,0.9128787879,0.7160493827,0.6516853933,0.9262339894
+lr_study,r16_on_lr0p0001_t44_a3409,aptos361_on,4-bit r16 CLAHE-on lr 0.0001 alpha 16,FP16,3,Severe,18,24,7,11,17,326,0.3888888889,0.9504373178,0.2916666667,0.3333333333,0.9099449304
+lr_study,r16_on_lr0p0001_t44_a3409,aptos361_on,4-bit r16 CLAHE-on lr 0.0001 alpha 16,FP16,4,Proliferative DR,30,21,15,15,6,325,0.5,0.9818731118,0.7142857143,0.5882352941,0.9287009063
+lr_study,r16_on_lr0p0002_t42_a3407,aptos361_on,4-bit r16 CLAHE-on lr 0.0002 alpha 16,FP16,0,No DR,181,174,174,7,0,180,0.9613259669,1,1,0.9802816901,0.9955494168
+lr_study,r16_on_lr0p0002_t42_a3407,aptos361_on,4-bit r16 CLAHE-on lr 0.0002 alpha 16,FP16,1,Mild,35,59,30,5,29,297,0.8571428571,0.9110429448,0.5084745763,0.6382978723,0.9585451358
+lr_study,r16_on_lr0p0002_t42_a3407,aptos361_on,4-bit r16 CLAHE-on lr 0.0002 alpha 16,FP16,2,Moderate,97,49,37,60,12,252,0.381443299,0.9545454545,0.7551020408,0.5068493151,0.9202983443
+lr_study,r16_on_lr0p0002_t42_a3407,aptos361_on,4-bit r16 CLAHE-on lr 0.0002 alpha 16,FP16,3,Severe,18,39,8,10,31,312,0.4444444444,0.9096209913,0.2051282051,0.2807017544,0.8780369291
+lr_study,r16_on_lr0p0002_t42_a3407,aptos361_on,4-bit r16 CLAHE-on lr 0.0002 alpha 16,FP16,4,Proliferative DR,30,40,25,5,15,316,0.8333333333,0.9546827795,0.625,0.7142857143,0.9657603223
+lr_study,r16_on_lr0p0002_t43_a3408,aptos361_on,4-bit r16 CLAHE-on lr 0.0002 alpha 16,FP16,0,No DR,181,171,169,12,2,178,0.9337016575,0.9888888889,0.9883040936,0.9602272727,0.9933701657
+lr_study,r16_on_lr0p0002_t43_a3408,aptos361_on,4-bit r16 CLAHE-on lr 0.0002 alpha 16,FP16,1,Mild,35,33,20,15,13,313,0.5714285714,0.9601226994,0.6060606061,0.5882352941,0.9517090272
+lr_study,r16_on_lr0p0002_t43_a3408,aptos361_on,4-bit r16 CLAHE-on lr 0.0002 alpha 16,FP16,2,Moderate,97,110,77,20,33,231,0.793814433,0.875,0.7,0.7439613527,0.9296704155
+lr_study,r16_on_lr0p0002_t43_a3408,aptos361_on,4-bit r16 CLAHE-on lr 0.0002 alpha 16,FP16,3,Severe,18,26,8,10,18,325,0.4444444444,0.9475218659,0.3076923077,0.3636363636,0.8858114674
+lr_study,r16_on_lr0p0002_t43_a3408,aptos361_on,4-bit r16 CLAHE-on lr 0.0002 alpha 16,FP16,4,Proliferative DR,30,21,16,14,5,326,0.5333333333,0.9848942598,0.7619047619,0.6274509804,0.9590130916
+lr_study,r16_on_lr0p0002_t44_a3409,aptos361_on,4-bit r16 CLAHE-on lr 0.0002 alpha 16,FP16,0,No DR,181,172,170,11,2,178,0.9392265193,0.9888888889,0.988372093,0.9631728045,0.9927869859
+lr_study,r16_on_lr0p0002_t44_a3409,aptos361_on,4-bit r16 CLAHE-on lr 0.0002 alpha 16,FP16,1,Mild,35,60,27,8,33,293,0.7714285714,0.8987730061,0.45,0.5684210526,0.932427695
+lr_study,r16_on_lr0p0002_t44_a3409,aptos361_on,4-bit r16 CLAHE-on lr 0.0002 alpha 16,FP16,2,Moderate,97,94,68,29,26,238,0.7010309278,0.9015151515,0.7234042553,0.7120418848,0.9195954389
+lr_study,r16_on_lr0p0002_t44_a3409,aptos361_on,4-bit r16 CLAHE-on lr 0.0002 alpha 16,FP16,3,Severe,18,18,5,13,13,330,0.2777777778,0.9620991254,0.2777777778,0.2777777778,0.8966634273
+lr_study,r16_on_lr0p0002_t44_a3409,aptos361_on,4-bit r16 CLAHE-on lr 0.0002 alpha 16,FP16,4,Proliferative DR,30,17,12,18,5,326,0.4,0.9848942598,0.7058823529,0.5106382979,0.9433031219
+lr_study,r16_on_lr0p0001_t42_a3407__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0001 alpha 16,FP16,0,No DR,468,689,424,44,265,324,0.905982906,0.5500848896,0.6153846154,0.7329299914,0.8178500428
+lr_study,r16_on_lr0p0001_t42_a3407__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0001 alpha 16,FP16,1,Mild,207,215,32,175,183,667,0.154589372,0.7847058824,0.1488372093,0.1516587678,0.4904916169
+lr_study,r16_on_lr0p0001_t42_a3407__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0001 alpha 16,FP16,2,Moderate,290,93,56,234,37,730,0.1931034483,0.9517601043,0.6021505376,0.2924281984,0.7930225239
+lr_study,r16_on_lr0p0001_t42_a3407__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0001 alpha 16,FP16,3,Severe,71,47,33,38,14,972,0.4647887324,0.985801217,0.7021276596,0.5593220339,0.965360112
+lr_study,r16_on_lr0p0001_t42_a3407__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0001 alpha 16,FP16,4,Proliferative DR,21,13,5,16,8,1028,0.2380952381,0.9922779923,0.3846153846,0.2941176471,0.9492094135
+lr_study,r16_on_lr0p0001_t43_a3408__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0001 alpha 16,FP16,0,No DR,468,720,415,53,305,284,0.8867521368,0.4821731749,0.5763888889,0.6986531987,0.787735986
+lr_study,r16_on_lr0p0001_t43_a3408__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0001 alpha 16,FP16,1,Mild,207,241,29,178,212,638,0.1400966184,0.7505882353,0.1203319502,0.1294642857,0.4526683717
+lr_study,r16_on_lr0p0001_t43_a3408__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0001 alpha 16,FP16,2,Moderate,290,61,19,271,42,725,0.06551724138,0.9452411995,0.3114754098,0.1082621083,0.7616643438
+lr_study,r16_on_lr0p0001_t43_a3408__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0001 alpha 16,FP16,3,Severe,71,14,11,60,3,983,0.1549295775,0.9969574037,0.7857142857,0.2588235294,0.938476702
+lr_study,r16_on_lr0p0001_t43_a3408__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0001 alpha 16,FP16,4,Proliferative DR,21,21,9,12,12,1024,0.4285714286,0.9884169884,0.4285714286,0.4285714286,0.9371207943
+lr_study,r16_on_lr0p0001_t44_a3409__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0001 alpha 16,FP16,0,No DR,468,673,413,55,260,329,0.8824786325,0.558573854,0.6136701337,0.7239263804,0.8208248081
+lr_study,r16_on_lr0p0001_t44_a3409__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0001 alpha 16,FP16,1,Mild,207,269,41,166,228,622,0.1980676329,0.7317647059,0.1524163569,0.1722689076,0.4874339301
+lr_study,r16_on_lr0p0001_t44_a3409__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0001 alpha 16,FP16,2,Moderate,290,83,33,257,50,717,0.1137931034,0.9348109518,0.3975903614,0.1769436997,0.7871824844
+lr_study,r16_on_lr0p0001_t44_a3409__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0001 alpha 16,FP16,3,Severe,71,23,17,54,6,980,0.2394366197,0.9939148073,0.7391304348,0.3617021277,0.9699454332
+lr_study,r16_on_lr0p0001_t44_a3409__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0001 alpha 16,FP16,4,Proliferative DR,21,9,4,17,5,1031,0.1904761905,0.9951737452,0.4444444444,0.2666666667,0.9428203714
+lr_study,r16_on_lr0p0002_t42_a3407__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0002 alpha 16,FP16,0,No DR,468,631,412,56,219,370,0.8803418803,0.6281833616,0.6529318542,0.7497725205,0.8359888555
+lr_study,r16_on_lr0p0002_t42_a3407__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0002 alpha 16,FP16,1,Mild,207,302,44,163,258,592,0.2125603865,0.6964705882,0.1456953642,0.1728880157,0.4937254902
+lr_study,r16_on_lr0p0002_t42_a3407__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0002 alpha 16,FP16,2,Moderate,290,62,29,261,33,734,0.1,0.9569752282,0.4677419355,0.1647727273,0.8078541564
+lr_study,r16_on_lr0p0002_t42_a3407__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0002 alpha 16,FP16,3,Severe,71,30,27,44,3,983,0.3802816901,0.9969574037,0.9,0.5346534653,0.9619461189
+lr_study,r16_on_lr0p0002_t42_a3407__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0002 alpha 16,FP16,4,Proliferative DR,21,32,12,9,20,1016,0.5714285714,0.9806949807,0.375,0.4528301887,0.9571612429
+lr_study,r16_on_lr0p0002_t43_a3408__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0002 alpha 16,FP16,0,No DR,468,565,363,105,202,387,0.7756410256,0.6570458404,0.6424778761,0.7028073572,0.7878049134
+lr_study,r16_on_lr0p0002_t43_a3408__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0002 alpha 16,FP16,1,Mild,207,311,67,140,244,606,0.3236714976,0.7129411765,0.2154340836,0.2586872587,0.5094856493
+lr_study,r16_on_lr0p0002_t43_a3408__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0002 alpha 16,FP16,2,Moderate,290,152,76,214,76,691,0.2620689655,0.9009126467,0.5,0.3438914027,0.7583779166
+lr_study,r16_on_lr0p0002_t43_a3408__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0002 alpha 16,FP16,3,Severe,71,20,16,55,4,982,0.2253521127,0.9959432049,0.8,0.3516483516,0.9520041139
+lr_study,r16_on_lr0p0002_t43_a3408__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0002 alpha 16,FP16,4,Proliferative DR,21,9,6,15,3,1033,0.2857142857,0.9971042471,0.6666666667,0.4,0.9481522339
+lr_study,r16_on_lr0p0002_t44_a3409__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0002 alpha 16,FP16,0,No DR,468,613,397,71,216,373,0.8482905983,0.6332767402,0.647634584,0.7345050879,0.8109391552
+lr_study,r16_on_lr0p0002_t44_a3409__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0002 alpha 16,FP16,1,Mild,207,342,55,152,287,563,0.2657004831,0.6623529412,0.1608187135,0.2003642987,0.449678886
+lr_study,r16_on_lr0p0002_t44_a3409__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0002 alpha 16,FP16,2,Moderate,290,85,24,266,61,706,0.08275862069,0.9204693611,0.2823529412,0.128,0.7980263454
+lr_study,r16_on_lr0p0002_t44_a3409__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0002 alpha 16,FP16,3,Severe,71,13,8,63,5,981,0.1126760563,0.9949290061,0.6153846154,0.1904761905,0.9685169843
+lr_study,r16_on_lr0p0002_t44_a3409__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0002 alpha 16,FP16,4,Proliferative DR,21,4,3,18,1,1035,0.1428571429,0.999034749,0.75,0.24,0.9441073727
+alpha_study,r16_on_alpha32_t42_a3407,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 32,FP16,0,No DR,181,176,155,26,21,159,0.8563535912,0.8833333333,0.8806818182,0.8683473389,0.9109883364
+alpha_study,r16_on_alpha32_t42_a3407,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 32,FP16,1,Mild,35,185,29,6,156,170,0.8285714286,0.5214723926,0.1567567568,0.2636363636,0.723225241
+alpha_study,r16_on_alpha32_t42_a3407,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 32,FP16,2,Moderate,97,0,0,97,0,264,0,1,,0,0.7925257732
+alpha_study,r16_on_alpha32_t42_a3407,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 32,FP16,3,Severe,18,0,0,18,0,343,0,1,,0,0.7159054098
+alpha_study,r16_on_alpha32_t42_a3407,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 32,FP16,4,Proliferative DR,30,0,0,30,0,331,0,1,,0,0.7065458207
+alpha_study,r16_on_alpha32_t43_a3408__aptos_test_fp32,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 32,FP32 fallback,0,No DR,181,361,181,0,180,0,1,0,0.5013850416,0.667896679,0.6507980356
+alpha_study,r16_on_alpha32_t43_a3408__aptos_test_fp32,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 32,FP32 fallback,1,Mild,35,0,0,35,0,326,0,1,,0,0.4465381245
+alpha_study,r16_on_alpha32_t43_a3408__aptos_test_fp32,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 32,FP32 fallback,2,Moderate,97,0,0,97,0,264,0,1,,0,0.6665885661
+alpha_study,r16_on_alpha32_t43_a3408__aptos_test_fp32,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 32,FP32 fallback,3,Severe,18,0,0,18,0,343,0,1,,0,0.4429867185
+alpha_study,r16_on_alpha32_t43_a3408__aptos_test_fp32,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 32,FP32 fallback,4,Proliferative DR,30,0,0,30,0,331,0,1,,0,0.6099697885
+alpha_study,r16_on_alpha32_t44_a3409,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 32,FP16,0,No DR,181,0,0,181,0,180,0,1,,0,0.2754450583
+alpha_study,r16_on_alpha32_t44_a3409,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 32,FP16,1,Mild,35,0,0,35,0,326,0,1,,0,0.510254163
+alpha_study,r16_on_alpha32_t44_a3409,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 32,FP16,2,Moderate,97,0,0,97,0,264,0,1,,0,0.3250546704
+alpha_study,r16_on_alpha32_t44_a3409,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 32,FP16,3,Severe,18,0,0,18,0,343,0,1,,0,0.3658892128
+alpha_study,r16_on_alpha32_t44_a3409,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 32,FP16,4,Proliferative DR,30,361,30,0,331,0,1,0,0.08310249307,0.1534526854,0.507653575
+alpha_study,r16_on_alpha8_t42_a3407,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 8,FP16,0,No DR,181,172,172,9,0,180,0.9502762431,1,1,0.9745042493,0.9936157152
+alpha_study,r16_on_alpha8_t42_a3407,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 8,FP16,1,Mild,35,59,30,5,29,297,0.8571428571,0.9110429448,0.5084745763,0.6382978723,0.951884312
+alpha_study,r16_on_alpha8_t42_a3407,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 8,FP16,2,Moderate,97,61,45,52,16,248,0.4639175258,0.9393939394,0.737704918,0.5696202532,0.9283817557
+alpha_study,r16_on_alpha8_t42_a3407,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 8,FP16,3,Severe,18,56,12,6,44,299,0.6666666667,0.8717201166,0.2142857143,0.3243243243,0.9033041788
+alpha_study,r16_on_alpha8_t42_a3407,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 8,FP16,4,Proliferative DR,30,13,10,20,3,328,0.3333333333,0.9909365559,0.7692307692,0.4651162791,0.9503524673
+alpha_study,r16_on_alpha8_t43_a3408,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 8,FP16,0,No DR,181,170,169,12,1,179,0.9337016575,0.9944444444,0.9941176471,0.962962963,0.9966850829
+alpha_study,r16_on_alpha8_t43_a3408,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 8,FP16,1,Mild,35,56,26,9,30,296,0.7428571429,0.9079754601,0.4642857143,0.5714285714,0.9428571429
+alpha_study,r16_on_alpha8_t43_a3408,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 8,FP16,2,Moderate,97,57,42,55,15,249,0.4329896907,0.9431818182,0.7368421053,0.5454545455,0.9062011871
+alpha_study,r16_on_alpha8_t43_a3408,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 8,FP16,3,Severe,18,52,12,6,40,303,0.6666666667,0.8833819242,0.2307692308,0.3428571429,0.8791707159
+alpha_study,r16_on_alpha8_t43_a3408,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 8,FP16,4,Proliferative DR,30,26,14,16,12,319,0.4666666667,0.9637462236,0.5384615385,0.5,0.9257804632
+alpha_study,r16_on_alpha8_t44_a3409,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 8,FP16,0,No DR,181,0,0,181,0,180,0,1,,0,0.6681092695
+alpha_study,r16_on_alpha8_t44_a3409,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 8,FP16,1,Mild,35,0,0,35,0,326,0,1,,0,0.4647677476
+alpha_study,r16_on_alpha8_t44_a3409,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 8,FP16,2,Moderate,97,0,0,97,0,264,0,1,,0,0.5747032177
+alpha_study,r16_on_alpha8_t44_a3409,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 8,FP16,3,Severe,18,0,0,18,0,343,0,1,,0,0.4919015225
+alpha_study,r16_on_alpha8_t44_a3409,aptos361_on,4-bit r16 CLAHE-on lr 0.0005 alpha 8,FP16,4,Proliferative DR,30,361,30,0,331,0,1,0,0.08310249307,0.1534526854,0.5097683787
+alpha_study,r16_on_alpha32_t42_a3407__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 32,FP16,0,No DR,468,1057,468,0,589,0,1,0,0.4427625355,0.6137704918,0.4401491736
+alpha_study,r16_on_alpha32_t42_a3407__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 32,FP16,1,Mild,207,0,0,207,0,850,0,1,,0,0.4291503268
+alpha_study,r16_on_alpha32_t42_a3407__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 32,FP16,2,Moderate,290,0,0,290,0,767,0,1,,0,0.4641415277
+alpha_study,r16_on_alpha32_t42_a3407__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 32,FP16,3,Severe,71,0,0,71,0,986,0,1,,0,0.500057138
+alpha_study,r16_on_alpha32_t42_a3407__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 32,FP16,4,Proliferative DR,21,0,0,21,0,1036,0,1,,0,0.4660783232
+alpha_study,r16_on_alpha32_t43_a3408__messidor_archived_fp32,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 32,FP32 fallback,0,No DR,468,1057,468,0,589,0,1,0,0.4427625355,0.6137704918,0.4953020475
+alpha_study,r16_on_alpha32_t43_a3408__messidor_archived_fp32,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 32,FP32 fallback,1,Mild,207,0,0,207,0,850,0,1,,0,0.4987951122
+alpha_study,r16_on_alpha32_t43_a3408__messidor_archived_fp32,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 32,FP32 fallback,2,Moderate,290,0,0,290,0,767,0,1,,0,0.4882749629
+alpha_study,r16_on_alpha32_t43_a3408__messidor_archived_fp32,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 32,FP32 fallback,3,Severe,71,0,0,71,0,986,0,1,,0,0.3768248436
+alpha_study,r16_on_alpha32_t43_a3408__messidor_archived_fp32,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 32,FP32 fallback,4,Proliferative DR,21,0,0,21,0,1036,0,1,,0,0.4761445119
+alpha_study,r16_on_alpha32_t44_a3409__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 32,FP16,0,No DR,468,0,0,468,0,589,0,1,,0,0.4802976216
+alpha_study,r16_on_alpha32_t44_a3409__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 32,FP16,1,Mild,207,0,0,207,0,850,0,1,,0,0.4764194373
+alpha_study,r16_on_alpha32_t44_a3409__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 32,FP16,2,Moderate,290,0,0,290,0,767,0,1,,0,0.4882300049
+alpha_study,r16_on_alpha32_t44_a3409__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 32,FP16,3,Severe,71,0,0,71,0,986,0,1,,0,0.4442190669
+alpha_study,r16_on_alpha32_t44_a3409__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 32,FP16,4,Proliferative DR,21,1057,21,0,1036,0,1,0,0.01986754967,0.03896103896,0.4576668505
+alpha_study,r16_on_alpha8_t42_a3407__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 8,FP16,0,No DR,468,508,355,113,153,436,0.7585470085,0.740237691,0.6988188976,0.7274590164,0.8134749612
+alpha_study,r16_on_alpha8_t42_a3407__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 8,FP16,1,Mild,207,438,95,112,343,507,0.4589371981,0.5964705882,0.2168949772,0.2945736434,0.5092355783
+alpha_study,r16_on_alpha8_t42_a3407__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 8,FP16,2,Moderate,290,64,28,262,36,731,0.09655172414,0.9530638853,0.4375,0.1581920904,0.7802184957
+alpha_study,r16_on_alpha8_t42_a3407__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 8,FP16,3,Severe,71,45,31,40,14,972,0.4366197183,0.985801217,0.6888888889,0.5344827586,0.9718881239
+alpha_study,r16_on_alpha8_t42_a3407__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 8,FP16,4,Proliferative DR,21,2,2,19,0,1036,0.09523809524,1,1,0.1739130435,0.9629067843
+alpha_study,r16_on_alpha8_t43_a3408__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 8,FP16,0,No DR,468,502,346,122,156,433,0.7393162393,0.7351443124,0.6892430279,0.7134020619,0.8126659701
+alpha_study,r16_on_alpha8_t43_a3408__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 8,FP16,1,Mild,207,414,85,122,329,521,0.4106280193,0.6129411765,0.2053140097,0.2737520129,0.5278942882
+alpha_study,r16_on_alpha8_t43_a3408__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 8,FP16,2,Moderate,290,85,50,240,35,732,0.1724137931,0.9543676662,0.5882352941,0.2666666667,0.8166569258
+alpha_study,r16_on_alpha8_t43_a3408__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 8,FP16,3,Severe,71,39,29,42,10,976,0.4084507042,0.9898580122,0.7435897436,0.5272727273,0.964660172
+alpha_study,r16_on_alpha8_t43_a3408__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 8,FP16,4,Proliferative DR,21,17,7,14,10,1026,0.3333333333,0.9903474903,0.4117647059,0.3684210526,0.9436936937
+alpha_study,r16_on_alpha8_t44_a3409__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 8,FP16,0,No DR,468,0,0,468,0,589,0,1,,0,0.4562890891
+alpha_study,r16_on_alpha8_t44_a3409__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 8,FP16,1,Mild,207,0,0,207,0,850,0,1,,0,0.4670133561
+alpha_study,r16_on_alpha8_t44_a3409__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 8,FP16,2,Moderate,290,0,0,290,0,767,0,1,,0,0.5120082723
+alpha_study,r16_on_alpha8_t44_a3409__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 8,FP16,3,Severe,71,0,0,71,0,986,0,1,,0,0.4933005742
+alpha_study,r16_on_alpha8_t44_a3409__messidor_archived,messidor_archived,4-bit r16 CLAHE-on lr 0.0005 alpha 8,FP16,4,Proliferative DR,21,1057,21,0,1036,0,1,0,0.01986754967,0.03896103896,0.472283508

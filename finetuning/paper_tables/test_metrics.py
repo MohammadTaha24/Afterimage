@@ -111,5 +111,29 @@ class Bootstrap(unittest.TestCase):
         self.assertGreater(result["boot_auc_undefined"], 0)
 
 
+class FinalQueueHelpers(unittest.TestCase):
+    def test_scaling_uses_alpha_over_rank(self):
+        self.assertEqual(bpt.lora_scaling(16, 16, 1.0), (1.0, ""))
+        scaling, note = bpt.lora_scaling(32, 16, 1.0)  # recorded as 16/rank
+        self.assertEqual(scaling, 2.0)
+        self.assertIn("adapter_config.json", note)
+        with self.assertRaises(bpt.BuildError):
+            bpt.lora_scaling(32, 16, 3.0)
+
+    def test_timing_drops_warmup_images(self):
+        stats = bpt.timing_stats([9, 9, 9, 1, 2, 3])
+        self.assertEqual(stats["images_timed"], 3)
+        self.assertEqual(stats["median_seconds"], 2)
+
+    def test_fallback_runs_stay_out_of_fp16_mean(self):
+        frame = pd.DataFrame({"g": ["a"] * 3, "in_fp16_mean": [True, True, False], "accuracy": [0.2, 0.4, 0.9],
+                              "qwk": [0.0] * 3, "macro_auc": [0.5] * 3, "best_val_loss": [0.1] * 3,
+                              "degenerate": [False] * 3, "n_grades_predicted": [5] * 3, "n": [361] * 3})
+        summary = bpt.study_summary(frame, ["g"]).set_index("scoring_group")
+        self.assertAlmostEqual(summary.loc[bpt.GROUP_FP16_ONLY, "accuracy_mean"], 0.3)
+        self.assertAlmostEqual(summary.loc[bpt.GROUP_MIXED, "accuracy_mean"], 0.5)
+        self.assertEqual(summary.loc[bpt.GROUP_FP16_ONLY, "n_fallback_excluded"], 1)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

@@ -34,6 +34,7 @@ Sets are kept apart. Every table carries a `result_set` column.
 | C | BF16 base, rank 16, CLAHE on, 16 layers offloaded to CPU | 361 | FP16 |
 | D | Original 2929/366/367 split, rank 16, CLAHE on/off, three same-seed pairs (42/3407) | 367 | BF16 |
 | E | Retraining 2 saved-adapter replay. APTOS, plus the archived 1,057-image Messidor export | 367 / 1,057 | FP16 |
+| F | Final queue `final_01`: zero-shot, inference benchmark, original adapter audit, archived Messidor for all models, lr and alpha studies (rank 16, CLAHE on) | 361 / 367 / 1,057 | FP16; one labelled FP32 fallback |
 
 The script discovers runs from the folders. It reads rank, alpha, CLAHE, split, base precision and seeds from each run's saved configuration:
 - sets A, B and C: `pilot_configuration.json`
@@ -90,6 +91,7 @@ For sets A, B and C the scoring precision is not recorded in `score_result.json`
   - `messidor_archived_*.csv` (table 8)
   - `misclassified_*.csv` (table 9; image IDs and probabilities only, no images)
 - `efficiency/`: `qwen_efficiency_per_run.csv` and `qwen_efficiency_by_condition.csv` (table 10, Qwen only).
+- `final_01/` (set F, `--final-root`, default `D:\Afterimage_Experimentsinal_runsinal_01`; `--skip-final` leaves it out): `SUMMARY.md` (tables F1-F6), `per_job_metrics.csv`, `zero_shot.csv`, `lr_study_*.csv`, `alpha_study_*.csv`, `inference_benchmark*.csv`, `original_adapter_audit.csv`, `messidor_all_models_*.csv`, confusion and class-wise files. Every row of the queue's `summary.csv` and every group row of its `summary.md` is checked against the recomputed values. LoRA scaling is alpha/r from `adapter_config.json`; `train_result.json`'s `effective_scaling` is stored as 16/rank and is wrong for alpha != 16 (kept as `recorded_effective_scaling` with a `scaling_note`). The alpha-32 seed-43 run's FP16 score overflowed; its FP32-fallback rows are flagged and kept out of FP16-only means.
 
 ## Caveats
 

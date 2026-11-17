@@ -8,6 +8,8 @@ Result sets (never mixed in one table without a `result_set` column):
   C  BF16-base control, 361 test images
   D  original-split CLAHE pairs, 367 test images (same-seed repeats)
   E  Retraining 2 saved-adapter replay, 367 APTOS + 1,057 archived Messidor
+  F  final queue final_01 (zero-shot, inference benchmark, original adapter audit, archived Messidor
+     for all models, learning-rate and alpha studies); written to output/final_01 only
 
 Usage (from the repo root):
   C:\\Users\\moht2\\.conda\\envs\\afterimage_env\\python.exe -I finetuning\\paper_tables\\build_paper_tables.py
@@ -22,6 +24,7 @@ import json
 import math
 import platform
 import re
+import statistics
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -36,6 +39,7 @@ DEFAULT_ORIGINAL = REPO / "finetuning/Qwen3/artifacts/paper_reproduction/trainin
 DEFAULT_REFERENCE = REPO / "finetuning/Qwen3/artifacts/paper_reproduction/reference_run_02"
 DEFAULT_OUTPUT = HERE / "output"
 DEFAULT_DATASETS = Path(r"D:\Afterimage_Experiments\datasets")
+DEFAULT_FINAL = Path(r"D:\Afterimage_Experiments\final_runs\final_01")
 
 GRADES = list(range(5))
 LABELS = ["No DR", "Mild", "Moderate", "Severe", "Proliferative DR"]
@@ -601,6 +605,683 @@ def paired(per_run: pd.DataFrame, left: dict, right: dict, pair_on: list[str], l
     return pd.DataFrame(rows)
 
 
+# --------------------------------------------------------------------------- final queue (set F, final_01)
+
+FALLBACK = "FP32 fallback"
+NONFINITE = "Non-finite answer likelihood"   # final_runs.py: marker of a failed FP16 score
+WARMUP_IMAGES = 3                             # score_cohort.py: first images left out of every timing summary
+GROUP_FP16 = "FP16"
+GROUP_FP16_ONLY = "FP16 only (FP32-fallback seed excluded)"
+GROUP_MIXED = "FP16 + FP32 fallback (mixed)"
+REFERENCE_SOURCE = "set A runs/ (lr 5e-4, alpha 16)"
+FINAL_SOURCE = "final_01"
+SCALING_NOTE = ("train_result.json effective_scaling = {recorded:g} (stored as 16/rank, record error); "
+                "true alpha/r = {true:g} from adapter_config.json")
+
+
+def same(ours, saved, tol=TOL) -> bool:
+    """Equal within tol; None and NaN count as 'undefined' and only match each other."""
+    a = np.nan if ours is None else float(ours)
+    b = np.nan if saved is None else float(saved)
+    if math.isnan(a) or math.isnan(b):
+        return math.isnan(a) and math.isnan(b)
+    return math.isclose(a, b, rel_tol=0, abs_tol=tol)
+
+
+def check_same(name: str, what: str, ours, saved, tol=TOL):
+    if not same(ours, saved, tol):
+        raise BuildError(f"{name}: {what} mismatch: recomputed {ours!r}, saved {saved!r}")
+
+
+def path_key(path) -> str:
+    return str(Path(path)).rstrip("\\/").lower()
+
+
+def timing_stats(seconds) -> dict:
+    """Same summary as score_cohort.timing_summary: the first WARMUP_IMAGES are left out."""
+    seconds = [float(v) for v in seconds]
+    measured = seconds[WARMUP_IMAGES:] if len(seconds) > WARMUP_IMAGES else seconds
+    ordered = sorted(measured)
+    return {"images_timed": len(measured), "mean_seconds": statistics.fmean(measured),
+            "median_seconds": statistics.median(measured),
+            "p95_seconds": ordered[min(len(ordered) - 1, math.ceil(0.95 * len(ordered)) - 1)],
+            "images_per_second": len(measured) / sum(measured)}
+
+
+def lora_scaling(alpha: float, rank: int, recorded: float) -> tuple[float, str]:
+    """True LoRA scaling alpha/r and a note when train_result.json records something else.
+
+    train_result.json stores effective_scaling as 16/rank whatever the alpha, so it is wrong for
+    alpha != 16. Any other disagreement is unexplained and stops the build.
+    """
+    true = alpha / rank
+    if math.isclose(recorded, true, rel_tol=0, abs_tol=TOL):
+        return true, ""
+    if math.isclose(recorded, 16 / rank, rel_tol=0, abs_tol=TOL):
+        return true, SCALING_NOTE.format(recorded=recorded, true=true)
+    raise BuildError(f"effective_scaling {recorded!r} is neither alpha/r = {true!r} nor 16/r = {16 / rank!r}")
+
+
+def training_info(run: Path) -> dict:
+    """Training configuration of a saved run, with the LoRA scaling taken from adapter_config.json."""
+    cfg = read_json(run / "pilot_configuration.json")
+    train = read_json(run / "train_result.json")
+    adapter_cfg = read_json(run / "best_lora" / "adapter_config.json")
+    training = cfg["training"]
+    rank, alpha = int(cfg["rank"]), float(training["lora_alpha"])
+    if int(adapter_cfg["r"]) != rank or int(train["adapter"]["rank"]) != rank or int(training["lora_r"]) != rank:
+        raise BuildError(f"{run.name}: rank differs between configuration, train_result.json and adapter_config.json")
+    if float(adapter_cfg["lora_alpha"]) != alpha:
+        raise BuildError(f"{run.name}: adapter_config.json lora_alpha {adapter_cfg['lora_alpha']} != configured {alpha}")
+    if adapter_cfg.get("use_rslora") or adapter_cfg.get("alpha_pattern") or adapter_cfg.get("rank_pattern"):
+        raise BuildError(f"{run.name}: adapter uses rsLoRA or per-module alpha/rank; alpha/r does not apply")
+    recorded = float(train["adapter"]["effective_scaling"])
+    try:
+        scaling, note = lora_scaling(alpha, rank, recorded)
+    except BuildError as error:
+        raise BuildError(f"{run.name}: {error}") from None
+    best_epoch, best_step = best_epoch_from_history(train)
+    return {
+        "source_run": run.name, "base": "4-bit" if training["load_in_4bit"] else "BF16", "rank": rank,
+        "lr": float(training["lr"]), "alpha": alpha, "lora_dropout": float(training["lora_dropout"]),
+        "patience": int(training["early_stopping_patience"]), "clahe_trained": "on" if cfg["clahe"] else "off",
+        "trainer_seed": int(training["trainer_seed"]), "lora_seed": int(cfg["adapter_seed"]),
+        "effective_scaling": scaling, "recorded_effective_scaling": recorded, "scaling_note": note,
+        "best_epoch": best_epoch, "best_step": best_step, "best_val_loss": float(train["validation_loss"]),
+        "epochs_run": max(float(entry.get("epoch", 0)) for entry in train["history"]),
+        "adapter_weights_sha256": train["adapter"]["weights_sha256"],
+        "adapter_config_sha256": INPUTS[str(run / "best_lora" / "adapter_config.json")],
+        "train_result_sha256": INPUTS[str(run / "train_result.json")],
+    }
+
+
+def condition_label(info: dict) -> str:
+    return f"{info['base']} r{info['rank']} CLAHE-{info['clahe_trained']} lr {info['lr']:g} alpha {info['alpha']:g}"
+
+
+def check_saved_metrics(name: str, metrics: dict, saved: dict):
+    for key in ("accuracy", "qwk", "macro_ovr_auc", "samples"):
+        if key not in saved:
+            raise BuildError(f"{name}: saved metrics lack {key}")
+    check_same(name, "accuracy", metrics["accuracy"], saved["accuracy"])
+    check_same(name, "QWK", metrics["qwk"], saved["qwk"])
+    check_same(name, "macro AUC", metrics["macro_auc"], saved["macro_ovr_auc"])
+    check(name, "n", metrics["n"], saved["samples"])
+    aucs = saved.get("per_grade_auc") or [item["auc"] for item in saved.get("per_class", [])]
+    if len(aucs) != 5:
+        raise BuildError(f"{name}: saved metrics lack the five per-grade AUCs")
+    for g, value in enumerate(aucs):
+        check_same(name, f"grade {g} AUC", metrics["aucs"][g], value)
+    if "confusion_matrix" in saved and not np.array_equal(metrics["confusion"], np.asarray(saved["confusion_matrix"])):
+        raise BuildError(f"{name}: confusion matrix differs from the saved summary")
+
+
+def compare_reference(name: str, frame: pd.DataFrame, record: dict) -> dict:
+    """Recompute a saved 'agreement with reference predictions' block from the two prediction files."""
+    path = Path(record["reference"])
+    reference = pd.read_csv(track(path), dtype={"image_id": str})
+    if INPUTS[str(path)] != record["reference_sha256"]:
+        raise BuildError(f"{name}: reference {path} SHA-256 differs from the recorded one")
+    reference = reference.set_index("image_id")
+    if not set(frame["image_id"]) <= set(reference.index):
+        raise BuildError(f"{name}: reference {path} lacks some image IDs")
+    reference = reference.loc[frame["image_id"]]
+    mismatches = int((reference["y_pred"].to_numpy(int) != frame["y_pred"].to_numpy(int)).sum())
+    largest = float(np.abs(reference[PROB_COLS].to_numpy(float) - frame[PROB_COLS].to_numpy(float)).max())
+    check(name, "reference images compared", len(frame), record["images_compared"])
+    check(name, "reference grade mismatches", mismatches, record["grade_mismatches"])
+    check(name, "reference largest probability difference", largest, record["largest_probability_difference"])
+    return {"images": len(frame), "grade_mismatches": mismatches, "largest_probability_difference": largest}
+
+
+def read_score_job(folder: Path, sources: set[str]) -> dict:
+    """One scores/<job> folder: predictions, timing and generation recomputed and checked against summary.json."""
+    name = folder.name
+    summary = read_json(folder / "summary.json")
+    identity = summary["identity"]
+    if identity["name"] != name:
+        raise BuildError(f"{name}: summary.json names job {identity['name']!r}")
+    if identity.get("limit"):
+        raise BuildError(f"{name}: limited (pilot) score")
+    pred_path = folder / "predictions.csv"
+    frame = read_predictions(pred_path)
+    if INPUTS[str(pred_path)] != summary["predictions_sha256"]:
+        raise BuildError(f"{name}: prediction SHA-256 differs from summary.json")
+    check(name, "images", len(frame), identity["images"])
+    metrics = point_metrics(frame)
+    check_saved_metrics(name, metrics, summary["metrics"])
+
+    timing = pd.read_csv(track(folder / "timing.csv"), dtype={"image_id": str, "generated_text": str})
+    if list(timing["image_id"]) != list(frame["image_id"]):
+        raise BuildError(f"{name}: timing.csv and predictions.csv list different images")
+    full = timing_stats(timing["full_answer_seconds"])
+    for key, value in full.items():
+        check_same(name, f"likelihood timing {key}", value, summary["full_answer_timing"][key])
+    times = {"likelihood_" + key.replace("_seconds", "_s"): value for key, value in full.items()}
+    times.update(model_load_s=float(summary["model_load_seconds"]),
+                 torch_peak_alloc_gib=summary["torch_peak_allocated_bytes"] / 2**30)
+
+    wanted = int(identity["generation_images"])
+    generation = {}
+    saved_gen = summary.get("generation")
+    if wanted:
+        if not saved_gen or int(saved_gen["images"]) != wanted:
+            raise BuildError(f"{name}: generation block missing or for a different image count")
+        if timing["generation_seconds"].iloc[wanted:].notna().any():
+            raise BuildError(f"{name}: generation timings beyond the generated images")
+        part = timing.iloc[:wanted]
+        parsed = part["generated_grade"].notna().to_numpy()
+        grades = part["generated_grade"].fillna(-1).to_numpy(int)
+        y_true = frame["y_true"].to_numpy(int)[:wanted]
+        y_pred = frame["y_pred"].to_numpy(int)[:wanted]
+        generation = {
+            "generation_images": wanted, "unparseable": int(wanted - parsed.sum()),
+            "generation_accuracy_strict": float((parsed & (grades == y_true)).sum() / wanted),
+            "generation_accuracy_unparseable_as_0": float((np.where(parsed, grades, 0) == y_true).sum() / wanted),
+            "agreement_with_likelihood_grade": float((parsed & (grades == y_pred)).sum() / wanted),
+            "prompt_tokens": int(saved_gen["prompt_tokens"]),
+        }
+        check(name, "unparseable generations", generation["unparseable"], saved_gen["unparseable_outputs"])
+        for ours, theirs in (("generation_accuracy_strict", "accuracy_unparseable_counted_wrong"),
+                             ("generation_accuracy_unparseable_as_0", "accuracy_unparseable_as_grade_0"),
+                             ("agreement_with_likelihood_grade", "agreement_with_likelihood_grade")):
+            check_same(name, ours, generation[ours], saved_gen[theirs])
+        gen_times = timing_stats(part["generation_seconds"])
+        for key, value in gen_times.items():
+            check_same(name, f"generation timing {key}", value, saved_gen["timing"][key])
+            generation["generation_" + key.replace("_seconds", "_s")] = value
+    elif saved_gen:
+        raise BuildError(f"{name}: generation block present but no images were generated")
+
+    agreement = {}
+    for key, label in (("agreement_with_saved_predictions", "saved"), ("agreement_with_diagnostic_predictions", "diagnostic")):
+        if key in summary:
+            for item, value in compare_reference(name, frame, summary[key]).items():
+                agreement[f"{label}_ref_{item}"] = value
+
+    base = {"4bit": "4-bit", "bf16": "BF16"}[identity["base_precision"]]
+    adapter = identity["adapter"]
+    if adapter is None:
+        model = {"condition": f"zero-shot {base}", "base": base, "adapter": "none"}
+    else:
+        run = Path(adapter["directory"]).parent
+        if path_key(run.parent) in sources:
+            info = training_info(run)
+            if info["adapter_weights_sha256"] != adapter["weights_sha256"] or \
+                    info["adapter_config_sha256"] != adapter["configuration_sha256"]:
+                raise BuildError(f"{name}: scored adapter files differ from {run.name}'s saved adapter")
+            if info["base"] != base:
+                raise BuildError(f"{name}: scored on a {base} base, adapter trained on {info['base']}")
+            model = {**info, "adapter": "yes", "condition": condition_label(info)}
+        else:
+            model = {"condition": "original paper adapter (legacy best_lora)", "base": base, "adapter": "yes",
+                     "scaling_note": "legacy adapter outside the experiment folders; its files are not read here "
+                                     "(identity hashes are in summary.json)"}
+    model["offload_layers"] = int(identity["offload_layers"])
+    precision = identity.get("scoring_precision", "FP16")
+    fallback_for = Path(identity["fallback_for"]).name if identity.get("fallback_for") else ""
+    if (precision == FALLBACK) != bool(fallback_for):
+        raise BuildError(f"{name}: FP32 fallback label and fallback_for disagree")
+    return {"job": name, "folder": folder, "kind": "score", "cohort": identity["cohort"], "frame": frame,
+            "metrics": metrics, "precision": precision, "fallback_for": fallback_for, "model": model,
+            "timing": times, "generation": generation, "agreement": agreement, "summary": summary}
+
+
+def discover_final(final_root: Path, runs_root: Path) -> tuple[list[dict], dict]:
+    """Every finished final_01 job. Returns (scored records, {train run whose FP16 score failed: info})."""
+    history = read_json(final_root / "queue_state.json")
+    last, stage_of = {}, {}
+    for item in history:
+        last[item["job"]], stage_of[item["job"]] = item["outcome"], item["stage"]
+    score_dirs = sorted(p for p in (final_root / "scores").iterdir() if p.is_dir())
+    train_dirs = sorted(p for p in (final_root / "train").iterdir() if p.is_dir())
+    folders = {p.name for p in score_dirs} | {p.name for p in train_dirs}
+    if set(last) != folders:
+        raise BuildError(f"queue_state.json jobs and result folders differ: {sorted(set(last) ^ folders)}")
+    sources = {path_key(runs_root), path_key(final_root / "train")}
+    scores = {p.name: read_score_job(p, sources) for p in score_dirs}
+    records, failures = [], {}
+    for name, record in scores.items():
+        if last[name] != "passed":
+            raise BuildError(f"{name}: last queue outcome is {last[name]!r}")
+        record["stage"] = stage_of[name]
+        records.append(record)
+    for run in train_dirs:
+        name = run.name
+        info = training_info(run)
+        latest = read_json(run / "latest_attempt.json")
+        model = {**info, "adapter": "yes", "condition": condition_label(info), "offload_layers": 0}
+        if (run / "score_result.json").is_file():
+            if last[name] != "passed" or latest["status"] != "passed":
+                raise BuildError(f"{name}: score_result.json exists but the run did not pass")
+            score = read_json(run / "score_result.json")
+            cfg = read_json(run / "pilot_configuration.json")
+            pred_path = run / "aptos_test.predictions.csv"
+            frame = read_predictions(pred_path)
+            if INPUTS[str(pred_path)] != score["predictions_sha256"]:
+                raise BuildError(f"{name}: prediction SHA-256 differs from score_result.json")
+            check(name, "test rows", len(frame), cfg["rows"]["test"])
+            if score["adapter"]["weights_sha256"] != info["adapter_weights_sha256"]:
+                raise BuildError(f"{name}: score_result.json adapter differs from train_result.json")
+            check(name, "score_result.json effective_scaling", score["adapter"]["effective_scaling"],
+                  info["recorded_effective_scaling"])
+            metrics = point_metrics(frame)
+            check_saved_metrics(name, metrics, score["metrics"])
+            records.append({"job": name, "folder": run, "kind": "train", "stage": stage_of[name],
+                            "cohort": f"aptos361_{info['clahe_trained']}", "frame": frame, "metrics": metrics,
+                            "precision": "FP16", "fallback_for": "", "model": model,
+                            "timing": {}, "generation": {}, "agreement": {}})
+            continue
+        # Training finished but the pinned FP16 score failed: the run must have a labelled FP32 fallback.
+        if latest["status"] != "failed" or not last[name].startswith("failed"):
+            raise BuildError(f"{name}: no score_result.json and the run is not recorded as failed")
+        log = Path(latest["path"]) / "score.log"
+        if NONFINITE not in track(log).read_text(encoding="utf-8", errors="replace"):
+            raise BuildError(f"{name}: no score_result.json and {log} shows no non-finite FP16 likelihood")
+        fallbacks = [r for r in scores.values() if r["fallback_for"] == name]
+        if not any(r["cohort"] == f"aptos361_{info['clahe_trained']}" for r in fallbacks):
+            raise BuildError(f"{name}: FP16 score failed and no APTOS FP32 fallback exists")
+        for record in fallbacks:
+            run_record = record["summary"]["training_run"]
+            if run_record["train_result_sha256"] != info["train_result_sha256"]:
+                raise BuildError(f"{record['job']}: fallback was made from a different train_result.json")
+            check_same(record["job"], "fallback validation loss", run_record["validation_loss"], info["best_val_loss"])
+        failures[name] = {**model, "stage": stage_of[name], "fallback_jobs": " ".join(r["job"] for r in fallbacks)}
+    for record in records:
+        record["in_fp16_mean"] = record["precision"] == "FP16"
+        record["boot"] = bootstrap(record["frame"])
+    return records, failures
+
+
+def cross_check_queue_summary(final_root: Path, records: list[dict], failures: dict):
+    """Every row of final_01/summary.csv must equal the recomputed values (no row may be missing)."""
+    saved = pd.read_csv(track(final_root / "summary.csv"))
+    by_job = {r["job"]: r for r in records}
+    if set(saved["job"]) != set(by_job) | set(failures):
+        raise BuildError(f"summary.csv jobs differ from the result folders: "
+                         f"{sorted(set(saved['job']) ^ (set(by_job) | set(failures)))}")
+    for row in saved.to_dict("records"):
+        name = f"summary.csv {row['job']}"
+        if row["job"] in failures:
+            info = failures[row["job"]]
+            if not str(row.get("scoring_status", "")).startswith("FP16 scoring failed"):
+                raise BuildError(f"{name}: expected an FP16 scoring failure row")
+            check_same(name, "best validation loss", info["best_val_loss"], row["best_validation_loss"])
+            check_same(name, "epochs run", info["epochs_run"], row["epochs_run"])
+            if set(str(row["fallback_jobs"]).split()) != set(info["fallback_jobs"].split()):
+                raise BuildError(f"{name}: fallback jobs differ")
+            continue
+        record = by_job[row["job"]]
+        metrics = record["metrics"]
+        predicted = metrics["confusion"].sum(0)
+        check(name, "images", metrics["n"], row["images"])
+        check_same(name, "accuracy", metrics["accuracy"], row["accuracy"])
+        check_same(name, "QWK", metrics["qwk"], row["qwk"])
+        check_same(name, "macro AUC", metrics["macro_auc"], row["macro_auc"])
+        if row["predicted_per_grade"] != " ".join(map(str, predicted)):
+            raise BuildError(f"{name}: predicted_per_grade {row['predicted_per_grade']!r} != {predicted}")
+        if str(row["constant_predictor"]) != str(bool((predicted > 0).sum() == 1)):
+            raise BuildError(f"{name}: constant_predictor differs")
+        if row["scoring_precision"] != record["precision"]:
+            raise BuildError(f"{name}: scoring precision {row['scoring_precision']!r} != {record['precision']!r}")
+        for item in class_rows(metrics["confusion"], metrics["aucs"]):
+            check_same(name, f"sensitivity {item['grade']}", item["sensitivity"], row[f"sensitivity_{item['grade']}"])
+            check_same(name, f"specificity {item['grade']}", item["specificity"], row[f"specificity_{item['grade']}"])
+        if record["kind"] == "score":
+            check_same(name, "median s/image", record["timing"]["likelihood_median_s"], row["median_seconds_per_image"])
+            check_same(name, "p95 s/image", record["timing"]["likelihood_p95_s"], row["p95_seconds_per_image"])
+            gen = record["generation"]
+            check_same(name, "generation median", gen.get("generation_median_s"), row["generation_median_seconds"])
+            check_same(name, "unparseable", gen.get("unparseable"), row["generation_unparseable"])
+            check_same(name, "generation accuracy", gen.get("generation_accuracy_strict"), row["generation_accuracy_strict"])
+            agreement = record["agreement"]
+            check_same(name, "saved-prediction mismatches", agreement.get("saved_ref_grade_mismatches"),
+                       row["saved_prediction_grade_mismatches"])
+            check_same(name, "fallback diagnostic mismatches", agreement.get("diagnostic_ref_grade_mismatches"),
+                       row.get("diagnostic_grade_mismatches"))
+        else:
+            model = record["model"]
+            for ours, theirs in (("best_val_loss", "best_validation_loss"), ("epochs_run", "epochs_run"),
+                                 ("lr", "lr"), ("alpha", "lora_alpha"), ("rank", "rank")):
+                check_same(name, theirs, model[ours], row[theirs])
+
+
+SUMMARY_MD_GROUP = re.compile(
+    r"^\| (lr_study|alpha_study) \| (\d+) \| (\S+) \| ([\d.e-]+) \| ([\d.]+) \| [\d.]+ \| \d+ \| ([^|]+?) \| (\d+)[^|]* \| "
+    r"([\d.]+)(?: (?:±|Â±) ([\d.]+))? \| ([\d.]*) \| ([\d.]+) \| (\d+) \|$", re.M)
+
+
+def cross_check_queue_groups(final_root: Path, lr_summary: pd.DataFrame, alpha_summary: pd.DataFrame):
+    """Group means in final_01/summary.md (rounded there) must match the recomputed group rows."""
+    text = track(final_root / "summary.md").read_text(encoding="utf-8")
+    matches = SUMMARY_MD_GROUP.findall(text)
+    if not matches:
+        raise BuildError("summary.md: no training-variant group rows found")
+    groups = pd.concat([lr_summary.assign(stage="lr_study"), alpha_summary.assign(stage="alpha_study")])
+    groups = groups[groups["source"] == FINAL_SOURCE]
+    if len(matches) != len(groups):
+        raise BuildError(f"summary.md has {len(matches)} group rows, recomputed {len(groups)}")
+    for stage, _, _, lr, alpha, scoring, seeds, acc, sd, qwk_mean, auc_mean, constant in matches:
+        wanted = GROUP_MIXED if "mixed" in scoring else (GROUP_FP16_ONLY if "protocol" in scoring else GROUP_FP16)
+        row = groups[(groups["stage"] == stage) & np.isclose(groups["lr"], float(lr)) &
+                     np.isclose(groups["alpha"], float(alpha)) & (groups["scoring_group"] == wanted)]
+        if len(row) != 1:
+            raise BuildError(f"summary.md group {stage} lr {lr} alpha {alpha} {scoring!r}: no single recomputed row")
+        row = row.iloc[0]
+        label = f"summary.md {stage} lr {lr} alpha {alpha} {wanted}"
+        check(label, "seeds", row["n_runs"], int(seeds))
+        check_same(label, "accuracy mean (pp, rounded)", 100 * row["accuracy_mean"], float(acc), tol=0.005 + 1e-9)
+        if sd:
+            check_same(label, "accuracy SD (pp, rounded)", 100 * row["accuracy_sd"], float(sd), tol=0.005 + 1e-9)
+        if qwk_mean:
+            check_same(label, "QWK mean (rounded)", row["qwk_mean"], float(qwk_mean), tol=5e-5 + 1e-12)
+        check_same(label, "macro AUC mean (rounded)", row["macro_auc_mean"], float(auc_mean), tol=5e-5 + 1e-12)
+        check(label, "constant predictors", row["n_constant_predictor"], int(constant))
+
+
+def metric_columns(metrics: dict, boot: dict) -> dict:
+    predicted = metrics["confusion"].sum(0)
+    row = {"n": metrics["n"], "accuracy": metrics["accuracy"],
+           "accuracy_ci_low": boot["accuracy_ci"][0], "accuracy_ci_high": boot["accuracy_ci"][1],
+           "qwk": metrics["qwk"], "qwk_ci_low": boot["qwk_ci"][0], "qwk_ci_high": boot["qwk_ci"][1],
+           "macro_auc": metrics["macro_auc"],
+           "macro_auc_ci_low": boot["macro_auc_ci"][0], "macro_auc_ci_high": boot["macro_auc_ci"][1],
+           "boot_qwk_undefined": boot["boot_qwk_undefined"], "boot_auc_undefined": boot["boot_auc_undefined"]}
+    row.update({f"auc_g{g}": metrics["aucs"][g] for g in GRADES})
+    row.update({f"n_pred_g{g}": int(predicted[g]) for g in GRADES})
+    row.update({"n_grades_predicted": int((predicted > 0).sum()), "degenerate": bool((predicted > 0).sum() == 1),
+                "grades_never_predicted": ";".join(str(g) for g in GRADES if predicted[g] == 0)})
+    return row
+
+
+MODEL_COLS = ["condition", "base", "offload_layers", "adapter", "source_run", "rank", "lr", "alpha", "lora_dropout",
+              "patience", "effective_scaling", "recorded_effective_scaling", "scaling_note", "clahe_trained",
+              "trainer_seed", "lora_seed"]
+TRAIN_COLS = ["best_epoch", "best_step", "best_val_loss", "epochs_run"]
+TIMING_COLS = ["likelihood_images_timed", "likelihood_mean_s", "likelihood_median_s", "likelihood_p95_s",
+               "likelihood_images_per_second", "model_load_s", "torch_peak_alloc_gib"]
+GENERATION_COLS = ["generation_images", "generation_images_timed", "generation_mean_s", "generation_median_s",
+                   "generation_p95_s", "generation_images_per_second", "prompt_tokens", "unparseable",
+                   "generation_accuracy_strict", "generation_accuracy_unparseable_as_0", "agreement_with_likelihood_grade"]
+AGREEMENT_COLS = [f"{label}_ref_{item}" for label in ("saved", "diagnostic")
+                  for item in ("images", "grade_mismatches", "largest_probability_difference")]
+STRING_COLS = {"condition", "base", "adapter", "source_run", "scaling_note", "clahe_trained", "fallback_for"}
+
+
+def final_row(record: dict, source: str = FINAL_SOURCE) -> dict:
+    model = record["model"]
+    row = {"result_set": "F" if source == FINAL_SOURCE else "A", "source": source, "stage": record["stage"],
+           "job": record["job"], "kind": record["kind"], "cohort": record["cohort"]}
+    row.update({col: model.get(col, "" if col in STRING_COLS else np.nan) for col in MODEL_COLS})
+    row.update({"scoring_precision": record["precision"], "fallback_for": record["fallback_for"],
+                "in_fp16_mean": record["in_fp16_mean"]})
+    row.update(metric_columns(record["metrics"], record["boot"]))
+    row.update({col: model.get(col, np.nan) for col in TRAIN_COLS})
+    for cols, part in ((TIMING_COLS, "timing"), (GENERATION_COLS, "generation"), (AGREEMENT_COLS, "agreement")):
+        row.update({col: record.get(part, {}).get(col, np.nan) for col in cols})
+    return row
+
+
+def study_summary(frame: pd.DataFrame, keys: list[str]) -> pd.DataFrame:
+    """Group rows. Means use FP16-scored runs; a group with an FP32-fallback run gets a second, mixed row."""
+    rows = []
+    for key, group in frame.groupby(keys, sort=False, dropna=False):
+        key = key if isinstance(key, tuple) else (key,)
+        excluded = int((~group["in_fp16_mean"]).sum())
+        variants = [(GROUP_FP16, group)] if not excluded else [(GROUP_FP16_ONLY, group[group["in_fp16_mean"]]),
+                                                                (GROUP_MIXED, group)]
+        for label, members in variants:
+            row = dict(zip(keys, key))
+            row.update({"scoring_group": label, "n_runs": len(members),
+                        "n_fallback_excluded": excluded if label == GROUP_FP16_ONLY else 0,
+                        "n_fallback_included": int((~members["in_fp16_mean"]).sum()),
+                        "n_constant_predictor": int(members["degenerate"].sum()),
+                        "runs_missing_a_grade": int((members["n_grades_predicted"] < 5).sum()),
+                        "n_images": ";".join(str(int(v)) for v in sorted(members["n"].unique()))})
+            metrics = ["accuracy", "qwk", "macro_auc"] + (["best_val_loss"] if members["best_val_loss"].notna().any() else [])
+            for metric in metrics:
+                values = members[metric].dropna()
+                row[f"{metric}_mean"] = values.mean() if len(values) else np.nan
+                row[f"{metric}_sd"] = values.std(ddof=1) if len(values) > 1 else np.nan
+                row[f"{metric}_min"] = values.min() if len(values) else np.nan
+                row[f"{metric}_max"] = values.max() if len(values) else np.nan
+            rows.append(row)
+    return pd.DataFrame(rows)
+
+
+def build_final(args, out: Path, evaluated, messidor_e: dict, written: dict):
+    """Set F: tables from the finished final_01 queue, written to output/final_01 only."""
+    folder = out / "final_01"
+    records, failures = discover_final(args.final_root, args.runs_root)
+    cross_check_queue_summary(args.final_root, records, failures)
+
+    # Reference arm: the existing set A rank-16 CLAHE-on runs (lr 5e-4, alpha 16), same per-run values as Table 1.
+    references = []
+    for run, metrics in evaluated:
+        if run["result_set"] == "A" and run["rank"] == 16 and run["clahe"] == "on":
+            info = training_info(args.runs_root / run["run"])
+            check_same(run["run"], "best validation loss", info["best_val_loss"], run["best_val_loss"])
+            references.append({"job": run["run"], "kind": "train", "stage": "reference", "cohort": "aptos361_on",
+                               "frame": run["frame"], "metrics": metrics, "boot": metrics["boot"],
+                               "precision": run["scoring_precision"], "fallback_for": "", "in_fp16_mean": True,
+                               "model": {**info, "adapter": "yes", "condition": condition_label(info), "offload_layers": 0}})
+    if len(references) != 3:
+        raise BuildError(f"Expected 3 set A rank-16 CLAHE-on reference runs, found {len(references)}")
+
+    per_job = pd.DataFrame([final_row(r) for r in records])
+    stage_order = {s: i for i, s in enumerate(["zero_shot", "benchmark", "original_adapter_audit", "messidor_archived",
+                                               "lr_study", "alpha_study"])}
+    per_job["_order"] = per_job["stage"].map(stage_order).fillna(len(stage_order))
+    per_job = per_job.sort_values(["_order", "cohort", "job"], kind="stable").drop(columns="_order").reset_index(drop=True)
+    write_csv(per_job, folder / "per_job_metrics.csv", written)
+    order = {job: i for i, job in enumerate(per_job["job"])}
+    ordered = sorted(records, key=lambda r: order[r["job"]])
+    cm_rows, cw_rows = [], []
+    for r in ordered:
+        for g in GRADES:
+            cm_rows.append({"stage": r["stage"], "job": r["job"], "cohort": r["cohort"], "condition": r["model"]["condition"],
+                            "scoring_precision": r["precision"], "true_grade": g,
+                            **{f"pred_{p}": int(r["metrics"]["confusion"][g, p]) for p in GRADES}})
+        for item in class_rows(r["metrics"]["confusion"], r["metrics"]["aucs"]):
+            cw_rows.append({"stage": r["stage"], "job": r["job"], "cohort": r["cohort"],
+                            "condition": r["model"]["condition"], "scoring_precision": r["precision"], **item})
+    write_csv(pd.DataFrame(cm_rows), folder / "confusion_matrices_per_job.csv", written)
+    write_csv(pd.DataFrame(cw_rows), folder / "classwise_per_job.csv", written)
+
+    zero = per_job[(per_job["stage"] == "zero_shot") & per_job["cohort"].str.startswith("aptos")].reset_index(drop=True)
+    zero.insert(zero.columns.get_loc("cohort") + 1, "input_clahe", zero["cohort"].str.rsplit("_", n=1).str[1])
+    write_csv(zero, folder / "zero_shot.csv", written)
+
+    study_cols = ["source", "stage", "job", "cohort", "condition", "rank", "lr", "alpha", "effective_scaling",
+                  "recorded_effective_scaling", "scaling_note", "trainer_seed", "lora_seed", "scoring_precision",
+                  "fallback_for", "in_fp16_mean", "n", "accuracy", "accuracy_ci_low", "accuracy_ci_high", "qwk",
+                  "qwk_ci_low", "qwk_ci_high", "macro_auc", "macro_auc_ci_low", "macro_auc_ci_high",
+                  *[f"n_pred_g{g}" for g in GRADES], "n_grades_predicted", "degenerate", "grades_never_predicted",
+                  "best_epoch", "best_step", "best_val_loss", "epochs_run"]
+    reference_rows = pd.DataFrame([final_row(r, REFERENCE_SOURCE) for r in references])
+    aptos = per_job[per_job["cohort"].str.startswith("aptos361")]
+    studies = {}
+    for stage, key in (("lr_study", "lr"), ("alpha_study", "alpha")):
+        rows = pd.concat([reference_rows, aptos[aptos["stage"] == stage]], ignore_index=True)[study_cols]
+        rows = rows.sort_values([key, "trainer_seed"], kind="stable").reset_index(drop=True)
+        keys = ["source", "lr", "alpha", "effective_scaling"]
+        summary = study_summary(rows, keys)
+        studies[stage] = (rows, summary)
+        write_csv(rows, folder / f"{stage}_per_run.csv", written)
+        write_csv(summary, folder / f"{stage}_summary.csv", written)
+    cross_check_queue_groups(args.final_root, studies["lr_study"][1], studies["alpha_study"][1])
+
+    bench_cols = ["stage", "job", "cohort", "condition", "base", "offload_layers", "adapter", "scoring_precision", "n",
+                  "accuracy", "qwk", "macro_auc", *TIMING_COLS, *GENERATION_COLS,
+                  "saved_ref_images", "saved_ref_grade_mismatches", "saved_ref_largest_probability_difference"]
+    bench = per_job[per_job["generation_images"].notna()][bench_cols].reset_index(drop=True)
+    bench.insert(bench.columns.get_loc("generation_median_s") + 1, "generation_to_likelihood_median_ratio",
+                 bench["generation_median_s"] / bench["likelihood_median_s"])
+    write_csv(bench, folder / "inference_benchmark.csv", written)
+    bench_groups = []
+    for (base, adapter), group in bench.groupby(["base", "adapter"], sort=False):
+        row = {"base": base, "adapter": adapter, "n_jobs": len(group), "jobs": ";".join(group["job"])}
+        for col in ("likelihood_median_s", "generation_median_s", "generation_to_likelihood_median_ratio",
+                    "agreement_with_likelihood_grade", "generation_accuracy_strict"):
+            row.update({f"{col}_mean": group[col].mean(), f"{col}_min": group[col].min(), f"{col}_max": group[col].max()})
+        row.update({"unparseable_total": int(group["unparseable"].sum()),
+                    "generation_images_total": int(group["generation_images"].sum())})
+        bench_groups.append(row)
+    bench_groups = pd.DataFrame(bench_groups)
+    write_csv(bench_groups, folder / "inference_benchmark_by_condition.csv", written)
+
+    audit = per_job[per_job["stage"] == "original_adapter_audit"].reset_index(drop=True)
+    if len(audit) != 1:
+        raise BuildError(f"Expected one original adapter audit job, found {len(audit)}")
+    write_csv(audit, folder / "original_adapter_audit.csv", written)
+
+    # Archived Messidor: every final_01 model plus the set E replay (same 1,057 images and labels required).
+    messidor = per_job[per_job["cohort"] == "messidor_archived"].copy()
+    some = next(r for r in records if r["cohort"] == "messidor_archived")["frame"]
+    e_frame = messidor_e["frame"]
+    if sorted(zip(e_frame["image_id"], e_frame["y_true"])) != sorted(zip(some["image_id"], some["y_true"])):
+        raise BuildError("Set E Messidor replay and final_01 Messidor scores cover different images or labels")
+    e_record = {"job": "retraining2_replay/messidor_external", "kind": "score", "stage": "set E replay",
+                "cohort": "messidor_archived", "frame": e_frame, "metrics": messidor_e["metrics"],
+                "boot": messidor_e["boot"], "precision": messidor_e["precision"], "fallback_for": "",
+                "in_fp16_mean": True, "model": {"condition": "Retraining 2 replay (set E, archived run_02)",
+                                                "base": "4-bit", "adapter": "yes", "rank": 16, "clahe_trained": "on"}}
+    messidor = pd.concat([messidor, pd.DataFrame([final_row(e_record, "set E replay")])], ignore_index=True)
+    messidor_cols = ["source", "stage", "job", "condition", "base", "adapter", "rank", "lr", "alpha", "effective_scaling",
+                     "scaling_note", "trainer_seed", "lora_seed", "scoring_precision", "fallback_for", "in_fp16_mean",
+                     "n", "accuracy", "accuracy_ci_low", "accuracy_ci_high", "qwk", "qwk_ci_low", "qwk_ci_high",
+                     "macro_auc", "macro_auc_ci_low", "macro_auc_ci_high", *[f"n_pred_g{g}" for g in GRADES],
+                     "n_grades_predicted", "degenerate", "grades_never_predicted", "likelihood_median_s"]
+    messidor = messidor[messidor_cols]
+    write_csv(messidor, folder / "messidor_all_models_per_run.csv", written)
+    messidor_summary = study_summary(messidor.assign(best_val_loss=np.nan), ["condition"])
+    write_csv(messidor_summary, folder / "messidor_all_models_summary.csv", written)
+
+    write_final_summary(folder, zero, studies, bench, bench_groups, audit, messidor, messidor_summary, failures, written)
+
+
+def write_final_summary(folder, zero, studies, bench, bench_groups, audit, messidor, messidor_summary, failures, written):
+    def ci_pct(row):
+        return f"{100 * row['accuracy']:.2f} [{100 * row['accuracy_ci_low']:.2f}–{100 * row['accuracy_ci_high']:.2f}]"
+
+    def ci(row, metric):
+        return f"{row[metric]:.4f} [{row[f'{metric}_ci_low']:.4f}–{row[f'{metric}_ci_high']:.4f}]"
+
+    def run_table(frame, extra):
+        table = frame[extra].copy()
+        table["accuracy % [95% CI]"] = frame.apply(ci_pct, axis=1)
+        table["QWK [95% CI]"] = frame.apply(lambda r: ci(r, "qwk"), axis=1)
+        table["macro AUC [95% CI]"] = frame.apply(lambda r: ci(r, "macro_auc"), axis=1)
+        table["predicted per grade"] = frame[[f"n_pred_g{g}" for g in GRADES]].astype(int).astype(str).agg(" ".join, axis=1)
+        table["constant"] = frame["degenerate"]
+        return table
+
+    def group_table(summary, extra, val_loss=True):
+        table = summary[extra + ["scoring_group", "n_runs", "n_constant_predictor", "runs_missing_a_grade"]].copy()
+        table["accuracy % (mean ± SD)"] = mean_sd(summary, "accuracy", percent=True)
+        table["QWK (mean ± SD)"] = mean_sd(summary, "qwk")
+        table["macro AUC (mean ± SD)"] = mean_sd(summary, "macro_auc")
+        if val_loss:
+            table["best val loss (mean ± SD)"] = summary.apply(
+                lambda r: f"{r.best_val_loss_mean:.5f}" + ("" if pd.isna(r.best_val_loss_sd) else f" ± {r.best_val_loss_sd:.5f}"),
+                axis=1)
+        return table
+
+    num = {"lr": lambda v: f"{v:g}", "alpha": lambda v: f"{v:g}", "effective_scaling": lambda v: f"{v:g}",
+           "recorded_effective_scaling": lambda v: f"{v:g}", "trainer_seed": lambda v: str(int(v)),
+           "lora_seed": lambda v: str(int(v)), "rank": lambda v: str(int(v)), "n": lambda v: str(int(v)),
+           "best_val_loss": lambda v: f"{v:.5f}", "epochs_run": lambda v: f"{v:g}", "best_epoch": lambda v: f"{v:g}"}
+    lines = ["# Final queue final_01: summary", "",
+             "Generated by `build_paper_tables.py` (set F) from the saved predictions, timing and training records in "
+             "`D:\\Afterimage_Experiments\\final_runs\\final_01`. Every metric is recomputed from the prediction files "
+             "and checked against the job's `summary.json` / `score_result.json` and against the queue's own "
+             "`summary.csv` and `summary.md` (the build stops on any disagreement). Accuracy in percent; brackets are "
+             "per-run 95% bootstrap CIs; ± is the sample SD across runs.", ""]
+
+    lines += ["## Table F1. Zero-shot (no adapter), APTOS duplicate-excluded test, n = 361",
+              "Likelihood (five-answer) scorer, FP16. The BF16 base is loaded as FP16 weights with 16 layers offloaded "
+              "to CPU, as in the BF16 control's scoring. Generation: greedy, 24 new tokens, every image.", "",
+              md_table(run_table(zero, ["condition", "input_clahe"]).assign(
+                  **{"generation acc %": zero["generation_accuracy_strict"].map(pct),
+                     "unparseable": zero["unparseable"].astype(int).astype(str) + " of " +
+                     zero["generation_images"].astype(int).astype(str)})), "",
+              "The zero-shot score on the archived Messidor export is in Table F6.", ""]
+
+    for stage, title, key in (("lr_study", "F2. Learning-rate study", "lr"), ("alpha_study", "F3. LoRA alpha study", "alpha")):
+        rows, summary = studies[stage]
+        lines += [f"## Table {title} (rank 16, CLAHE on, 4-bit base, APTOS n = 361)",
+                  "Three seed pairs (42/3407, 43/3408, 44/3409) per value. The lr 5e-4 / alpha 16 rows are the existing "
+                  "set A rank-16 CLAHE-on runs (same per-run values as Table 1). `constant` = the run predicts a single "
+                  "grade. Best val loss = validation loss of the saved (best) checkpoint.", "",
+                  md_table(group_table(summary, ["source", "lr", "alpha", "effective_scaling"]), num), "",
+                  md_table(run_table(rows, ["source", key, "effective_scaling", "trainer_seed", "lora_seed",
+                                            "scoring_precision", "best_epoch", "epochs_run", "best_val_loss"]), num), ""]
+    alpha_rows = studies["alpha_study"][0]
+    noted = alpha_rows[alpha_rows["scaling_note"] != ""]
+    lines += ["**Scaling record error.** `train_result.json` (and `score_result.json`) store `effective_scaling` as "
+              "16/rank whatever the alpha, so they record 1.0 for every rank-16 run. The true LoRA scaling is alpha/r "
+              "from each adapter's `adapter_config.json` (no rsLoRA): "
+              + ", ".join(f"alpha {a:g} → {s:g}" for a, s in
+                          sorted(set(zip(noted["alpha"], noted["effective_scaling"])))) +
+              f". The `effective_scaling` column above uses adapter_config.json; {len(noted)} runs carry the note.", ""]
+    for name, info in failures.items():
+        lines += [f"**FP16 scoring failure.** `{name}` (alpha {info['alpha']:g}, seeds {info['trainer_seed']}/"
+                  f"{info['lora_seed']}): the pinned FP16 score stopped with a non-finite likelihood (FP16 overflow). "
+                  f"It is scored by the labelled FP32 fallback ({info['fallback_jobs']}), flagged "
+                  f"`scoring_precision = {FALLBACK}`, left out of the FP16 group rows and included only in the rows "
+                  f"labelled “{GROUP_MIXED}”.", ""]
+
+    bench_md = bench[["stage", "job", "base", "adapter", "n", "likelihood_median_s", "likelihood_p95_s",
+                      "generation_median_s", "generation_to_likelihood_median_ratio", "agreement_with_likelihood_grade",
+                      "generation_accuracy_strict", "accuracy", "unparseable", "saved_ref_grade_mismatches"]].copy()
+    bench_md["agreement_with_likelihood_grade"] = bench_md["agreement_with_likelihood_grade"].map(pct)
+    bench_md["generation_accuracy_strict"] = bench_md["generation_accuracy_strict"].map(pct)
+    bench_md["accuracy"] = bench_md["accuracy"].map(pct)
+    sec = lambda v: f"{v:.3f}"  # noqa: E731
+    lines += ["## Table F4. Inference benchmark: likelihood scorer vs text generation",
+              "Seconds per image on one RTX 5070 Ti, excluding model load and the first three images. The likelihood "
+              "scorer runs five forward passes per image; generation is greedy with up to 24 new tokens. "
+              "`accuracy` = likelihood-scorer accuracy; generation accuracy counts unparseable outputs as wrong; "
+              "agreement = generated grade equals the likelihood grade. `saved_ref_grade_mismatches` compares the "
+              "re-scored grades with the run's saved predictions (benchmark jobs only).", "",
+              md_table(bench_md, {"n": lambda v: str(int(v)), "likelihood_median_s": sec, "likelihood_p95_s": sec,
+                                  "generation_median_s": sec, "generation_to_likelihood_median_ratio": lambda v: f"{v:.2f}",
+                                  "unparseable": lambda v: str(int(v)), "saved_ref_grade_mismatches": lambda v: str(int(v))}), "",
+              md_table(bench_groups[["base", "adapter", "n_jobs", "likelihood_median_s_mean", "generation_median_s_mean",
+                                     "generation_to_likelihood_median_ratio_mean", "agreement_with_likelihood_grade_mean",
+                                     "unparseable_total", "generation_images_total"]],
+                       {"likelihood_median_s_mean": sec, "generation_median_s_mean": sec,
+                        "generation_to_likelihood_median_ratio_mean": lambda v: f"{v:.2f}",
+                        "agreement_with_likelihood_grade_mean": pct}), ""]
+
+    a = audit.iloc[0]
+    lines += ["## Table F5. Original paper adapter audit (original split test, n = 367)",
+              "The original paper's saved adapter on the frozen 367-image original-split test list, 4-bit base, FP16 "
+              "likelihood scoring, plus generation on every image.", "",
+              md_table(run_table(audit, ["condition"]).assign(
+                  **{"generation acc %": audit["generation_accuracy_strict"].map(pct),
+                     "agreement with likelihood %": audit["agreement_with_likelihood_grade"].map(pct),
+                     "unparseable": f"{int(a['unparseable'])} of {int(a['generation_images'])}"})), "",
+              "The original split's test images overlap its training images (see the main SUMMARY.md caveats).", ""]
+
+    lines += ["## Table F6. Archived Messidor export (n = 1,057), all models",
+              "Archived 1,057-image Messidor export, not an independently verified cohort. FP16 likelihood scoring "
+              f"except the row flagged `{FALLBACK}`. The set E replay row is the same frame as Table 8.", "",
+              md_table(group_table(messidor_summary, ["condition"], val_loss=False)), "",
+              md_table(run_table(messidor, ["condition", "trainer_seed", "scoring_precision"]), num), ""]
+
+    lines += ["## Notes",
+              "- The benchmark jobs re-score existing set A/C adapters; their likelihood grades match the saved "
+              "set A/C predictions exactly (`saved_ref_grade_mismatches`).",
+              "- Timing medians come from `timing.csv` and exclude the first three images, as in the scorer; "
+              "they are not comparable with the upper-bound per-image times in Table 10.",
+              "- Constant predictors and runs that never predict some grades are kept in every table and mean.",
+              "- Full columns (per-grade AUCs, CIs, timing, agreement) are in the CSV files in this folder.", ""]
+    path = folder / "SUMMARY.md"
+    path.write_bytes("\n".join(lines).encode("utf-8"))
+    written[str(path)] = len(lines)
+
+
 # --------------------------------------------------------------------------- output
 
 def write_csv(frame: pd.DataFrame, path: Path, written: dict):
@@ -806,6 +1487,10 @@ def build(args) -> dict:
               out / "split_overlap_facts.csv", written)
     write_summary(out, summaries, rank, clahe_pairs, original_pairs, bf16, groups, m_row, m_cm, m_cw, mild, eff_summary,
                   facts, written)
+    if args.final_root is not None:
+        messidor_e = {"frame": messidor, "metrics": m_metrics, "boot": m_boot,
+                      "precision": messidor_saved["summary"]["evaluation_precision"]}
+        build_final(args, out, evaluated, messidor_e, written)
     return written
 
 
@@ -932,6 +1617,10 @@ def main(argv=None):
     parser.add_argument("--reference-root", type=Path, default=DEFAULT_REFERENCE)
     parser.add_argument("--datasets-root", type=Path, default=DEFAULT_DATASETS)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument("--final-root", type=Path, default=DEFAULT_FINAL,
+                        help="finished final_01 queue folder (set F, written to output/final_01)")
+    parser.add_argument("--skip-final", dest="final_root", action="store_const", const=None,
+                        help="build sets A-E only")
     args = parser.parse_args(argv)
     args.output_dir = args.output_dir.resolve()
     if not str(args.output_dir).lower().startswith(str(HERE).lower()):
