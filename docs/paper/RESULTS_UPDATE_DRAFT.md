@@ -1,64 +1,42 @@
-# Results update to Dr. Noor (draft)
-
-**Subject:** Results update: Qwen3-VL and RetiZero paper revision
+Subject: Revision results update (Qwen3-VL and RetiZero)
 
 Dear Dr. Noor,
 
-Here is a short update on the revision experiments.
+I hope you are well. Below is an update on the revision experiments. I have attached two spreadsheets: Afterimage_results.xlsx has all the numbers, each with the log or evaluation file it came from, and EA_review_checklist.xlsx tracks each reviewer point. I mention the sheet names below so you can find the numbers.
 
-**Summary.** The final Qwen runs are finished: zero-shot baselines, a learning-rate study, an alpha study, timing, and scoring on the archived Messidor cohort, all on the 361-image test set.
+1. Clean split vs original split (sheet Data_split)
 
-I propose the clean 361-image suite as the main result. In the original 367 split, 19 test images have an exact copy outside test (17 in train, 2 in validation), 3 with a different grade. The 361 is the 367 minus those 3 and 3 test-test duplicates. Please confirm. Method and script are documented and can be shared.
+While checking the data I found that the original split was not fully clean. 19 of the 367 test images have an exact copy outside the test set (17 in train, 2 in validation), and 3 of those copies have a different grade. I rebuilt the split so the test set has no overlap: 3 conflicting images and 3 test-test duplicates were removed, which gives 361 test images (2,786 train, 357 validation). The check compares the image files byte by byte. All new results below are on the 361 clean images, and I would like to use this as the main result, with the original 367 result kept as a historical reference. Could you confirm this?
 
-At the learning rate used so far (5e-4) the three-seed mean is 69.71 ± 13.46%, because some runs are unstable. At 1e-4 and 2e-4 the results are higher and stable (74.98 ± 2.08% and 78.12 ± 2.22%, no collapsed runs). RetiZero retraining on the same 361 images has not started; it needs the official pretrained checkpoint.
+2. Qwen3-VL (sheets Qwen_summary and Qwen_runs)
 
-| Item | Accuracy | Other |
-|---|---|---|
-| Zero-shot, 4-bit, CLAHE on / off | 46.54% / 54.57% | 0.712 / 0.718 s per image |
-| Zero-shot, BF16, CLAHE on | 52.63% | 1.344 s per image |
-| Fine-tuned rank 16, 5e-4 (3 seeds) | 69.71 ± 13.46% | QWK 0.6701 |
-| Fine-tuned rank 16, 2e-4 (3 seeds) | 78.12 ± 2.22% | QWK 0.8939 |
-| Fine-tuned rank 16, 1e-4 (3 seeds) | 74.98 ± 2.08% | QWK 0.8795 |
-| Fine-tuned, timing benchmark | n/a | 0.852 to 0.901 s per image (4-bit); 1.348 s (BF16) |
-| Alpha 8, 5e-4 (3 seeds) | 51.89 ± 37.75% | one run predicts a single grade |
-| Alpha 32, 5e-4 (2 seeds, FP16) | 29.64 ± 30.16% | third seed overflowed in FP16; scored in FP32 (all three: 36.47 ± 24.39%, mixed precision) |
-| Original paper adapter, 367 images | 81.47% | QWK 0.9286 |
-| RetiZero saved checkpoint, 367 / 361 images | 82.29% / 82.55% | not leak-free (trained on the original split) |
-| Archived Messidor (1,057 images) | 43.52% to 54.12% | zero-shot 45.98% |
+- Without fine-tuning (zero-shot): 46.54% with CLAHE and 54.57% without, using the 4-bit model.
+- Rank 16, learning rate 5e-4 (the rate used so far), 3 seeds: 69.71% ± 13.46. Some seeds collapse to predicting one or two grades, which is where the large spread comes from.
+- The same setup at 2e-4 gives 78.12% ± 2.22 and at 1e-4 gives 74.98% ± 2.08, with no collapsed runs.
+- The alpha runs at 5e-4 were unstable too (3 of 6 predict one grade), so they do not answer the rank question (S6) yet.
 
-**Reviewer points.**
-- S6: the alpha runs do not answer it. Of six, three predict one grade for every image and one more reaches only 50.97%. Rank with alpha/r fixed is still open.
-- S7: the no-adapter baseline is done and sits well below the fine-tuned models; the BF16 base is done too.
-- S8: the learning-rate runs give the tuning evidence.
-- S14: the efficiency table is being computed from the saved run records. Parameter counts are done.
+3. RetiZero (sheets RetiZero_summary and RetiZero_runs)
 
-**Decisions I have made, for your correction.** Main results stay at 5e-4, with 1e-4 and 2e-4 reported as tuning and stability evidence. CLAHE on and off are both reported. Messidor-2 source verification is in progress.
+I retrained RetiZero from the official pretrained checkpoint on the same clean split, 3 seeds:
+- Clean split: 79.04% ± 1.69
+- Clean split with CLAHE: 79.32% ± 1.53, so CLAHE makes no clear difference for RetiZero either
+- Original split: 80.11% to 81.47%, close to our earlier 82.29%
 
-**Questions.**
-1. Should I repeat the full grid (ranks 8, 16, 32, CLAHE on and off, three seeds; about 20 GPU-hours) at 1e-4 or 2e-4, or keep 5e-4?
-2. Do you agree that the clean 361-image result is the main result and the original 367-image result is historical reference only?
-3. For S6, should I run rank with alpha equal to rank, or state it as a limitation?
-4. Who holds the raw Messidor-2 images, grades and eye pairing?
+4. Comparison (sheets Head_to_head and Efficiency)
 
-**Next steps.** I will download the official RetiZero checkpoint, repeat its pilot, then train the three seeds, and finish the efficiency table. A repeat Qwen grid starts only after your answer to question 1.
+On the same 361 images RetiZero (79.04%) is close to Qwen at 2e-4 (78.12%) and well above Qwen at 5e-4 (69.71%). I still need to run a paired statistical test. RetiZero is also much faster: about 16 ms per image against about 0.86 s for Qwen.
+
+5. Messidor (sheet Messidor)
+
+Both models drop on the archived Messidor set of 1,057 images (Qwen about 48 to 50%, RetiZero 40.46% ± 7.33). The label distribution of that archive does not match the published adjudicated Messidor-2 grades (Krause et al.), so I am not confident in those labels. I plan to rescore against the adjudicated grades, which are available on Kaggle.
+
+Questions
+1. Do you agree that the clean 361 result is the main result?
+2. Should I repeat the full Qwen grid at a lower learning rate (about 20 GPU hours), or keep 5e-4 and report the lower rates as tuning evidence?
+3. For S6, should I run rank with alpha/r fixed, or state it as a limitation?
+4. Is it fine to use the adjudicated Messidor-2 grades as the reference?
+
+Next I will do the paired comparison, finish the efficiency table, and the remaining analyses (class counts, misclassified examples, adjacent-grade errors).
 
 Kind regards,
 Mohammad Taha
-
----
-
-## Sources
-
-Reviewer numbering follows `REVIEWER_CHECKLIST.md`, one higher than your email from your item 5.
-
-| Number | File |
-|---|---|
-| Zero-shot accuracy and timing; benchmark timing; original adapter 81.47% / 0.9286; Messidor range and zero-shot; alpha means; FP16 overflow and FP32 fallback | `D:\Afterimage_Experiments\final_runs\final_01\summary.md` |
-| 1e-4: 74.98 ± 2.08, 2e-4: 78.12 ± 2.22, QWK means | same file, "Training variants" table |
-| 5e-4: 69.71 ± 13.46, QWK 0.6701 | `finetuning/paper_tables/output/SUMMARY.md`; also `docs/paper/DELIVERABLES_CHECKLIST.md` (section B) |
-| Alpha 32 seed 42 at 50.97% | `summary.md`, alpha_study row |
-| Decisions, 20 GPU-hours, RetiZero waiting for checkpoint | `docs/paper/REMAINING_WORK.md` (phases 1 to 3) |
-| 19 of 367 test images have an exact copy outside test (17 train, 2 validation); 3 with a different grade; 361 = 367 − 3 − 3; method and script | `docs/paper/HEADLINE_VERIFICATION.md` (Verdict; sections (a), (b); Verification method) |
-| RetiZero 82.29% (367) | `finetuning/RetiZero/README.md` (Status) |
-| RetiZero 82.55% (361), not leak-free | `finetuning/RetiZero/REPRODUCTION_PLAN.md` (lines 11 and 71) |
-| Parameter counts, S14 status | `DELIVERABLES_CHECKLIST.md` (section D) |

@@ -1,95 +1,118 @@
 # Remaining work and phases
 
-Written 16 November 2026, after the Qwen queue `final_01` finished. This is the ordered view of what is left. The full item-by-item list, including finished items, is [DELIVERABLES_CHECKLIST.md](DELIVERABLES_CHECKLIST.md).
+Updated 17 November 2026. This is the ordered view of what is done and what is left. The item-by-item list is [DELIVERABLES_CHECKLIST.md](DELIVERABLES_CHECKLIST.md) (not yet refreshed for 17 November; see phase 7).
 
 ## Where things stand
 
-- **Qwen queue (`D:\Afterimage_Experiments\final_runs\final_01`):** 40 of 41 jobs finished in 22.2 hours. Zero-shot, the timing benchmark, the audit of the original paper adapter, archived Messidor scoring, the learning-rate study and the alpha study are done.
-- **One run could not be scored with the standard scorer:** rank 16, alpha 32, seed 43. Its arithmetic overflows in half precision at the third language layer. It is now scored with a labelled FP32 fallback and is a collapsed run (every image predicted grade 0).
-- **RetiZero:** code, tests, pilot and the replay of the saved checkpoint are done. No training run exists yet; all of them wait for the official pretrained checkpoint.
-- **Nothing since commit `d326be1` is committed**, and nothing is pushed.
+- **Qwen:** the final queue `D:\Afterimage_Experiments\final_runs\final_01` is finished (41 of 42 jobs scored with the FP16 protocol; one run scored with a labelled FP32 fallback after an FP16 overflow). Its results are in the paper tables (`finetuning/paper_tables/output/final_01/`).
+- **RetiZero:** trained from the official pretrained checkpoint. All 18 jobs of `D:\Afterimage_Experiments\retizero_runs\retizero_01` are done: replay, original split and clean split (three seeds each), CLAHE (three seeds), timing, and archived Messidor. Results: [RESULTS_RETIZERO.md](../../finetuning/RetiZero/RESULTS_RETIZERO.md).
+- **Efficiency:** tables built from saved records, with power and energy now recorded for the RetiZero runs (`finetuning/paper_tables/output/efficiency/`).
+- **Headline set:** verified from the image files ([HEADLINE_VERIFICATION.md](HEADLINE_VERIFICATION.md)).
+- **Messidor:** no raw Messidor-2 data on this PC ([MESSIDOR_SOURCES_FOUND.md](MESSIDOR_SOURCES_FOUND.md)).
+- **Git:** everything up to commit `db6901a` is committed locally. Not pushed. `03_final_runs.ipynb` holds uncommitted run outputs only.
 
-## Phase 0. Close out the finished Qwen queue
+## Key numbers so far (361 clean test images)
 
-- [x] Alpha 32, seed 43: scored with the FP32 fallback (`score_fp32_fallback.py`), labelled as such in the summary, with its archived Messidor job. It predicts grade 0 for every image: 50.14% on APTOS (QWK 0.0), 44.28% on Messidor. It is a collapsed run. Of the six alpha runs at 5e-4, three predict a single grade (alpha 8 seed 44; alpha 32 seeds 43 and 44), one predicts only grades 0 and 1 (alpha 32 seed 42, 50.97%), and two are healthy (alpha 8 seeds 42 and 43).
-- [x] Overflow recorded as a finding in `final_01\summary.md` ("FP16 scoring failures"), with the diagnosis in `.verification/final_runs/`.
-- [ ] Known record error to mention in the methods audit: `train_result.json` stores `effective_scaling` as 16 / rank (the pinned worker assumes alpha 16), so it reads 1.0 for the alpha 8 and alpha 32 runs. The adapters themselves were built with the right alpha (`adapter_constructor_arguments.json`, `adapter_config.json`).
-- [ ] Read `final_01` into `finetuning/paper_tables/build_paper_tables.py` (zero-shot, learning-rate study, alpha study, benchmark, Messidor, original-adapter audit).
-- [ ] Commit the work since `d326be1` in small groups: restructure, final-runs queue, RetiZero folder, paper documents. Local only.
-- [ ] Remove the leftover folder `D:\Afterimage_Experiments\retizero_runs\retizero_01__dev_01` if it is still there (2.3 GB).
+| Model | Accuracy | Notes |
+| --- | --- | --- |
+| Qwen zero-shot, 4-bit, CLAHE on / off | 46.54% / 54.57% | BF16 CLAHE on: 52.63% |
+| Qwen r16 CLAHE on, lr 5e-4 (3 seeds) | 69.71 ± 13.46% | collapsed runs |
+| Qwen r16 CLAHE on, lr 2e-4 / 1e-4 (3 seeds) | 78.12 ± 2.22% / 74.98 ± 2.08% | no collapse |
+| RetiZero, clean split (3 seeds) | 79.04 ± 1.69% | |
+| RetiZero, clean split with CLAHE (3 seeds) | 79.32% (mean) | no consistent CLAHE effect |
+| RetiZero, original split (3 seeds) | 80.11–81.47% | old checkpoint: 82.29% on 367 |
+| Archived Messidor (1,057) | Qwen about 43–54%, RetiZero 32–50% | weak transfer for both |
+| Time per image | Qwen 0.85–0.90 s, RetiZero about 16 ms | batch size 1 |
 
-## Phase 1. Decisions and the update to Dr. Noor
+## Phase 0. Close out the Qwen queue — done
 
-Nothing in phases 2 to 4 should start before the first three are answered.
+- [x] Alpha 32, seed 43: FP16 overflow at `language_model.layers.2.mlp.down_proj`; scored with the labelled FP32 fallback (`score_fp32_fallback.py`): predicts grade 0 for every image (50.14% APTOS, 44.28% Messidor). Of the six alpha runs at 5e-4, three predict one grade, one predicts only grades 0 and 1 (50.97%), two are healthy (74.52%, 72.85%).
+- [x] Overflow recorded in `final_01\summary.md` and `.verification/final_runs/`.
+- [x] `final_01` read into `build_paper_tables.py` (set F, tables F1–F6).
+- [x] `effective_scaling` record error handled: `train_result.json` stores 16/rank, so alpha 8 and 32 runs read 1.0; the tables take alpha/r from `adapter_config.json`. Still to state in the methods audit (phase 6).
+- [x] Work committed in small local commits.
+- [x] Leftover folder `retizero_01__dev_01` removed.
 
-- [ ] **Learning rate for the main results.** At 5e-4 the three seeds gave 69.71 ± 13.46% with collapsed runs. At 2e-4 they gave 78.12 ± 2.22% and at 1e-4 74.98 ± 2.08%, with no collapse. Validation loss does not separate 1e-4 from 2e-4. Decide whether to repeat the main grid at a lower rate, and at which one.
-- [ ] **Headline result set.** Clean 361-image suite as the main result; the original 367-image result as historical reference only.
-- [ ] **CLAHE position.** Zero-shot is better with CLAHE off (54.57% against 46.54%), and the earlier fine-tuned runs showed no CLAHE benefit.
-- [ ] **RetiZero batch size.** 128 images per step as in the original notebook (my recommendation) or 8 as in the earlier draft script.
-- [ ] **Efficiency measurement scope** (fill the gaps, or repeat every run).
-- [ ] **Messidor sources:** who holds the raw images, the grades and the eye pairing.
-- [ ] Send the results update to Dr. Noor (Gmail address; she leaves in December).
+## Phase 1. Decisions
 
-## Phase 2. Qwen repeat runs (only if phase 1 adopts a lower learning rate)
+- [x] **Learning rate:** main results stay at 5e-4. The 1e-4 and 2e-4 runs are reported as tuning and stability evidence. A lower-rate grid can still be run if Dr. Noor asks (phase 2); choose its rate on validation loss, not test accuracy.
+- [x] **CLAHE:** report both on and off.
+- [x] **RetiZero batch size:** 128 per optimizer step, processed 32 at a time (original notebook).
+- [x] **Efficiency scope:** fill the gaps from saved records; rerun only what cannot be derived (see phase 5).
+- [x] **Headline set:** clean 361-image suite proposed as main result, verified. Correct wording: 19 of the 367 original test images have an exact copy outside test (17 train, 2 validation), 3 with a different grade; 361 = 367 − those 3 − 3 test–test duplicates. Waiting for Dr. Noor's confirmation.
+- [ ] **Messidor sources:** you obtain raw Messidor-2 (ADCIS registration) and the adjudicated grades (Kaggle account). See phase 4.
+- [ ] **Send the results update** to Dr. Noor ([RESULTS_UPDATE_DRAFT.md](RESULTS_UPDATE_DRAFT.md)). Before sending: add the RetiZero results (79.04 ± 1.69%, CLAHE, Messidor) — the draft predates them.
 
-- [ ] Main grid at the chosen rate: rank 8, 16 and 32, CLAHE on and off, three seeds (section 8 of `03_final_runs.ipynb`, about 20 hours).
-- [ ] BF16 base with CLAHE off, three seeds (only if CLAHE off becomes the headline; its worker is not built).
-- [ ] Score and time the new adapters on the 361 test images and on archived Messidor.
-- [ ] Rank with alpha/r held fixed at the chosen rate, or a written limitation. The alpha runs at 5e-4 collapsed, so they do not answer S6.
+## Phase 2. Qwen repeat runs (only if Dr. Noor asks for a lower learning rate)
 
-## Phase 3. RetiZero
+- [ ] Main grid at the chosen rate: rank 8, 16, 32 × CLAHE on/off × three seeds (section 8 of `03_final_runs.ipynb`, about 20 hours).
+- [ ] BF16 base with CLAHE off, three seeds (worker not built; only if CLAHE off becomes the headline).
+- [ ] Score and time the new adapters on the 361 images and archived Messidor.
+- [ ] S6 (rank with alpha/r fixed): run at the chosen rate, or write it as a limitation — the 5e-4 alpha runs do not answer it.
 
-- [ ] Download the official pretrained `RetiZero.pth` to `D:\Afterimage_Experiments\assets`, record source, date, size and SHA-256, and paste the hash into Setup of `02_retizero_runs.ipynb`.
-- [ ] Repeat the pilot with the pretrained checkpoint (new `pilot_tag`).
-- [ ] Build the 224-pixel CLAHE dataset and the 224-pixel archived Messidor build.
-- [ ] Run the full queue: 16 jobs waiting (original split, clean split, CLAHE, timing, Messidor), three seeds each.
-- [ ] Record training time, memory and utilization for the efficiency table.
+## Phase 3. RetiZero — done
+
+- [x] Official pretrained `RetiZero.pth` downloaded (SHA-256 `7d06d294…601ede`, source in `RetiZero.pth.source.txt`), hash pinned in the notebook.
+- [x] Readiness check ([READINESS_CHECK.md](../../finetuning/RetiZero/READINESS_CHECK.md)); non-finite FP16 loss now skips the step (counted), as the original did.
+- [x] Pilot `pilot_02` passed with pretrained weights.
+- [x] 224-pixel CLAHE APTOS and 224-pixel archived Messidor datasets built (`finetuning/RetiZero/data/build_retizero_datasets.py`).
+- [x] All 18 jobs: original split, clean split, CLAHE, timing, archived Messidor. Zero skipped steps from non-finite loss.
+- [x] Power logged every 5 s; energy per job in `retizero_01\energy_per_job.csv` (whole-card power, includes about 20 W idle).
+- [ ] RetiZero results into `build_paper_tables.py` (new set; the efficiency tables already read the RetiZero folder but should be rebuilt to include the full runs).
+- [ ] RetiZero on the verified Messidor cohort (after phase 4).
+- [ ] Optional: export a new RetiZero checkpoint in the app's format; Grad-CAM (open questions in the plan).
 
 ## Phase 4. External evaluation on verified Messidor
 
-- [ ] Locate and verify the raw Messidor-2 images, grades and eye pairing.
+- [ ] You: download raw Messidor-2 images and eye pairing (ADCIS) and the adjudicated grades (Kaggle), onto D:.
+- [ ] Match them to the archived 1,057 images; document how the 1,057 were chosen.
 - [ ] Reconcile the four duplicate pairs with different patient IDs.
-- [ ] Freeze the verified cohort and build it at 512 pixels (CLAHE on and off) and 224 pixels.
+- [ ] Freeze the verified cohort; build at 512 pixels (CLAHE on and off) and 224 pixels (direct raw → 224, removing the current raw → 512 → 224 caveat).
 - [ ] Score the chosen Qwen models and RetiZero on it; Mild-versus-Normal analysis.
 
 ## Phase 5. Analysis and tables
 
-- [ ] Paired comparison of Qwen and RetiZero on the same 361 images.
-- [ ] Final efficiency table for both models (S14), with telemetry summed over all attempts of a run.
+- [ ] **Paired comparison** Qwen vs RetiZero on the same 361 images (paired bootstrap and McNemar). Inputs now exist for both models.
+- [ ] **Efficiency, remaining gaps** (from `output/efficiency/GAPS.md`):
+  - [ ] Rebuild the efficiency tables with the full RetiZero training runs.
+  - [ ] Short scoring-only timing job for the 7 Qwen configurations without warm per-image timing (no retraining).
+  - [ ] Qwen power/energy: not recorded in past runs; measure during the timing job, or state as a limitation.
+  - [ ] Final Qwen-vs-RetiZero efficiency table (S14).
 - [ ] Misclassified-image lists and exported examples (S11).
 - [ ] Adjacent-grade versus distant-grade error table (S13).
-- [ ] Class counts per split, before and after augmentation (S9).
+- [ ] Class counts per split, before and after augmentation, for both models (S9).
 - [ ] Calibration analysis for the headline models.
-- [ ] Near-duplicate check across splits.
+- [ ] Near-duplicate check across splits (approximate count is in HEADLINE_VERIFICATION.md section f; decide whether to report it).
 - [ ] Excel workbook of the tables for Dr. Noor.
 
 ## Phase 6. Manuscript
 
-- [ ] Reviewer points G1 to G3 and S1 to S14 answered in the text (list in the deliverables checklist, section G).
-- [ ] Limitations: seed variance and collapsed runs, the half-precision overflow, duplicate overlap in the original split, mixed scoring precision, archived Messidor cohort.
-- [ ] Methods text matches the code; every number traced to a file under `finetuning/paper_tables/output/`.
+- [ ] Reviewer points G1–G3 and S1–S14 answered in the text (deliverables checklist, section G).
+- [ ] Methods: clean split and how 361 arises; scorer; checkpoint selection (Qwen by validation loss, RetiZero by validation accuracy); preprocessing (Qwen 512 with CLAHE, RetiZero 224; CLAHE tile size differs at 224).
+- [ ] Limitations: seed variance and collapsed runs at 5e-4; the FP16 overflow and FP32 fallback; the `effective_scaling` record error; duplicate overlap in the original split; mixed scoring precision; archived Messidor cohort (processed archive, raw → 512 → 224 for RetiZero); energy is whole-card power.
+- [ ] S9 now has evidence for both models: CLAHE shows no consistent benefit for RetiZero either.
+- [ ] Every number traced to a file under `finetuning/paper_tables/output/`.
 - [ ] Target journal, format, data and code availability statements.
 
 ## Phase 7. Reproducibility and housekeeping
 
-- [ ] Back up `D:\Afterimage_Experiments\runs`, `final_runs` and `retizero_runs`. No second copy exists.
+- [ ] Refresh `DELIVERABLES_CHECKLIST.md` and `finetuning/RetiZero/README.md` status for 17 November.
+- [ ] Back up `D:\Afterimage_Experiments\{runs,final_runs,retizero_runs,datasets,assets}`. No second copy exists.
 - [ ] Commit a snapshot of `D:\Afterimage_Experiments\code` with hashes.
 - [ ] Remove the read dependency on the C: copy for new 4-bit launches.
-- [ ] Remove pilot folders; refresh stale documents.
+- [ ] Remove pilot folders when no longer needed; refresh stale documents (`PAPER_TRAINING_CHECKLIST.md`, `RUN_CHECKLIST.md`).
 - [ ] Final table rebuild from a clean checkout.
 - [ ] Push to the shared repository when you approve it.
 
 ## Dependencies in one view
 
-| Phase | Needs | GPU time |
-| --- | --- | --- |
-| 0 | Nothing | Under 1 hour |
-| 1 | You and Dr. Noor | None |
-| 2 | Phase 1 learning-rate decision | About 20 hours, more with the BF16 control |
-| 3 | The pretrained checkpoint | Not measured for full runs; one epoch takes about 25 s before validation |
-| 4 | The Messidor sources | Scoring only |
-| 5 | Phases 2 and 3 for the paired comparison; the rest can start now | None |
-| 6 | Phases 1 to 5 | None |
-| 7 | Can run alongside any phase | None |
-
-Phases 2 and 3 share one GPU and cannot overlap. Phase 3 does not depend on the phase 1 decisions except the batch size, so it can start as soon as the checkpoint is on the PC.
+| Phase | Status | Needs | GPU time |
+| --- | --- | --- | --- |
+| 0 | Done | — | — |
+| 1 | Two items open | You and Dr. Noor | None |
+| 2 | Optional | Dr. Noor asking for a lower rate | About 20 hours |
+| 3 | Done except tables | — | — |
+| 4 | Blocked | Raw Messidor-2 and grades | Scoring only |
+| 5 | Can start now | Nothing for the paired comparison | Under 1 hour for the timing job |
+| 6 | After 1–5 | — | None |
+| 7 | Any time | — | None |
