@@ -272,9 +272,9 @@ Download a Hugging Face model to a folder with, for example, `hf download Qwen/Q
 
 The archived Messidor set (1,057 images) used so far is derived from that preprocessed archive, not from raw Messidor-2, and its grades do not match the published adjudicated grades. Treat Messidor results as provisional.
 
-**5. Code that lives outside the repository**
+**5. Code that runs from the experiments folder**
 
-These files are in `D:\Afterimage_Experiments\` on the machine that ran the experiments. **They are not in this repository.** Copy them from that machine, or ask for them to be added to the repository. Saved runs record their SHA-256, so do not edit them.
+These files were run from `D:\Afterimage_Experiments\`, outside the repository. Byte-identical copies are in [external/Afterimage_Experiments/](external/Afterimage_Experiments/README.md). Copy them to `D:\Afterimage_Experiments\`, keeping the `code\` subfolder, because the notebooks and scripts refer to them by that path. Saved runs record their SHA-256, so do not edit them.
 
 | File | What it does |
 | --- | --- |
@@ -293,9 +293,9 @@ The research code uses absolute Windows paths, mostly under `D:\Afterimage_Exper
 D:\aptos2019-blindness-detection\     Kaggle APTOS download
 D:\recovered\                         archived preprocessed exports
 D:\Afterimage_Experiments\
-    01_preprocessing.ipynb, 02_training.ipynb
+    01_preprocessing.ipynb, 02_training.ipynb   copied from external/Afterimage_Experiments
     assets\                           the three model folders and RetiZero.pth
-    code\                             the four helper scripts
+    code\                             the four helper scripts, copied from external/Afterimage_Experiments/code
     reference\aptos_split\            the recovered split
     datasets\                         built by the preprocessing notebook
     runs\  final_runs\  retizero_runs\    created by the runs
