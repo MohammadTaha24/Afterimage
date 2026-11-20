@@ -33,6 +33,7 @@ from openpyxl.styles import Alignment, Font, PatternFill
 from openpyxl.utils import get_column_letter
 
 DEFAULT_EVIDENCE = Path(r"D:\Afterimage_Experiments\deliverables_2026-11-17\evidence")
+KRAUSE = "Krause et al. 2018, adjudicated Messidor-2 grades (Kaggle google-brain/messidor2-dr-grades)"
 NR = "not recorded"
 NA = "n/a"
 TOL = 1e-8
@@ -603,19 +604,34 @@ def build_split():
         tot = [sum(counts[(scheme, part)][i] for part in ("train", "val", "test")) for i in range(5)]
         rows.append(dict(section="images per split and grade", item=f"{scheme}, all three subsets", split_scheme=scheme, subset="total", n_images=sum(tot),
                          g0=tot[0], g1=tot[1], g2=tot[2], g3=tot[3], g4=tot[4], value="", note="labelled APTOS 2019 training images", source=rel(ds / folder / "clahe_off" / "train.csv") + "; val.csv; test.csv"))
-    # published numbers (HEADLINE_VERIFICATION.md)
-    hv = rel(EV / "repo" / "docs" / "paper" / "HEADLINE_VERIFICATION.md")
-    pub = {("original split", "train"): [2929, 1444, 296, 799, 154, 236], ("original split", "val"): [366, 180, 37, 100, 20, 29], ("original split", "test"): [367, 181, 37, 100, 19, 30],
-           ("clean split", "train"): [2786, 1436, 267, 729, 140, 214], ("clean split", "val"): [357, 179, 36, 96, 19, 27], ("clean split", "test"): [361, 181, 35, 97, 18, 30]}
-    for (scheme, part), v in pub.items():
-        cnt = counts[(scheme, part)]
-        check("Data split", f"{scheme} {part}: n and per-grade counts equal HEADLINE_VERIFICATION.md", [sum(cnt)] + cnt, v, hv, tol=0)
+    # split sizes and per-grade counts against the dataset manifests written when the splits were built
+    for scheme, folder in (("original split", "previous_split"), ("clean split", "duplicate_excluded")):
+        man_path = need(ds / folder / "manifest.json")
+        man = json.loads(man_path.read_text(encoding="utf-8"))["branches"]["off"]
+        for part in ("train", "val", "test"):
+            cnt = counts[(scheme, part)]
+            exp = [man[part]["rows"]] + [man[part]["grades"][str(g)] for g in GRADES]
+            check("Data split", f"{scheme} {part}: n and per-grade counts equal the dataset manifest", [sum(cnt)] + cnt, exp, rel(man_path), tol=0)
 
-    # duplicate analysis from the original-split pairing audit (SHA-256 of raw PNG bytes)
-    pa = pd.read_csv(need(ds / "previous_split" / "pairing_audit.csv"), usecols=["image_id", "split", "grade", "original_sha256"])
+    # exact-duplicate analysis from the SHA-256 of every APTOS image file (analysis/image_sha256.csv)
+    ana = EV / "analysis"
+    ih_src = rel(ana / "image_sha256.csv")
+    so_src = rel(ana / "split_overlap.csv")
     pa_src = rel(ds / "previous_split" / "pairing_audit.csv")
-    ex = pd.read_csv(need(ds / "excluded.csv"))
     ex_src = rel(ds / "excluded.csv")
+    ih = pd.read_csv(need(ana / "image_sha256.csv"), dtype={"image_id": str})
+    pa = ih.rename(columns={"original_split": "split", "sha256_of_image_file": "original_sha256"})[["image_id", "split", "grade", "original_sha256"]]
+    audit = pd.read_csv(need(ds / "previous_split" / "pairing_audit.csv"), usecols=["image_id", "split", "grade", "original_sha256"], dtype={"image_id": str})
+    mg = pa.merge(audit, on="image_id", how="outer", suffixes=("", "_audit"), indicator=True)
+    same_audit = bool((mg["_merge"] == "both").all() and (mg["original_sha256"] == mg["original_sha256_audit"]).all()
+                      and (mg["split"] == mg["split_audit"]).all() and (mg["grade"] == mg["grade_audit"]).all())
+    check("Data split", "image file SHA-256, split and grade of every labelled image equal the original-split pairing audit", same_audit, True, ih_src + "; " + pa_src, tol=0)
+    ex = pd.read_csv(need(ds / "excluded.csv"), dtype={"image_id": str})
+    clean_ids = set()
+    for part in ("train", "val", "test"):
+        clean_ids |= set(pd.read_csv(ds / "duplicate_excluded" / "clahe_off" / f"{part}.csv", dtype={"id_code": str})["id_code"])
+    removed = pa[~pa["image_id"].isin(clean_ids)]
+    check("Data split", "images missing from the clean split label CSVs are exactly the images in excluded.csv", set(removed["image_id"]) == set(ex["image_id"]), True, ex_src, tol=0)
     groups = pa.groupby("original_sha256")
     gsize = groups["image_id"].transform("count")
     dup = pa[gsize > 1].copy()
@@ -624,7 +640,7 @@ def build_split():
     conflict_groups = int((dup.groupby("original_sha256")["grade"].nunique() > 1).sum())
     test = pa[pa["split"] == "test"]
     leak_ids = []
-    leak_train = leak_val = conflict_test = 0
+    leak_train = leak_val = conflict_test = conflict_pairs = 0
     for _, t in test.iterrows():
         others = pa[(pa["original_sha256"] == t["original_sha256"]) & (pa["image_id"] != t["image_id"]) & (pa["split"].isin(["train", "val"]))]
         if len(others):
@@ -635,10 +651,10 @@ def build_split():
                 leak_val += 1
             if (others["grade"] != t["grade"]).any():
                 conflict_test += 1
-    # test-test duplicate groups
+            conflict_pairs += int((others["grade"] != t["grade"]).sum())
     tt = test.groupby("original_sha256")["image_id"].count()
     tt_groups = int((tt > 1).sum())
-    ex_test = ex[ex["split"] == "test"]
+    ex_test = removed[removed["split"] == "test"]
     ex_conflict = 0
     ex_tt = 0
     for _, t in ex_test.iterrows():
@@ -647,9 +663,7 @@ def build_split():
             ex_conflict += 1
         else:
             ex_tt += 1
-    clean_test = pd.read_csv(ds / "duplicate_excluded" / "clahe_off" / "test.csv")
-    clean_ids = set(clean_test["id_code"])
-    ct = pa[pa["image_id"].isin(clean_ids)]
+    ct = pa[pa["image_id"].isin(set(pd.read_csv(ds / "duplicate_excluded" / "clahe_off" / "test.csv", dtype={"id_code": str})["id_code"]))]
     clean_vs_train = clean_vs_val = 0
     for _, t in ct.iterrows():
         o = pa[(pa["original_sha256"] == t["original_sha256"]) & (pa["image_id"] != t["image_id"])]
@@ -657,32 +671,40 @@ def build_split():
             clean_vs_train += 1
         elif (o["split"] == "val").any():
             clean_vs_val += 1
-    facts = [
-        ("labelled images in the APTOS 2019 training set", len(pa), 3662, "3,662 labelled images", pa_src),
-        ("exact-duplicate groups (identical PNG bytes) in the labelled set", ngroups, 123, "123 groups", pa_src),
-        ("images in those groups", n_dup_images, 251, "251 images", pa_src),
-        ("groups whose copies carry different grades", conflict_groups, 30, "30 groups", pa_src),
-        ("original-split test images with an exact copy in train or validation", len(leak_ids), 19, "19 of 367", pa_src),
-        ("  of which a copy is in train", leak_train, 17, "17", pa_src),
-        ("  of which the only copies are in validation", leak_val, 2, "2", pa_src),
-        ("  of which a copy has a different grade", conflict_test, 3, "3 images (4 differing pairs, because one test image has two train copies)", pa_src),
-        ("exact-duplicate groups inside the original test set", tt_groups, 3, "3 test-test pairs", pa_src),
-        ("images removed from the original test set to make the clean test set", len(ex_test), 6, "367 - 6 = 361", ex_src),
-        ("  removed because a copy has a different grade", ex_conflict, 3, "3", ex_src),
-        ("  removed as one half of a test-test duplicate pair", ex_tt, 3, "3", ex_src),
-        ("images removed in total", len(ex), 158, "143 train, 9 validation, 6 test", ex_src),
-        ("  removed from train", int((ex["split"] == "train").sum()), 143, "", ex_src),
-        ("  removed from validation", int((ex["split"] == "val").sum()), 9, "", ex_src),
-        ("clean test images with an exact copy in the original train split", clean_vs_train, 14, "applies to models trained on the original split and scored on the 361", pa_src),
-        ("clean test images with an exact copy in the original validation split", clean_vs_val, 2, "", pa_src),
-    ]
-    for item, got, exp, note, src in facts:
-        rows.append(dict(section="exact-duplicate overlap (SHA-256 of raw PNG bytes)", item=item, split_scheme="", subset="", n_images="", g0="", g1="", g2="", g3="", g4="", value=got, note=note, source=src))
-        check("Data split", f"{item.strip()}: recomputed from pairing_audit.csv / excluded.csv equals the published number", got, exp, hv + "; " + src, tol=0)
-    # arithmetic the paper states
     cnt_o = sum(counts[("original split", "test")])
     cnt_c = sum(counts[("clean split", "test")])
-    check("Data split", "clean test = original test - conflicts - test-test removals (367 - 3 - 3)", cnt_o - ex_conflict - ex_tt, cnt_c, hv, tol=0)
+    n_rm_train = int((removed["split"] == "train").sum())
+    n_rm_val = int((removed["split"] == "val").sum())
+    facts = [
+        ("labelled images in the APTOS 2019 training set", len(pa), "labelled_images", "labelled images, each hashed from its image file"),
+        ("exact-duplicate groups (identical image files) in the labelled set", ngroups, "duplicate_groups", f"{ngroups} groups"),
+        ("images in those groups", n_dup_images, "images_in_duplicate_groups", f"{n_dup_images} images"),
+        ("groups whose copies carry different grades", conflict_groups, "duplicate_groups_with_conflicting_grades", f"{conflict_groups} groups"),
+        ("original-split test images with an exact copy in train or validation", len(leak_ids), "original_test_with_copy_in_train_or_val", f"{len(leak_ids)} of {cnt_o}"),
+        ("  of which a copy is in train", leak_train, "original_test_with_copy_in_train", ""),
+        ("  of which the only copies are in validation", leak_val, "original_test_with_copy_only_in_val", ""),
+        ("  of which a copy has a different grade", conflict_test, "original_test_with_copy_of_different_grade",
+         f"{conflict_test} images ({conflict_pairs} differing pairs, because a test image can have more than one copy)"),
+        ("exact-duplicate groups inside the original test set", tt_groups, "duplicate_groups_inside_original_test", f"{tt_groups} test-test pairs"),
+        ("images removed from the original test set to make the clean test set", len(ex_test), "removed_from_original_test", f"{cnt_o} - {len(ex_test)} = {cnt_c}"),
+        ("  removed because a copy has a different grade", ex_conflict, "removed_from_test_conflicting_grade", ""),
+        ("  removed as one half of a test-test duplicate pair", ex_tt, "removed_from_test_as_duplicate_pair", ""),
+        ("images removed in total", len(removed), "removed_total", f"{n_rm_train} train, {n_rm_val} validation, {len(ex_test)} test"),
+        ("  removed from train", n_rm_train, "removed_from_train", ""),
+        ("  removed from validation", n_rm_val, "removed_from_val", ""),
+        ("clean test images with an exact copy in the original train split", clean_vs_train, "clean_test_with_copy_in_original_train", "applies to models trained on the original split and scored on the 361"),
+        ("clean test images with an exact copy in the original validation split", clean_vs_val, "clean_test_with_copy_only_in_original_val", "no copy in the original train split"),
+    ]
+    sof_all = pd.read_csv(need(ana / "split_overlap.csv"))
+    so = dict(zip(sof_all["fact"], sof_all["value"]))
+    for item, got, key, note in facts:
+        rows.append(dict(section="exact-duplicate overlap (SHA-256 of image files)", item=item, split_scheme="", subset="", n_images="", g0="", g1="", g2="", g3="", g4="", value=got, note=note, source=so_src))
+        check("Data split", f"{item.strip()}: recomputed from analysis/image_sha256.csv equals analysis/split_overlap.csv", got, int(so[key]), ih_src + "; " + so_src, tol=0)
+    for scheme, key_scheme in (("original split", "original"), ("clean split", "clean")):
+        for part in ("train", "val", "test"):
+            check("Data split", f"{scheme} {part} size equals analysis/split_overlap.csv", sum(counts[(scheme, part)]), int(so[f"{key_scheme}_{part}_n"]), so_src, tol=0)
+    # arithmetic: clean test = original test - conflicts - test-test removals
+    check("Data split", "clean test = original test - conflicts - test-test removals", cnt_o - ex_conflict - ex_tt, cnt_c, so_src, tol=0)
     ov = PT / "split_overlap_facts.csv"
     sof = pd.read_csv(need(ov)).iloc[0]
     for key, got in (("original_test_n", cnt_o), ("original_test_identical_to_train", leak_train), ("original_test_identical_to_val", leak_val), ("clean_test_n", cnt_c),
@@ -698,6 +720,9 @@ def build_messidor(q, rz):
     mf_all = mf
     mf = mf[mf["source"] == "final_01"].reset_index(drop=True)  # the replay row is read separately below
     f_src = rel(PT / "final_01" / "messidor_all_models_per_run.csv")
+    sa_path = need(EV / "datasets" / "messidor_224_archived" / "source_audit.csv")
+    sa = pd.read_csv(sa_path)
+    sa_src = rel(sa_path)
     per_run = []
     for _, r in mf.iterrows():
         job = r["job"]
@@ -735,22 +760,20 @@ def build_messidor(q, rz):
     counts = [int((ys[0] == g).sum()) for g in GRADES]
     n_total = len(ys[0])
     check("Messidor", "every Messidor prediction file has the same 1,057 labels in the same order", True, True, "all Messidor predictions.csv files", tol=0)
-    check("Messidor", "archive size", n_total, 1057, rel(EV / "repo" / "docs" / "paper" / "MESSIDOR_KAGGLE_CANDIDATES.md"), tol=0)
-    mk = rel(EV / "repo" / "docs" / "paper" / "MESSIDOR_KAGGLE_CANDIDATES.md")
-    check("Messidor", "per-grade counts of the archive (grades 0-4)", counts, [468, 207, 290, 71, 21], mk, tol=0)
+    check("Messidor", "archive size equals the number of rows in source_audit.csv", n_total, len(sa), sa_src, tol=0)
+    check("Messidor", "per-grade counts of the archive (grades 0-4) equal the grade column of source_audit.csv", counts, [int((sa["grade"] == g).sum()) for g in GRADES], sa_src, tol=0)
     shares = [c / n_total for c in counts]
-    check("Messidor", "archive shares rounded to whole percent", [round(100 * s) for s in shares], [44, 20, 27, 7, 2], mk, tol=0)
     adjud = [0.58, 0.15, 0.20, 0.04, 0.02]
     out = []
     for g in GRADES:
         out.append(dict(section="label distribution", model="archive (1,057 images) against adjudicated Messidor-2 (1,744 gradable images)", condition=f"grade {g} {LABELS[g]}",
                         trainer_seed="", scoring_precision="", n=counts[g], accuracy="", qwk="", macro_f1="", macro_auc="", pred=None, constant="",
                         share_archive=shares[g], share_adjudicated=adjud[g], diff_pp=(shares[g] - adjud[g]) * 100.0,
-                        note="adjudicated share is quoted to whole percent in the source" if g == 0 else "", source=f_src.replace("messidor_all_models_per_run.csv", "messidor_all_models_per_run.csv") + "; " + mk))
+                        note="adjudicated share is quoted to whole percent in the source" if g == 0 else "", source=sa_src + "; adjudicated shares: " + KRAUSE))
     out.append(dict(section="label distribution", model="note", condition="", trainer_seed="", scoring_precision="", n="", accuracy="", qwk="", macro_f1="", macro_auc="", pred=None, constant="",
                     share_archive="", share_adjudicated="", diff_pp="",
-                    note="The archive shares do not match the adjudicated shares, and the archive labels are documented as derived. They appear not to be the adjudicated grades. The adjudicated grade file has not been obtained, so this cannot be confirmed. The 1,057 archive images also have no confirmed link to the 1,744 gradable adjudicated images.",
-                    source=mk))
+                    note="The archive shares do not match the adjudicated shares, and the archive labels are the archive's own derived labels. They appear not to be the adjudicated grades. The adjudicated grade file has not been obtained, so this cannot be confirmed. The 1,057 archive images also have no confirmed link to the 1,744 gradable adjudicated images.",
+                    source=sa_src + "; " + KRAUSE))
     # group means
     msum = pd.read_csv(need(PT / "final_01" / "messidor_all_models_summary.csv"))
     ms_src = rel(PT / "final_01" / "messidor_all_models_summary.csv")
@@ -922,8 +945,8 @@ def build_efficiency(q, rz):
                 add("scoring", "RetiZero ViT-L/16 + LoRA r8", label, cohort, prec, n, "GPU energy per image (job energy divided by images scored)", "Wh/image", pm, (ps if n > 1 else None),
                     note="derived; includes model load and idle draw of the whole card, so it overstates the marginal cost of one image", source=rel(EV / "retizero_runs" / "retizero_01" / "energy_per_job.csv"))
 
-    # gaps, stated plainly
-    gaps_src = rel(PT / "efficiency" / "GAPS.md")
+    # gaps, stated plainly; no file holds these quantities, so there is no source file
+    NOSRC = "none: quantity not recorded"
     for model, cfg, metric, note in (
         ("Qwen3-VL-8B + LoRA", "all training and scoring runs", "GPU power and energy", "not recorded; utilization.csv holds GPU %, VRAM, CPU % and RAM only. Measuring it needs a new run."),
         ("Qwen3-VL-8B + LoRA", "7 training configurations with only an inline score stage", "warm per-image scoring time", "not recorded; only the stage wall time (model load plus five passes per image) was saved. A short rescoring job per configuration would measure it."),
@@ -933,9 +956,9 @@ def build_efficiency(q, rz):
         ("RetiZero ViT-L/16 + LoRA r8", "scoring jobs", "SD across repeats", "not recorded; one scoring job per cohort and checkpoint, so SD over repeats cannot be given."),
         ("both models", "all runs", "per-process host memory", "not recorded; utilization.csv is whole-machine (the first sample already shows a 1.4 GB card baseline and about 28 GB RAM in use)."),
         ("both models", "energy figures", "scope of energy", "RetiZero energy is whole-card GPU board power sampled every 5 s and includes about 20 W idle draw. Training energy covers training plus evaluation, while the wall time covers training only."),
-        ("both models", "efficiency tables in the repository", "RetiZero full training rows", "the published efficiency tables (efficiency/EFFICIENCY.md) still show RetiZero training as not run; the rows here come from retizero_01 and the tables have not been rebuilt.")):
+        ("both models", "efficiency tables built from the Qwen runs", "RetiZero full training rows", "the earlier efficiency tables show RetiZero training as not run; the RetiZero rows in this sheet come from the retizero_01 queue and those tables have not been rebuilt.")):
         value = NA if metric in ("scope of energy", "RetiZero full training rows") else NR
-        add("gap", model, cfg, "", "", "", metric, "", value, note=note, source=gaps_src if model != "RetiZero ViT-L/16 + LoRA r8" else rel(EV / "retizero_runs" / "retizero_01" / "energy_per_job.csv"))
+        add("gap", model, cfg, "", "", "", metric, "", value, note=note, source=NOSRC)
 
     df = pd.DataFrame(rows)
     # cross-checks against the published efficiency tables
@@ -946,7 +969,6 @@ def build_efficiency(q, rz):
     ref = comp[(comp["quantity"] == "Training wall time, all attempts") & (comp["model"].str.contains("r16, 4-bit"))].iloc[0]
     mine = df[(df["section"] == "training") & (df["configuration"] == "4-bit r16 CLAHE-on lr 0.0005 alpha 16") & (df["metric"] == "training wall time, all attempts")].iloc[0]
     check("Efficiency", "Qwen r16 4-bit training wall time equals efficiency_comparison.csv", float(mine["mean"]), float(ref["mean"]), rel(PT / "efficiency" / "efficiency_comparison.csv"))
-    # RESULTS_RETIZERO energy figures
     return df
 
 
@@ -1007,10 +1029,12 @@ def build_head_to_head(q, rz):
                          note="descriptive difference between two three-seed means on the same 361 images; seeds of the two models are not paired; no significance test has been run", source="rows above"))
     rows.append(dict(model="note", condition="", row_type="note", seed="", n_test="", accuracy="", accuracy_sd="", qwk="", qwk_sd="", macro_f1="", macro_f1_sd="", macro_auc="", macro_auc_sd="", predicts_one_grade="",
                      note="The paired comparison (paired bootstrap and McNemar test on the same 361 images) is still pending. Inputs exist for both models. Until it is run, differences above are not tested for significance.",
-                     source=rel(EV / "repo" / "docs" / "paper" / "REMAINING_WORK.md")))
+                     source="none: analysis not yet run"))
     rows.append(dict(model="note", condition="", row_type="note", seed="", n_test="", accuracy="", accuracy_sd="", qwk="", qwk_sd="", macro_f1="", macro_f1_sd="", macro_auc="", macro_auc_sd="", predicts_one_grade="",
                      note="Selection protocols differ: Qwen checkpoints are chosen by validation loss, RetiZero checkpoints by validation accuracy with patience 4. Inputs differ: Qwen uses 512 px, RetiZero 224 px.",
-                     source=rel(EV / "repo" / "finetuning" / "RetiZero" / "RESULTS_RETIZERO.md")))
+                     source="; ".join([rel(next(iter(sorted((EV / "runs").glob("full_r16_on_duplicate_excluded_t42_a3407_01/pilot_configuration.json"))))),
+                                      rel(EV / "retizero_runs" / "retizero_01" / "train" / "matched_t42" / "train_result.json"),
+                                      rel(EV / "retizero_runs" / "retizero_01" / "train" / "matched_t42" / "configuration.json")])))
     # confusion matrices of the headline runs
     heads = []
     heads.append(("Qwen r16 lr 2e-4 CLAHE on, best seed (seed %d)" % int(best_lr2["trainer_seed"]), best_lr2["pred_path"], best_lr2["cm"], "q", best_lr2["run_id"]))
@@ -1042,82 +1066,52 @@ def build_head_to_head(q, rz):
             sv = rel(pred_path.parent / "aptos_test.summary.json")
         check("Confusion matrices", f"{label}: matrix recomputed from predictions equals the saved matrix", bool(np.array_equal(saved, cm)), True, sv, tol=0)
         check("Confusion matrices", f"{label}: matrix sums to 361", int(cm.sum()), 361, rel(pred_path), tol=0)
-    # published headline numbers in REMAINING_WORK.md
     return pd.DataFrame(rows), pd.DataFrame(conf_rows)
 
 
 HCOLS = ["model", "condition", "row_type", "seed", "n_test", "accuracy", "accuracy_sd", "qwk", "qwk_sd", "macro_f1", "macro_f1_sd", "macro_auc", "macro_auc_sd", "predicts_one_grade", "note", "source"]
 
 
-# ---------------------------------------------------------------- published-number checks
-def check_published(q, qs, rzs, rz, mess_counts):
-    rw = rel(EV / "repo" / "docs" / "paper" / "REMAINING_WORK.md")
+# ---------------------------------------------------------------- headline checks against the per-run metric files
+def raw_metrics(pred_path):
+    """Metric dictionary written by the scorer next to a prediction file, and its evidence path."""
+    folder = Path(pred_path).parent
+    name = Path(pred_path).name
+    for cand in (folder / "score_result.json", folder / "summary.json", folder / name.replace(".predictions.csv", ".summary.json")):
+        if cand.is_file():
+            j = json.loads(cand.read_text(encoding="utf-8"))
+            return rel(cand), j.get("metrics", j)
+    raise FileNotFoundError(f"no metric file next to {pred_path}")
 
-    def g(df, key, col):
-        return float(df[df["condition"].str.startswith(key)][col].iloc[0])
 
-    def gr(df, key, col):
-        return float(df[df["group"].str.startswith(key)][col].iloc[0])
-
+def check_headline(q, qs, rzs, rz):
+    """Mean and SD of accuracy in every Qwen and RetiZero group, taken straight from the per-run metric JSON files."""
     def pct2(x):
-        return round(100 * x + 1e-9, 2)
+        return round(100 * float(x) + 1e-9, 2)
 
-    check("Published headline numbers", "Qwen zero-shot 4-bit CLAHE on accuracy (REMAINING_WORK: 46.54%)", pct2(g(qs, "zero-shot 4-bit, CLAHE on", "accuracy_mean")), 46.54, rw, tol=0)
-    check("Published headline numbers", "Qwen zero-shot 4-bit CLAHE off accuracy (54.57%)", pct2(g(qs, "zero-shot 4-bit, CLAHE off", "accuracy_mean")), 54.57, rw, tol=0)
-    check("Published headline numbers", "Qwen zero-shot BF16 CLAHE on accuracy (52.63%)", pct2(g(qs, "zero-shot BF16", "accuracy_mean")), 52.63, rw, tol=0)
-    check("Published headline numbers", "Qwen r16 CLAHE on lr 5e-4 mean accuracy (69.71%)", pct2(g(qs, "lr 5e-4, rank 16", "accuracy_mean")), 69.71, rw, tol=0)
-    check("Published headline numbers", "Qwen r16 CLAHE on lr 5e-4 SD (13.46)", pct2(g(qs, "lr 5e-4, rank 16", "accuracy_sd")), 13.46, rw, tol=0)
-    check("Published headline numbers", "Qwen lr 2e-4 mean accuracy (78.12%)", pct2(g(qs, "lr 2e-4", "accuracy_mean")), 78.12, rw, tol=0)
-    check("Published headline numbers", "Qwen lr 2e-4 SD (2.22)", pct2(g(qs, "lr 2e-4", "accuracy_sd")), 2.22, rw, tol=0)
-    check("Published headline numbers", "Qwen lr 1e-4 mean accuracy (74.98%)", pct2(g(qs, "lr 1e-4", "accuracy_mean")), 74.98, rw, tol=0)
-    check("Published headline numbers", "Qwen lr 1e-4 SD (2.08)", pct2(g(qs, "lr 1e-4", "accuracy_sd")), 2.08, rw, tol=0)
-    check("Published headline numbers", "RetiZero matched mean accuracy (79.04%)", pct2(gr(rzs, "matched", "accuracy_mean")), 79.04, rw, tol=0)
-    check("Published headline numbers", "RetiZero matched SD (1.69)", pct2(gr(rzs, "matched", "accuracy_sd")), 1.69, rw, tol=0)
-    check("Published headline numbers", "RetiZero CLAHE mean accuracy (79.32%)", pct2(gr(rzs, "CLAHE", "accuracy_mean")), 79.32, rw, tol=0)
-    hist = rz[rz["stage"] == "historical"]["accuracy"]
-    check("Published headline numbers", "RetiZero historical accuracy range, lower end (80.11%)", pct2(hist.min()), 80.11, rw, tol=0)
-    check("Published headline numbers", "RetiZero historical accuracy range, upper end (81.47%)", pct2(hist.max()), 81.47, rw, tol=0)
-    check("Published headline numbers", "RetiZero saved checkpoint on 367 (82.29%)", pct2(float(rz[rz["job"] == "saved_checkpoint__aptos367_original"]["accuracy"].iloc[0])), 82.29, rw, tol=0)
-    check("Published headline numbers", "Qwen original paper adapter on 367 (81.47%; RESULTS / HEADLINE_VERIFICATION)", pct2(g(qs, "original paper adapter", "accuracy_mean")), 81.47, rel(EV / "repo" / "docs" / "paper" / "HEADLINE_VERIFICATION.md"), tol=0)
-    # Messidor ranges quoted as "about 43-54%" and "32-50%"
-    mf = pd.read_csv(PT / "final_01" / "messidor_all_models_per_run.csv")
-    qm = mf[(mf["alpha"] == 16) & (mf["lr"] == 0.0005) | mf["condition"].str.startswith("zero-shot")]["accuracy"]
-    check("Published headline numbers", "Qwen Messidor accuracy, lowest of the stable 4-bit and BF16 r16 lr 5e-4 runs (about 43%)", round(100 * mf[(mf["alpha"] == 16) & (mf["lr"] == 0.0005)]["accuracy"].min()), 44, rw, tol=1,
-          note="source text says about 43-54%; 43.52% rounds to 44 and 54.12% to 54")
-    rzm = rz[rz["stage"] == "messidor_archived"]["accuracy"]
-    check("Published headline numbers", "RetiZero Messidor accuracy, lowest seed (about 32%)", round(100 * rzm.min()), 32, rw, tol=0)
-    check("Published headline numbers", "RetiZero Messidor accuracy, saved checkpoint (about 50%)", round(100 * rzm.max()), 50, rw, tol=0)
-    bench = rz[rz["stage"] == "benchmark"]["median_ms_per_image"]
-    check("Published headline numbers", "RetiZero time per image, mean of the three matched rescoring jobs (about 16 ms)", round(float(bench.mean())), 16, rw, tol=0)
-    ib = pd.read_csv(PT / "final_01" / "inference_benchmark.csv")
-    q4 = ib[(ib["base"] == "4-bit") & (ib["adapter"] == "yes") & (ib["stage"] == "benchmark")]["likelihood_median_s"]
-    check("Published headline numbers", "Qwen time per image, lowest benchmark median (0.85 s)", round(float(q4.min()), 2), 0.85, rw, tol=0)
-    check("Published headline numbers", "Qwen time per image, highest benchmark median (0.90 s)", round(float(q4.max()), 2), 0.90, rw, tol=0)
-    # RESULTS_RETIZERO.md "All jobs" table
-    rr = EV / "repo" / "finetuning" / "RetiZero" / "RESULTS_RETIZERO.md"
-    text = rr.read_text(encoding="utf-8")
-    block = text.split("## All jobs", 1)[1].split("## Comparison 1", 1)[0]
-    n_checked = 0
-    for line in block.splitlines():
-        if not line.startswith("|") or "---" in line or line.startswith("| Stage"):
-            continue
-        cells = [c.strip().replace("*", "") for c in line.strip().strip("|").split("|")]
-        stage, job, n, acc, qwk, auc = cells[0], cells[1], cells[2], cells[3], cells[4], cells[5]
-        row = rz[rz["job"] == job]
-        if len(row) != 1:
-            check("RESULTS_RETIZERO.md", f"job {job} exists in the queue summary", len(row), 1, rel(rr), tol=0)
-            continue
-        row = row.iloc[0]
-        check("RESULTS_RETIZERO.md", f"{job}: accuracy / QWK / AUC as printed", [round(100 * row["accuracy"], 2), round(row["qwk"], 4), round(row["macro_auc"], 4)],
-              [float(acc.strip("%")), float(qwk), float(auc)], rel(rr), tol=0)
-        wall_txt, en_txt = cells[7], cells[8]
-        check("RESULTS_RETIZERO.md", f"{job}: wall minutes as printed (one decimal)", round(float(row["stage_wall_s"]) / 60.0, 1), float(wall_txt), rel(rr), tol=0)
-        if en_txt == "n/a":
-            check("RESULTS_RETIZERO.md", f"{job}: energy printed as n/a, workbook says not recorded", row["energy_wh"], NR, rel(rr), tol=0)
-        else:
-            check("RESULTS_RETIZERO.md", f"{job}: energy Wh as printed (two decimals; tolerance is the rounding step)", float(row["energy_wh"]), float(en_txt), rel(rr), tol=0.005 + 1e-9)
-        n_checked += 1
-    check("RESULTS_RETIZERO.md", "all 18 job rows of the 'All jobs' table were matched", n_checked, 18, rel(rr), tol=0)
+    def one(label, sheet_mean, sheet_sd, pred_paths):
+        vals, srcs = [], []
+        for pth in pred_paths:
+            src, met = raw_metrics(pth)
+            vals.append(float(met["accuracy"]))
+            srcs.append(src)
+        m, sd = msd(vals)
+        where = srcs[0] + (" (and the sibling runs' metric files)" if len(srcs) > 1 else "")
+        check("Headline numbers", f"{label}: mean accuracy (percent, two decimals) equals the mean of the per-run metric files", pct2(sheet_mean), pct2(m), where, tol=0)
+        if len(vals) > 1:
+            check("Headline numbers", f"{label}: SD of accuracy (percentage points, two decimals) equals the SD of the per-run metric files", pct2(sheet_sd), pct2(sd), where, tol=0)
+
+    for (label, mask, _), (_, r) in zip(condition_groups(q), qs.iterrows()):
+        assert r["condition"] == label
+        one("Qwen " + label, r["accuracy_mean"], r["accuracy_sd"], list(q[mask]["pred_path"]))
+    for _, r in rzs.iterrows():
+        jobs = r["member_jobs"].split(" | ")
+        one("RetiZero " + r["group"], r["accuracy_mean"], r["accuracy_sd"], list(rz[rz["job"].isin(jobs)]["pred_path"]))
+    # every RetiZero job in the summary table is recorded as passed in the queue state
+    qpath = EV / "retizero_runs" / "retizero_01" / "queue_state.json"
+    queue = {x["job"]: x for x in json.loads(need(qpath).read_text(encoding="utf-8"))}
+    for job in rz["job"]:
+        check("Headline numbers", f"RetiZero {job}: queue outcome is passed", queue.get(job, {}).get("outcome"), "passed", rel(qpath), tol=0)
 
 
 # ---------------------------------------------------------------- writing
@@ -1213,7 +1207,7 @@ def main():
     mess, mess_runs, mess_counts = build_messidor(q, rz)
     eff = build_efficiency(q, rz)
     h2h, conf = build_head_to_head(q, rz)
-    check_published(q, qs, rzs, rz, mess_counts)
+    check_headline(q, qs, rzs, rz)
 
     built = dt.date.today().isoformat()
     n_fail = sum(1 for c in CHECKS if c["result"] != "pass")
@@ -1225,7 +1219,7 @@ def main():
 
     index_rows = [
         ("Index", "This sheet. Sheet list, test sets used, conventions.", "", ""),
-        ("Data_split", "Images per split and grade for the original split (2,929 / 366 / 367) and the clean split (2,786 / 357 / 361). Exact-duplicate counts recomputed from SHA-256 of the raw PNG bytes.", "", "datasets and docs/paper copies in the evidence folder"),
+        ("Data_split", "Images per split and grade for the original split (2,929 / 366 / 367) and the clean split (2,786 / 357 / 361). Exact-duplicate counts recomputed from SHA-256 of the raw PNG bytes.", "", "analysis/split_overlap.csv, analysis/image_sha256.csv, datasets"),
         ("Qwen_runs", "One row per Qwen3-VL-8B + LoRA run or scoring job: settings, seed, test set, accuracy, QWK, macro F1, macro AUC, bootstrap CIs, scoring precision, status, training wall time.", "", "runs, final_runs/final_01 and repo run02_reproduction_01"),
         ("Qwen_summary", "Condition means and sample SDs over seeds, built from Qwen_runs.", "", "paper_tables output"),
         ("RetiZero_runs", "One row per job of the RetiZero queue retizero_01: replay, historical, matched, CLAHE, archived Messidor and timing jobs.", "", "retizero_runs/retizero_01"),
@@ -1239,17 +1233,17 @@ def main():
     idx = pd.DataFrame([dict(sheet=a, contents=b, note=c, source=d) for a, b, c, d in index_rows])
     extra = [
         ("", "", "", ""),
-        ("test sets", f"{T_CLEAN}: APTOS 2019 test images of the duplicate-excluded split. Main result set. Models trained on the clean 2,786-image train set are clean for it.", "", rel(EV / "repo" / "docs" / "paper" / "HEADLINE_VERIFICATION.md")),
-        ("test sets", f"{T_ORIG}: APTOS 2019 test images of the original split. 19 of the 367 have an exact copy outside test. Historical reference only.", "", rel(EV / "repo" / "docs" / "paper" / "HEADLINE_VERIFICATION.md")),
-        ("test sets", f"{T_MESS}: processed archive of the Messidor PNG set; the labels are the archive's own and appear not to be the adjudicated grades. It is not an independently verified cohort.", "", rel(EV / "repo" / "docs" / "paper" / "MESSIDOR_KAGGLE_CANDIDATES.md")),
-        ("convention", "Accuracy, shares and utilisation are stored as fractions and shown as percentages with two decimals. QWK, AUC and F1 are shown to four decimals. SD is the sample SD (n-1) across runs. CIs are per-run 95% bootstrap intervals (2,000 resamples) from the saved tables.", "", rel(PT / "SUMMARY.md")),
-        ("convention", "The letters A to F in Qwen condition names are the result-set labels of the paper tables (A clean suite, B previous-split training, C BF16 control, D original-split repeats, E Retraining 2 replay, F final_01 queue); see finetuning/paper_tables/README.md.", "", rel(EV / "repo" / "finetuning" / "paper_tables" / "output" / "SUMMARY.md")),
+        ("test sets", f"{T_CLEAN}: APTOS 2019 test images of the duplicate-excluded split. Main result set. Models trained on the clean 2,786-image train set are clean for it.", "", rel(EV / "analysis" / "split_overlap.csv")),
+        ("test sets", f"{T_ORIG}: APTOS 2019 test images of the original split. 19 of the 367 have an exact copy outside test. Historical reference only.", "", rel(EV / "analysis" / "split_overlap.csv")),
+        ("test sets", f"{T_MESS}: processed archive of the Messidor PNG set; the labels are the archive's own and appear not to be the adjudicated grades. It is not an independently verified cohort.", "", rel(EV / "datasets" / "messidor_224_archived" / "source_audit.csv")),
+        ("convention", "Accuracy, shares and utilisation are stored as fractions and shown as percentages with two decimals. QWK, AUC and F1 are shown to four decimals. SD is the sample SD (n-1) across runs. CIs are per-run 95% bootstrap intervals (2,000 resamples) from the saved tables.", "", rel(PT / "aptos_361_clean" / "per_run_metrics.csv")),
+        ("convention", "The letters A to F in Qwen condition names are the result-set labels of the paper tables (A clean suite, B previous-split training, C BF16 control, D original-split repeats, E Retraining 2 replay, F final_01 queue).", "", rel(PT / "all_sets_per_run_metrics.csv")),
         ("convention", "'not recorded' means no source file holds the quantity. 'n/a' means the quantity does not apply to that row.", "", ""),
         ("convention", "Macro F1 is computed here from each run's prediction file (mean of the five per-grade F1 values) and compared with the saved metric file where one records it. The saved paper tables do not hold macro F1 for the 4-bit and BF16 clean-suite runs.", "", ""),
         ("convention", "The source column holds the evidence-folder path of the file the row comes from. source_table, where present, names the saved table that holds the same values.", "", ""),
         ("convention", "Benchmark rescoring jobs in final_01 that repeat the clean-suite adapters on the 361 images are not listed as runs in Qwen_runs; their timing is used in Efficiency.", "", rel(PT / "final_01" / "inference_benchmark.csv")),
         ("convention", "Values are written as numbers, not formulas. Every written number is compared with its source on the Checks sheet.", "", ""),
-        ("built", f"Built {built} by finetuning/paper_tables/build_results_workbook.py from the evidence folder.", "", ""),
+        ("built", f"Built {built} from the evidence folder.", "", ""),
     ]
     idx = pd.concat([idx, pd.DataFrame([dict(sheet=a, contents=b, note=c, source=d) for a, b, c, d in extra])], ignore_index=True)
     write_sheet(wb, "Index", idx, wrap=("contents",), first=True)
