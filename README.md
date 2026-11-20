@@ -2,6 +2,8 @@
 
 Afterimage grades retinal fundus images with RetiZero or Qwen3-VL with a LoRA adapter. A Streamlit interface sends images to a FastAPI backend, which preprocesses them and starts one model server at a time.
 
+This branch (`afterimage-re`) also contains the experiments, evaluation and evidence for the paper revision. Sections 1 to 10 cover running the app. The [paper revision](#paper-revision-work) section covers the research work.
+
 These instructions target **Windows x64, Anaconda Prompt, Python 3.11 and an NVIDIA GPU with at least 16 GB VRAM**. The pinned CUDA 13.0 wheels require a compatible NVIDIA driver. Other platforms and GPU configurations need separate validation. See [setup verification](docs/SETUP_VERIFICATION.md) for the reviewed changes, test results and limits.
 
 ## 1. Clone and create the environment
@@ -193,9 +195,130 @@ The backend now launches model processes with `PYTHONIOENCODING=utf-8` and reads
 - Repeated `GET /model/status 200` lines mean the UI is polling. Check the JSON `state`, `progress` and `last_error`; HTTP 200 alone does not mean the model loaded.
 - If a process exits, the backend reports an error even if it was previously ready. Intentional unloads stay stopped, and failed processes can be retried.
 
+## Paper revision work
+
+This work responds to the reviewers' comments on the Afterimage paper. It retrains and re-evaluates both models under a controlled protocol. None of it is imported by the running app.
+
+### What changed
+
+| Date (2026) | Work |
+| --- | --- |
+| 10 Nov | App hardening: pinned CUDA and dependency stack, asset downloader and validation, environment check, real-model smoke test, rebuilt manual. Qwen3 APTOS reproduction training and evaluation, the four-run Qwen experiment queue, and the phase 1 dataset audit. |
+| 15 Nov | Qwen preprocessing with a CLAHE on/off switch. Retraining 2 replay, original-split CLAHE pairs, BF16 base control, remaining-run routing. Helpers for a matched RetiZero setup and verified Messidor. Paper tables builder and the first generated tables. |
+| 16 Nov | `finetuning/Qwen3` reorganized into `legacy/`, `notebooks/` and `paper_revision/`. Final Qwen runs queue (zero-shot, timing, archived Messidor, learning-rate and alpha studies), plus labelled FP32 fallback scoring for FP16 overflow. RetiZero reproduction folder. Paper plan, deliverables checklist and remaining-work phases. |
+| 17 Nov | RetiZero retrained from the official pretrained checkpoint (non-finite FP16 steps are skipped instead of stopping the run). Final-queue results added to the tables. Efficiency tables built from saved run records. Independent check of the headline split, Messidor source search, the evidence-folder and results-workbook builders, and the results email draft. |
+| 17 to 20 Nov | The evidence builder computes the split overlap directly from image SHA-256 hashes, and the workbook checks every number against raw run files instead of notes. Literature review on APTOS duplicates. |
+
+### Key finding on the data split
+
+19 of the 367 images in the original APTOS test split have a byte-identical copy in train (17) or validation (2), and 3 of those copies carry a different grade. A clean split removes the overlap, leaving 2,786 train, 357 validation and 361 test images. New results are reported on the clean 361-image test set, with the original 367 kept as a reference. See [HEADLINE_VERIFICATION.md](docs/paper/HEADLINE_VERIFICATION.md) and [APTOS_DUPLICATES_LITERATURE.md](docs/paper/APTOS_DUPLICATES_LITERATURE.md).
+
+### Where to start
+
+| Path | What it is |
+| --- | --- |
+| [docs/paper/REMAINING_WORK.md](docs/paper/REMAINING_WORK.md) | Current status, results so far and the remaining phases. Read this first. |
+| [docs/paper/](docs/paper/) | Plan, final-runs design, deliverables checklist, headline verification, Messidor source notes, RetiZero training brief and the results update draft. |
+| [REVIEWER_CHECKLIST.md](REVIEWER_CHECKLIST.md), [PAPER_TRAINING_CHECKLIST.md](PAPER_TRAINING_CHECKLIST.md) | Each reviewer point, and the training and evaluation checklist. |
+| [finetuning/Qwen3/](finetuning/Qwen3/README.md) | Qwen3-VL-8B + LoRA training and scoring. `notebooks/03_final_runs.ipynb` is the final queue; `paper_revision/` holds the helpers. Several files are hash-pinned by saved runs; the folder README lists which ones must not be edited. |
+| [finetuning/RetiZero/](finetuning/RetiZero/README.md) | RetiZero reproduction: helper, workers, queue notebook, plan and [results](finetuning/RetiZero/RESULTS_RETIZERO.md). |
+| [finetuning/paper_tables/](finetuning/paper_tables/README.md) | CPU-only builders for the paper tables, efficiency tables, evidence folder and results workbook. Generated tables are in `output/`. |
+| [experiments/](experiments/README.md) | The earlier four-condition Qwen queue and its post-run review. |
+| [audit/](audit/README.md) | Phase 1 dataset audit. |
+
+### Reproducing the experiments: prerequisites
+
+The app (sections 1 to 10) runs from this repository alone. The paper experiments do not. They need the data, models and helper scripts below, most of which are not in Git. Check this list before starting.
+
+**1. Hardware**
+
+| Item | What was used | Notes |
+| --- | --- | --- |
+| GPU | NVIDIA RTX 5070 Ti, 16 GB VRAM | 16 GB is the minimum for Qwen training. One Qwen run takes about 2 to 3 hours. |
+| System RAM | About 64 GB | Needed by the BF16 base control, which offloads 16 layers to the CPU. |
+| Free disk | About 60 GB, plus room for runs | Qwen models about 42 GB, RetiZero checkpoint 1.6 GB, datasets about 5 GB. Each Qwen run folder holds checkpoints and adapters. |
+
+**2. Python environment**
+
+Use the same `afterimage_env` as the app (sections 1 to 3). The research code also needs these packages, which `requirements.txt` does not install:
+
+```bat
+python -m pip install openpyxl psutil jupyterlab ipykernel
+python -m ipykernel install --user --name afterimage_env --display-name "Python (afterimage_env)"
+```
+
+`openpyxl` is used by the results workbook builder, `psutil` by the Qwen run worker, and Jupyter by every notebook. The notebooks expect the kernel named `Python (afterimage_env)`.
+
+**3. Models**
+
+| Model | Source | Expected location | Used by |
+| --- | --- | --- | --- |
+| Qwen3-VL-8B 4-bit base | Hugging Face `unsloth/Qwen3-VL-8B-Instruct-unsloth-bnb-4bit`, revision `b5b904c3fcdc7541adf2a2bb219b0ed95288c794` | `D:\Afterimage_Experiments\assets\qwen3-vl-8b-4bit\` | All Qwen training and scoring |
+| Qwen3-VL-8B BF16 base | Hugging Face `Qwen/Qwen3-VL-8B-Instruct`, revision `1dd1e02d981403da25ed73d43430e4ef598cb94b` | `D:\Afterimage_Experiments\assets\qwen3-vl-8b-bf16\` | BF16 base control and BF16 zero-shot only |
+| RetiZero official pretrained checkpoint | Google Drive link in [RetiZero/RetiZero/README.md](RetiZero/RetiZero/README.md) (file id `14bMmnefO73_NL1Xc4x0A5qFNbuI7GqKM`), SHA-256 `7d06d294...1601ede` | `D:\Afterimage_Experiments\assets\RetiZero.pth` | RetiZero retraining |
+| `emilyalsentzer/Bio_ClinicalBERT` | Downloaded by `python download_model_assets.py` | Hugging Face cache | RetiZero code imports |
+| Fine-tuned app weights (RetiZero checkpoint, Qwen LoRA) | Downloaded by `python download_model_assets.py` | See section 5 | Original adapter audit and the reference results |
+
+Download a Hugging Face model to a folder with, for example, `hf download Qwen/Qwen3-VL-8B-Instruct --revision 1dd1e02d981403da25ed73d43430e4ef598cb94b --local-dir D:\Afterimage_Experiments\assets\qwen3-vl-8b-bf16`. Saved run configurations record the revision and file hashes, so a different revision will fail the checks.
+
+**4. Data**
+
+| Data | Source | Expected location |
+| --- | --- | --- |
+| APTOS 2019 training images and labels (3,662 images) | Kaggle competition `aptos2019-blindness-detection`. Join the competition to download it. | `D:\aptos2019-blindness-detection\` with `train.csv` and `train_images\` |
+| The recovered original 80/10/10 split | Not public. Copy `D:\Afterimage_Experiments\reference\aptos_split\` (train, val and test CSVs plus `dataset_manifest.json`) from the machine that ran the experiments. **Without it the original 367-image split and the clean 361-image split cannot be rebuilt.** | `D:\Afterimage_Experiments\reference\aptos_split\` |
+| Archived preprocessed APTOS and Messidor exports (512 px) | The original project's preprocessed archive, `DR_Aptos_Messidor_Only_Full_Dataset` and `DR_Messidor_Only_512_Full_Dataset`. Not public. | `D:\recovered\` |
+| Messidor-2 (raw images and adjudicated grades) | Not obtained yet. Raw images come from ADCIS (registration required); adjudicated grades from Kaggle `google-brain/messidor2-dr-grades`. See [MESSIDOR_SOURCES_FOUND.md](docs/paper/MESSIDOR_SOURCES_FOUND.md). | Not used yet |
+
+The archived Messidor set (1,057 images) used so far is derived from that preprocessed archive, not from raw Messidor-2, and its grades do not match the published adjudicated grades. Treat Messidor results as provisional.
+
+**5. Code that lives outside the repository**
+
+These files are in `D:\Afterimage_Experiments\` on the machine that ran the experiments. **They are not in this repository.** Copy them from that machine, or ask for them to be added to the repository. Saved runs record their SHA-256, so do not edit them.
+
+| File | What it does |
+| --- | --- |
+| `01_preprocessing.ipynb` | Builds the 512-pixel APTOS datasets for both splits (original and clean), CLAHE on and off |
+| `02_training.ipynb` | Ran the main Qwen grid on the clean split (ranks 8/16/32, CLAHE on/off, three seeds) |
+| `code\qwen_pilot.py` | Qwen training and scoring worker used by both training notebooks and `finetuning/Qwen3/paper_revision/` |
+| `code\prepare_aptos.py` | Dataset builder behind `01_preprocessing.ipynb` and `finetuning/RetiZero/data/build_retizero_datasets.py` |
+| `code\notebook_runner.py` | Launches workers from notebooks and keeps their console output |
+| `code\recover_qwen.py` | Resumes or rescores a stopped Qwen run |
+
+**6. Folder layout and paths**
+
+The research code uses absolute Windows paths, mostly under `D:\Afterimage_Experiments\` and `D:\aptos2019-blindness-detection\`. The simplest setup is to recreate the same folders on a `D:` drive:
+
+```text
+D:\aptos2019-blindness-detection\     Kaggle APTOS download
+D:\recovered\                         archived preprocessed exports
+D:\Afterimage_Experiments\
+    01_preprocessing.ipynb, 02_training.ipynb
+    assets\                           the three model folders and RetiZero.pth
+    code\                             the four helper scripts
+    reference\aptos_split\            the recovered split
+    datasets\                         built by the preprocessing notebook
+    runs\  final_runs\  retizero_runs\    created by the runs
+```
+
+Otherwise, change the path constants at the top of each notebook and script. Some notes and saved configurations also record paths from the original machine (`C:\Users\...`). Those are a record of where files were at the time, not settings to edit.
+
+**7. Order of work**
+
+1. Build the datasets with `D:\Afterimage_Experiments\01_preprocessing.ipynb` (Qwen, 512 px, both splits), then `finetuning/RetiZero/data/build_retizero_datasets.py` (RetiZero, 224 px). `finetuning/Qwen3/notebooks/01_preprocessing.ipynb` only builds the earlier original-split CLAHE pairs.
+2. Run the main Qwen grid with `D:\Afterimage_Experiments\02_training.ipynb`, then the remaining Qwen queue in `finetuning/Qwen3/notebooks/03_final_runs.ipynb`. Run each pilot first.
+3. Run the RetiZero queue in `finetuning/RetiZero/notebooks/02_retizero_runs.ipynb`. Run its pilot first.
+4. Rebuild the tables on the CPU with the scripts in `finetuning/paper_tables/` (see its README).
+
+Run one GPU job at a time. The Qwen and RetiZero runners share a GPU lock in `D:\Afterimage_Experiments\runs`.
+
+### What is in Git and what is not
+
+Trained adapters, checkpoints, datasets, run logs and per-run predictions are gitignored. They stay in the experiments folder on the machine that ran them. The tables and summaries built from them are committed under `finetuning/paper_tables/output/`, so the reported results can be read without the run folders.
+
 ## Repository and generated files
 
-`backend/` and `frontend/` contain the live app; `Qwen3/` and `RetiZero/` contain model servers and preprocessing. `RetiZero/RetiZero/` is the bundled upstream research code. `finetuning/` and `*/prev/` are training material and older versions, not the running application.
+`backend/` and `frontend/` contain the live app; `Qwen3/` and `RetiZero/` contain model servers and preprocessing. `RetiZero/RetiZero/` is the bundled upstream research code. `finetuning/`, `experiments/`, `audit/` and `docs/paper/` hold the paper revision work described above. `*/prev/` directories hold older versions. None of these are part of the running application.
 
 Weights, `processed_image_cache/`, `unprocessed_image_cache/`, `unsloth_compiled_cache/` and `.verification/` are ignored by Git. Raw uploads are deleted after successful preprocessing; processed images are deleted after an inference response is received. Failed preprocessing or a failed connection can leave files in the cache directories for inspection.
 
