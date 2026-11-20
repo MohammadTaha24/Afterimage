@@ -270,6 +270,16 @@ Download a Hugging Face model to a folder with, for example, `hf download Qwen/Q
 | Archived preprocessed APTOS and Messidor exports (512 px) | The original project's preprocessed archive, `DR_Aptos_Messidor_Only_Full_Dataset` and `DR_Messidor_Only_512_Full_Dataset`. Not public. | `D:\recovered\` |
 | Messidor-2 (raw images and adjudicated grades) | Not obtained yet. Raw images come from ADCIS (registration required); adjudicated grades from Kaggle `google-brain/messidor2-dr-grades`. See [MESSIDOR_SOURCES_FOUND.md](docs/paper/MESSIDOR_SOURCES_FOUND.md). | Not used yet |
 
+**Getting the private data.** The recovered split and the archived exports are not public and must not be committed or redistributed: they derive from APTOS 2019 competition data and Messidor. Ask Mohammad Taha for access to the private share. It holds three zips, each with a SHA-256 in `SHA256SUMS.txt`:
+
+| Zip | Contents | Size | Extract into |
+| --- | --- | --- | --- |
+| `afterimage_aptos_split.zip` | `aptos_split\` (train, val and test CSVs, `dataset_manifest.json`) | 1.4 MB | `D:\Afterimage_Experiments\reference\` |
+| `afterimage_recovered_aptos_messidor_512.zip` | `DR_Aptos_Messidor_Only_Full_Dataset\` (9,440 files) | 3.0 GB | `D:\recovered\` |
+| `afterimage_recovered_messidor_512.zip` | `DR_Messidor_Only_512_Full_Dataset\` (2,116 files) | 0.7 GB | `D:\recovered\` |
+
+Check each download with `Get-FileHash <zip> -Algorithm SHA256` in PowerShell before extracting. Download APTOS 2019 itself from Kaggle; it is not in the share.
+
 The archived Messidor set (1,057 images) used so far is derived from that preprocessed archive, not from raw Messidor-2, and its grades do not match the published adjudicated grades. Treat Messidor results as provisional.
 
 **5. Code that runs from the experiments folder**
