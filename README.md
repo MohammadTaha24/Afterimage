@@ -223,6 +223,8 @@ This work responds to the reviewers' comments on the Afterimage paper. It retrai
 | [finetuning/Qwen3/](finetuning/Qwen3/README.md) | Qwen3-VL-8B + LoRA training and scoring. `notebooks/03_final_runs.ipynb` is the final queue; `paper_revision/` holds the helpers. Several files are hash-pinned by saved runs; the folder README lists which ones must not be edited. |
 | [finetuning/RetiZero/](finetuning/RetiZero/README.md) | RetiZero reproduction: helper, workers, queue notebook, plan and [results](finetuning/RetiZero/RESULTS_RETIZERO.md). |
 | [finetuning/paper_tables/](finetuning/paper_tables/README.md) | CPU-only builders for the paper tables, efficiency tables, evidence folder and results workbook. Generated tables are in `output/`. |
+| [docs/paper/REVISION_EVIDENCE.md](docs/paper/REVISION_EVIDENCE.md) | Answers to the revision plan, each with its evidence file (built by `build_revision_analysis.py` and `build_image_audits.py`). |
+| [finetuning/revision_jobs/](finetuning/revision_jobs/README.md) | One command for the remaining GPU work: verified Messidor-2, Qwen timing and power, and the optional rank sweep at lr 2e-4. |
 | [experiments/](experiments/README.md) | The earlier four-condition Qwen queue and its post-run review. |
 | [audit/](audit/README.md) | Phase 1 dataset audit. |
 

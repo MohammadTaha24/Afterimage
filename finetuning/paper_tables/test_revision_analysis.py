@@ -111,6 +111,20 @@ class RunMetrics(unittest.TestCase):
         self.assertAlmostEqual(m["macro_f1"], (f1_0 + f1_1 + 1 + 1 + 1) / 5)
 
 
+class VariantNames(unittest.TestCase):
+    def test_variant_names_from_final_runs(self):
+        self.assertEqual(bra.variant("r16_on_lr0p0002_t42_a3407")["condition"], "Qwen r16 CLAHE-on lr2e-4")
+        self.assertEqual(bra.variant("r16_on_alpha8_t43_a3408")["condition"], "Qwen r16 CLAHE-on lr5e-4 alpha8")
+        v = bra.variant("r32_on_alpha32_lr0p0002_t44_a3409")
+        self.assertEqual((v["condition"], v["seed"], v["rank"], v["alpha"]), ("Qwen r32 CLAHE-on lr2e-4 alpha32", 44, 32, 32))
+        self.assertEqual(bra.variant("r8_off_lr0p0002_t42_a3407")["condition"], "Qwen r8 CLAHE-off lr2e-4")
+        self.assertIsNone(bra.variant("full_r16_on_duplicate_excluded_t42_a3407_01"))
+
+    def test_condition_names_match_the_headline_constants(self):
+        self.assertEqual(bra.variant("r16_on_lr0p0001_t42_a3407")["condition"], bra.Q_ON_1E4)
+        self.assertEqual(bra.variant("r16_on_lr0p0002_t42_a3407")["condition"], bra.Q_ON_2E4)
+
+
 class IdNormalisation(unittest.TestCase):
     def test_ids(self):
         self.assertEqual(bra.normalise_id("messidor_messidor_p_0_20051109_57451_0400_PP"), "20051109_57451_0400_PP")

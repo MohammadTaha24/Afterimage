@@ -65,7 +65,27 @@ class AnalysisError(RuntimeError):
 # --------------------------------------------------------------------------- discovery
 
 PILOT_RE = re.compile(r"^full_(bf16_)?r(\d+)_(on|off)_(duplicate_excluded|previous_split)_t(\d+)_a(\d+)_(paper_controls_)?01$")
-FINAL_TRAIN_RE = re.compile(r"^r16_on_(lr0p0001|lr0p0002|alpha8|alpha32)_t(\d+)_a(\d+)$")
+# Training variants named by final_runs.variant_name, e.g. r16_on_lr0p0002_t42_a3407 or r8_on_alpha8_lr0p0002_t42_a3407.
+VARIANT_RE = re.compile(r"^r(\d+)_(on|off)_(?:alpha(\d+)_)?(?:lr(0p\d+)_)?t(\d+)_a(\d+)$")
+QWEN_CAMPAIGNS = ("final_01", "final_02")      # final_02: verified Messidor-2, timing and the optional rank sweep
+RETIZERO_CAMPAIGNS = ("retizero_01", "retizero_02")
+MESSIDOR_COHORTS = {"messidor_archived": "messidor", "messidor_archived_fp32": "messidor",
+                    "messidor2_on": "messidor2", "messidor2_off": "messidor2",
+                    "messidor2_224_off": "messidor2", "messidor2_224_on": "messidor2"}
+
+
+def lr_label(lr: float) -> str:
+    return f"{lr:.0e}".replace("e-0", "e-")
+
+
+def variant(name: str) -> dict | None:
+    m = VARIANT_RE.match(name)
+    if not m:
+        return None
+    rank, clahe, alpha, lr, seed = int(m.group(1)), m.group(2), int(m.group(3) or 16), m.group(4), int(m.group(5))
+    lr = float(lr.replace("p", ".")) if lr else 5e-4
+    cond = f"Qwen r{rank} CLAHE-{clahe} lr{lr_label(lr)}" + (f" alpha{alpha}" if alpha != 16 else "")
+    return {"condition": cond, "seed": seed, "rank": rank, "clahe": clahe, "lr": lr, "alpha": alpha}
 
 
 def run(model, condition, seed, cohort, path, source, **extra):
@@ -88,73 +108,82 @@ def discover(root: Path) -> list[dict]:
         val = bpt.read_json(d / "train_result.json")["validation_loss"]
         runs.append(run("Qwen", cond, seed, "aptos361", d / "aptos_test.predictions.csv", "runs", name=d.name,
                         val_loss=float(val), rank=rank, clahe=clahe, lr=5e-4, alpha=16))
-    final = root / "final_runs" / "final_01"
-    for d in sorted((final / "train").iterdir()):
-        m = FINAL_TRAIN_RE.match(d.name)
-        if not m:
+    for campaign in QWEN_CAMPAIGNS:
+        final = root / "final_runs" / campaign
+        if not final.is_dir():
             continue
-        kind, seed = m.group(1), int(m.group(2))
-        lr = {"lr0p0001": 1e-4, "lr0p0002": 2e-4}.get(kind, 5e-4)
-        alpha = {"alpha8": 8, "alpha32": 32}.get(kind, 16)
-        cond = f"Qwen r16 CLAHE-on lr{lr:.0e}".replace("e-0", "e-") + (f" alpha{alpha}" if alpha != 16 else "")
-        preds = d / "aptos_test.predictions.csv"
-        job = d.name
-        if not preds.is_file():  # the FP16-overflow run was scored with the labelled FP32 fallback
-            job = f"{d.name}__aptos_test_fp32"
-            preds = final / "scores" / job / "predictions.csv"
-        val = bpt.read_json(d / "train_result.json")["validation_loss"]
-        runs.append(run("Qwen", cond, seed, "aptos361", preds, "final_01", name=job, val_loss=float(val),
-                        rank=16, clahe="on", lr=lr, alpha=alpha))
-    for d in sorted((final / "scores").iterdir()):
-        name = d.name
-        m = re.match(r"^zeroshot_(4bit|bf16)__aptos361_(on|off)$", name)
-        if m:
-            runs.append(run("Qwen", f"Qwen zero-shot {m.group(1)} CLAHE-{m.group(2)}", None, "aptos361",
-                            d / "predictions.csv", "final_01", name=name, clahe=m.group(2)))
-            continue
-        if "messidor_archived" in name:
-            runs.append(qwen_messidor(name, d))
-    rz = root / "retizero_runs" / "retizero_01"
-    for d in sorted((rz / "train").iterdir()):
+        for d in sorted((final / "train").iterdir()) if (final / "train").is_dir() else []:
+            v = variant(d.name)
+            if v is None or not (d / "train_result.json").is_file():
+                continue  # not a variant, or training has not finished
+            preds = d / "aptos_test.predictions.csv"
+            job = d.name
+            if not preds.is_file():  # the FP16-overflow run was scored with the labelled FP32 fallback
+                job = f"{d.name}__aptos_test_fp32"
+                preds = final / "scores" / job / "predictions.csv"
+                if not preds.is_file():
+                    continue
+            val = bpt.read_json(d / "train_result.json")["validation_loss"]
+            runs.append(run("Qwen", v.pop("condition"), v.pop("seed"), "aptos361", preds, campaign, name=job,
+                            val_loss=float(val), **v))
+        for d in sorted((final / "scores").iterdir()) if (final / "scores").is_dir() else []:
+            name = d.name
+            if not (d / "predictions.csv").is_file() or "__" not in name:
+                continue
+            m = re.match(r"^zeroshot_(4bit|bf16)__aptos361_(on|off)$", name)
+            if m:
+                runs.append(run("Qwen", f"Qwen zero-shot {m.group(1)} CLAHE-{m.group(2)}", None, "aptos361",
+                                d / "predictions.csv", campaign, name=name, clahe=m.group(2)))
+                continue
+            if name.split("__")[1] in MESSIDOR_COHORTS:
+                runs.append(qwen_messidor(name, d, campaign))
+    for campaign in RETIZERO_CAMPAIGNS:
+        rz_runs(root / "retizero_runs" / campaign, campaign, runs)
+    return runs
+
+
+def rz_runs(rz: Path, campaign: str, runs: list[dict]) -> None:
+    if not rz.is_dir():
+        return
+    for d in sorted((rz / "train").iterdir()) if (rz / "train").is_dir() else []:
         stage, seed = d.name.rsplit("_t", 1)
         cond, cohort = {"matched": (R_OFF, "aptos361"), "clahe": (R_ON, "aptos361"),
                         "historical": ("RetiZero CLAHE-off original split", "aptos367")}[stage]
         result = bpt.read_json(d / "train_result.json")
         runs.append(run("RetiZero", cond, int(seed), cohort, d / "evaluation" / "aptos_test.predictions.csv",
-                        "retizero_01", name=d.name, val_acc=float(result["best_validation_accuracy"]),
+                        campaign, name=d.name, val_acc=float(result["best_validation_accuracy"]),
                         clahe="on" if stage == "clahe" else "off",
                         summary=d / "evaluation" / "aptos_test.summary.json"))
-    for d in sorted((rz / "scores").iterdir()):
+    for d in sorted((rz / "scores").iterdir()) if (rz / "scores").is_dir() else []:
         name = d.name
+        if not (d / "predictions.csv").is_file():
+            continue
         model_part, cohort_part = name.split("__")
         if model_part.startswith("matched") and cohort_part == "aptos361_clean":
             continue  # benchmark rescoring; identical to the training run's own predictions (checked below)
-        seed = int(model_part[-2:]) if model_part.startswith("matched") else None
-        cond = R_OFF if model_part.startswith("matched") else "RetiZero saved app checkpoint"
-        cohort = {"aptos361_clean": "aptos361", "aptos367_original": "aptos367", "messidor_archived": "messidor"}[cohort_part]
-        runs.append(run("RetiZero", cond, seed, cohort, d / "predictions.csv", "retizero_01", name=name,
+        seed = int(model_part[-2:]) if model_part[:-2].endswith("_t") else None
+        cond = {"matched": R_OFF, "clahe": R_ON}.get(model_part.rsplit("_t", 1)[0], "RetiZero saved app checkpoint")
+        cohort = {"aptos361_clean": "aptos361", "aptos367_original": "aptos367", **MESSIDOR_COHORTS}[cohort_part]
+        runs.append(run("RetiZero", cond, seed, cohort, d / "predictions.csv", campaign, name=name,
                         summary=d / "summary.json"))
-    return runs
 
 
-def qwen_messidor(name: str, folder: Path) -> dict:
-    stem = name.split("__")[0]
+def qwen_messidor(name: str, folder: Path, campaign: str) -> dict:
+    stem, cohort_part = name.split("__")
     seed, cond = None, None
-    m = re.match(r"^(bf16_)?r16_on_p(\d)$", stem)
+    m = re.match(r"^(bf16_)?r16_(on|off)_p(\d)$", stem)
     if m:
-        seed = 41 + int(m.group(2))
-        cond = "Qwen BF16 r16 CLAHE-on lr5e-4" if m.group(1) else Q_ON_5E4
-    m2 = FINAL_TRAIN_RE.match(stem)
-    if m2:
-        kind, seed = m2.group(1), int(m2.group(2))
-        lr = {"lr0p0001": 1e-4, "lr0p0002": 2e-4}.get(kind, 5e-4)
-        alpha = {"alpha8": 8, "alpha32": 32}.get(kind, 16)
-        cond = f"Qwen r16 CLAHE-on lr{lr:.0e}".replace("e-0", "e-") + (f" alpha{alpha}" if alpha != 16 else "")
+        seed = 41 + int(m.group(3))
+        cond = "Qwen BF16 r16 CLAHE-on lr5e-4" if m.group(1) else f"Qwen r16 CLAHE-{m.group(2)} lr5e-4"
+    v = variant(stem)
+    if v:
+        cond, seed = v["condition"], v["seed"]
     if stem == "zeroshot_4bit":
-        cond = "Qwen zero-shot 4bit CLAHE-on"
+        cond = f"Qwen zero-shot 4bit CLAHE-{'off' if cohort_part.endswith('_off') else 'on'}"
     if cond is None:
         raise AnalysisError(f"Unrecognised Messidor job {name}")
-    return run("Qwen", cond, seed, "messidor", folder / "predictions.csv", "final_01", name=name)
+    extra = {"summary": folder / "summary.json"} if (folder / "summary.json").is_file() else {}
+    return run("Qwen", cond, seed, MESSIDOR_COHORTS[cohort_part], folder / "predictions.csv", campaign, name=name, **extra)
 
 
 # --------------------------------------------------------------------------- metrics
@@ -341,6 +370,7 @@ def reproduction_table(runs: list[dict], experiments: Path) -> pd.DataFrame:
             source = "committed paper table"
         elif r.get("summary"):
             s = bpt.read_json(r["summary"])
+            s = s.get("metrics", s)  # score jobs nest the metrics; training evaluations keep them at the top
             ref = {"accuracy": find_metric(s, "accuracy"), "qwk": find_metric(s, "qwk"), "macro_auc": find_metric(s, "macro_ovr_auc")}
             source = "saved run summary"
         y = r["frame"]["y_true"].to_numpy(int)
@@ -405,14 +435,18 @@ SCALAR = ["n", "accuracy", "qwk", "macro_auc", "balanced_accuracy", "macro_f1", 
           *[f"auc_g{g}" for g in GRADES], *[f"n_pred_g{g}" for g in GRADES], "n_grades_predicted", "grades_never_predicted", "collapsed"]
 
 
-def per_run_table(runs: list[dict], groups: dict[str, np.ndarray]) -> pd.DataFrame:
+def per_run_table(runs: list[dict], groups: dict[str, dict]) -> pd.DataFrame:
+    """groups: cohort -> {image_id: cluster}; those cohorts get cluster (patient or exam) bootstrap CIs."""
     rows = []
     for r in runs:
         m = r["metrics"]
-        g = groups.get(r["cohort"])
         f = r["frame"]
-        if g is not None:
-            g = f["image_id"].map(groups["_patient_of"]).to_numpy()
+        g = None
+        if r["cohort"] in groups:
+            g = f["image_id"].map(groups[r["cohort"]])
+            if g.isna().any():
+                raise AnalysisError(f"{r['name']}: {int(g.isna().sum())} images have no patient or exam cluster")
+            g = g.to_numpy()
         boots = metrics_from_counts(f, resample_counts(len(f), g, BOOT_N, BOOT_SEED))
         row = {"model": r["model"], "condition": r["condition"], "seed": r["seed"], "cohort": r["cohort"], "job": r["name"],
                "source": r["source"], "val_loss": r.get("val_loss"), "val_accuracy": r.get("val_acc"),
@@ -521,9 +555,13 @@ def compare(runs: list[dict], family: str, label: str, cond_a: str, cond_b: str,
     return pair_rows, agg
 
 
-def run_comparisons(runs: list[dict], specs: list[tuple], groups=None) -> tuple[pd.DataFrame, pd.DataFrame]:
+def run_comparisons(runs: list[dict], specs: list[tuple], groups=None, optional=False) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """optional: leave out a comparison whose runs do not exist yet (results still to come from the GPU queue)."""
     pair_rows, agg_rows = [], []
+    present = {(r["condition"], r["cohort"]) for r in runs}
     for spec in specs:
+        if optional and not ((spec[2], spec[4]) in present and (spec[3], spec[4]) in present):
+            continue
         pr, agg = compare(runs, *spec, groups=groups)
         pair_rows += pr
         agg_rows.append(agg)
@@ -565,6 +603,25 @@ TRAINING = [
 MESSIDOR = [
     ("messidor", "Messidor: Qwen lr2e-4 vs RetiZero, native preprocessing", Q_ON_2E4, R_OFF, "messidor", True),
     ("messidor", "Messidor: Qwen lr5e-4 vs RetiZero, native preprocessing", Q_ON_5E4, R_OFF, "messidor", True),
+]
+# Verified Messidor-2 (1,744 gradable images, built from the raw photos); present once the GPU queue has run.
+MESSIDOR2 = [
+    ("messidor2", "Messidor-2: Qwen lr2e-4 vs RetiZero, native preprocessing", Q_ON_2E4, R_OFF, "messidor2", True),
+    ("messidor2", "Messidor-2: Qwen lr5e-4 vs RetiZero, native preprocessing", Q_ON_5E4, R_OFF, "messidor2", True),
+    ("messidor2", "Messidor-2: both CLAHE-off", Q_OFF_5E4, R_OFF, "messidor2", True),
+    ("messidor2", "Messidor-2: both CLAHE-on", Q_ON_2E4, R_ON, "messidor2", True),
+    ("messidor2", "Messidor-2: Qwen adapter (lr2e-4) vs zero-shot, CLAHE-on", Q_ON_2E4, "Qwen zero-shot 4bit CLAHE-on", "messidor2", True),
+    ("messidor2", "Messidor-2: RetiZero CLAHE on vs off", R_ON, R_OFF, "messidor2", True),
+]
+# Optional rank sweep at the validation-selected learning rate (revision_gpu_jobs.py --rank-sweep).
+RANK_2E4 = [
+    ("rank_lr2e-4", f"Qwen rank {r} vs 16, CLAHE-{c} (lr2e-4, alpha 16)", f"Qwen r{r} CLAHE-{c} lr2e-4", f"Qwen r16 CLAHE-{c} lr2e-4", "aptos361", True)
+    for c in ("on", "off") for r in (8, 32)
+] + [
+    ("rank_lr2e-4", f"Qwen rank {r} vs 16 with alpha = rank (alpha/r = 1), CLAHE-on (lr2e-4)", f"Qwen r{r} CLAHE-on lr2e-4 alpha{r}", Q_ON_2E4, "aptos361", True)
+    for r in (8, 32)
+] + [
+    ("rank_lr2e-4", "CLAHE on vs off, rank 16 (lr2e-4)", Q_ON_2E4, "Qwen r16 CLAHE-off lr2e-4", "aptos361", True),
 ]
 
 
@@ -828,7 +885,7 @@ def fmt(v, pct=False, d=3):
 
 
 def write_summary(out: Path, cond: pd.DataFrame, lr: pd.DataFrame, collapse: pd.DataFrame, h2h_agg, h2h_pairs, clahe_agg,
-                  rank_agg, train_agg, mess_facts, mild, errs, msd_agg, near):
+                  rank_agg, train_agg, mess_facts, mild, errs, msd_agg, near, extra_sections=()):
     def mean_sd(c, k, cohort="aptos361", pct=True):
         r = cond[(cond["condition"] == c) & (cond["cohort"] == cohort)]
         if r.empty:
@@ -895,6 +952,11 @@ def write_summary(out: Path, cond: pd.DataFrame, lr: pd.DataFrame, collapse: pd.
         if r["condition"] in (Q_ON_2E4, Q_ON_5E4, R_OFF, "RetiZero saved app checkpoint", "Qwen zero-shot 4bit CLAHE-on"):
             s.append(f"| {r['condition']} | {r['cohort']} | {fmt(r['mild_predicted_normal_rate'], True)} | {fmt(r['mild_recall'], True)} | {fmt(r['normal_predicted_mild_rate'], True)} | {fmt(r['auc_mild_vs_normal'])} |")
     s += ["", "Messidor head-to-head (patient-clustered):", "", agg_lines(msd_agg)]
+    for title, body in extra_sections:  # results that exist only after the final_02 / retizero_02 GPU queue
+        if isinstance(body, pd.DataFrame) and "delta_accuracy" in body:
+            s += ["", f"## {title}", "", agg_lines(body)]
+        elif isinstance(body, pd.DataFrame) and len(body):
+            s += ["", f"## {title}", "", bpt.md_table(body)]
     if near is not None and len(near):
         s += ["", "## Near-duplicate sensitivity (S10)", "",
               f"All 361 test images by grade 0-4: {near['all_grade_counts'].iloc[0]}. Removal is not random, so compare against the excluded grade mix.", "",
@@ -902,6 +964,93 @@ def write_summary(out: Path, cond: pd.DataFrame, lr: pd.DataFrame, collapse: pd.
         for (t, c), g in near.groupby(["threshold", "condition"], sort=False):
             s.append(f"| ≤{t} | {g['excluded_test_images'].iloc[0]} ({g['excluded_grade_counts'].iloc[0]}) | {c} | {fmt(g['accuracy_all'].mean(), True)} → {fmt(g['accuracy_kept'].mean(), True)} | {g['qwk_all'].mean():.3f} → {g['qwk_kept'].mean():.3f} |")
     (out / "SUMMARY.md").write_text("\n".join(s) + "\n", encoding="utf-8")
+
+
+def messidor2_clusters(runs: list[dict], pairs_csv: Path | None, dups_csv: Path | None) -> dict:
+    """image_id -> exam cluster for the verified Messidor-2 cohort (both eyes of an exam resample together).
+
+    Exams whose photos are pixel-identical duplicates of another exam's (messidor_duplicate_pairs.csv) are merged.
+    """
+    ids = {i for r in runs if r["cohort"] == "messidor2" for i in r["frame"]["image_id"]}
+    if not ids:
+        return {}
+    if pairs_csv is None:
+        raise AnalysisError("--messidor-pairs is needed to cluster the Messidor-2 cohort by exam")
+    exam = {}
+    lines = [l.strip() for l in open(bpt.track(pairs_csv), encoding="utf-8-sig").read().splitlines()[1:] if l.strip()]
+    for k, line in enumerate(lines, 1):
+        for name in line.split(";"):
+            exam[Path(name.strip()).stem.lower()] = f"exam_{k:04d}"
+    missing = sorted(i for i in ids if i.lower() not in exam)
+    if missing:
+        raise AnalysisError(f"{len(missing)} Messidor-2 images are not in pairs.csv, e.g. {missing[:3]}")
+    if dups_csv is not None and dups_csv.is_file():
+        dups = pd.read_csv(bpt.track(dups_csv))
+        alias = {}
+        for _, g in dups.groupby("group"):
+            exams = sorted(exam[i.lower()] for i in g["image"])
+            alias.update({e: exams[0] for e in exams})
+        for _ in range(len(alias)):  # transitive closure
+            alias = {e: alias.get(a, a) for e, a in alias.items()}
+        exam = {k: alias.get(v, v) for k, v in exam.items()}
+    return {i: exam[i.lower()] for i in ids}
+
+
+def archived_vs_verified(runs: list[dict]) -> pd.DataFrame:
+    """The same model on the 1,057 archived images and on the same images rebuilt from the raw photos."""
+    rows = []
+    archived = {(r["condition"], r["seed"]): r for r in runs if r["cohort"] == "messidor"}
+    for r in runs:
+        if r["cohort"] != "messidor2" or (r["condition"], r["seed"]) not in archived:
+            continue
+        a = archived[(r["condition"], r["seed"])]
+        ids = a["frame"]["image_id"].tolist()
+        v = r["frame"].set_index("image_id")
+        if not set(ids) <= set(v.index):
+            raise AnalysisError(f"{r['name']}: the verified cohort lacks archived images")
+        v = aligned(r["frame"], ids)
+        if not np.array_equal(v["y_true"].to_numpy(), a["frame"]["y_true"].to_numpy()):
+            raise AnalysisError(f"{r['name']}: verified grades differ from the archived grades on the shared images")
+        sub = bpt.point_metrics(v)
+        rows.append({"model": r["model"], "condition": r["condition"], "seed": r["seed"], "archived_job": a["name"],
+                     "verified_job": r["name"], "shared_images": len(ids),
+                     "same_predicted_grade": int((v["y_pred"].to_numpy() == a["frame"]["y_pred"].to_numpy()).sum()),
+                     "max_abs_probability_difference": float(np.abs(v[PROB].to_numpy(float) - a["frame"][PROB].to_numpy(float)).max()),
+                     "accuracy_archived": a["metrics"]["accuracy"], "accuracy_verified_same_images": sub["accuracy"],
+                     "qwk_archived": a["metrics"]["qwk"], "qwk_verified_same_images": sub["qwk"],
+                     "accuracy_verified_all_1744": r["metrics"]["accuracy"]})
+    frame = pd.DataFrame(rows)
+    if len(frame):
+        frame["seed"] = frame["seed"].astype("Int64")
+    return frame
+
+
+def timing_table(experiments: Path) -> pd.DataFrame:
+    """Warm per-image timing, generation check and energy of the final_02 timing jobs (revision_gpu_jobs.py)."""
+    scores = experiments / "final_runs" / "final_02" / "scores"
+    if not scores.is_dir():
+        return pd.DataFrame()
+    energy_path = experiments / "final_runs" / "final_02" / "energy_per_job.csv"
+    energy = pd.read_csv(bpt.track(energy_path)).set_index("job") if energy_path.is_file() else pd.DataFrame()
+    rows = []
+    for d in sorted(scores.glob("*")):
+        if not (d / "summary.json").is_file():
+            continue
+        s = bpt.read_json(d / "summary.json")
+        timing, generation = s.get("full_answer_timing", {}), s.get("generation") or {}
+        agreement = s.get("agreement_with_saved_predictions", {})
+        row = {"job": d.name, "cohort": s["identity"]["cohort"], "images": s["metrics"]["samples"],
+               "median_s_per_image": timing.get("median_seconds"), "p95_s_per_image": timing.get("p95_seconds"),
+               "images_per_s": timing.get("images_per_second"), "model_load_s": s.get("model_load_seconds"),
+               "torch_peak_gib": s.get("torch_peak_allocated_bytes", 0) / 2**30,
+               "generation_median_s": generation.get("timing", {}).get("median_seconds"),
+               "generation_unparseable": generation.get("unparseable_outputs"),
+               "saved_prediction_grade_mismatches": agreement.get("grade_mismatches")}
+        if d.name in energy.index:
+            row.update(mean_board_w=energy.loc[d.name, "mean_w"], energy_wh=energy.loc[d.name, "energy_wh"],
+                       energy_wh_per_image=energy.loc[d.name, "energy_wh"] / row["images"])
+        rows.append(row)
+    return pd.DataFrame(rows)
 
 
 def build(args) -> dict:
@@ -932,7 +1081,9 @@ def build(args) -> dict:
     write(pd.DataFrame([{k: v for k, v in facts.items() if not k.startswith("_")}]).T.reset_index()
           .rename(columns={"index": "fact", 0: "value"}), out / "messidor_label_audit.csv", written)
 
-    per_run = per_run_table(runs, {"messidor": True, "_patient_of": patient_of})
+    exam_of = messidor2_clusters(runs, args.messidor_pairs, args.messidor_duplicates)
+    groups = {"messidor": patient_of, **({"messidor2": exam_of} if exam_of else {})}
+    per_run = per_run_table(runs, groups)
     write(per_run, out / "per_run_metrics.csv", written)
     cond = condition_table(per_run)
     write(cond, out / "condition_summary.csv", written)
@@ -945,9 +1096,14 @@ def build(args) -> dict:
     write(collapse, out / "collapse_vs_validation.csv", written)
 
     results = {}
-    for name, specs, groups in (("head_to_head", HEAD_TO_HEAD, None), ("clahe", CLAHE, None), ("rank", RANK, None),
-                                ("training", TRAINING, None), ("messidor", MESSIDOR, patient_of)):
-        pairs, agg = run_comparisons(runs, specs, groups)
+    for name, specs, cluster, optional in (("head_to_head", HEAD_TO_HEAD, None, False), ("clahe", CLAHE, None, False),
+                                           ("rank", RANK, None, False), ("training", TRAINING, None, False),
+                                           ("messidor", MESSIDOR, patient_of, False),
+                                           ("messidor2", MESSIDOR2, exam_of, True), ("rank_lr2e-4", RANK_2E4, None, True)):
+        pairs, agg = run_comparisons(runs, specs, cluster, optional=optional)
+        if optional and agg.empty:
+            results[name] = (pairs, agg)
+            continue
         write(pairs, out / f"{name}_pairs.csv", written)
         write(agg, out / f"{name}_aggregate.csv", written)
         results[name] = (pairs, agg)
@@ -963,11 +1119,17 @@ def build(args) -> dict:
             for row in reliability_rows(f[PROB].to_numpy(float), f["y_true"].to_numpy(int)):
                 reliab.append({"condition": r["condition"], "seed": r["seed"], **row})
     write(pd.DataFrame(reliab), out / "calibration_reliability_bins.csv", written)
-    mis = pd.concat([misclassified(runs, c, coh) for c in (Q_ON_2E4, Q_ON_5E4, R_OFF) for coh in ("aptos361", "messidor")
+    archived_check = archived_vs_verified(runs)
+    if len(archived_check):
+        write(archived_check, out / "messidor_archived_vs_verified.csv", written)
+    mis = pd.concat([misclassified(runs, c, coh) for c in (Q_ON_2E4, Q_ON_5E4, R_OFF) for coh in ("aptos361", "messidor", "messidor2")
                      if any(r["condition"] == c and r["cohort"] == coh for r in runs)], ignore_index=True)
     write(mis, out / "misclassified_headline.csv", written)
     write(class_counts(args.experiments_root, args.original_split), out / "class_counts.csv", written)
     write(efficiency_final(args.experiments_root), out / "efficiency_final.csv", written)
+    timing = timing_table(args.experiments_root)
+    if len(timing):
+        write(timing, out / "timing_and_energy_final_02.csv", written)
     fallback = pd.read_csv(bpt.track(COMMITTED / "final_01" / "per_job_metrics.csv"))
     cols = ["job", "cohort", "generation_images", "unparseable", "generation_accuracy_strict", "generation_accuracy_unparseable_as_0", "accuracy"]
     fb = fallback.loc[fallback["generation_images"].notna(), cols].rename(columns={"accuracy": "likelihood_scorer_accuracy"})
@@ -979,7 +1141,12 @@ def build(args) -> dict:
         write(near, out / "near_duplicate_sensitivity.csv", written)
 
     write_summary(out, cond, lr, collapse, results["head_to_head"][1], results["head_to_head"][0], results["clahe"][1],
-                  results["rank"][1], results["training"][1], {k: v for k, v in facts.items()}, mild, errs, results["messidor"][1], near)
+                  results["rank"][1], results["training"][1], {k: v for k, v in facts.items()}, mild, errs, results["messidor"][1], near,
+                  extra_sections=[(title, results[key][1]) for key, title in
+                                  (("messidor2", "Verified Messidor-2, 1,744 gradable images (exam-clustered)"),
+                                   ("rank_lr2e-4", "LoRA rank at the validation-selected lr 2e-4"))
+                                  if len(results[key][1])]
+                                 + ([("Archived 1,057 vs the same images rebuilt from raw", archived_check)] if len(archived_check) else []))
     manifest = {
         "built_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"), "script_sha256": bpt.sha256(Path(__file__)),
         "metric_source_sha256": bpt.sha256(HERE / "build_paper_tables.py"),

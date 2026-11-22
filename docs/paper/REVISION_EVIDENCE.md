@@ -69,8 +69,8 @@ LoRA r16 at lr 2e-4 against the same 4-bit model with no adapter (zero-shot), bo
 
 **Colour conversions.**
 - The app preprocessing converts RGB → LAB. The dataset builder converts BGR → LAB. Both are correct, because each matches the channel order of the array it is given.
-- `build_image_audits.py` (`colour_conversion_check.csv`) checks this pixel by pixel on the 361 raw APTOS test photos: Qwen with CLAHE, Qwen without CLAHE, and RetiZero 224.
-- A deliberately wrong conversion (BGR data passed as RGB) runs as a negative control. It must come out different, which shows the check can catch the bug.
+- `build_image_audits.py` (`colour_conversion_check.csv`) checked this pixel by pixel on the 361 raw APTOS test photos. Both routes give **identical pixels on 361 of 361** images for Qwen with CLAHE, Qwen without CLAHE, and RetiZero 224 (OpenCV 5.1.0).
+- A deliberately wrong conversion (BGR data passed as RGB) ran as a negative control. It differs on **all 361** images, mean absolute difference 5.18 grey levels, so the check would catch the bug.
 
 ## 3. Computational efficiency (reviewer comment 13; S14)
 
@@ -160,11 +160,18 @@ That is why QWK (0.894) is high while accuracy is about 78%.
 - They are pixel-identical in the raw Messidor-2 release too, so the duplication comes from the dataset itself.
 - Each pair has the same grade. Patient-clustered CIs treat each pair as one patient (527 clusters).
 
+**Archived images against raw.** The verified Messidor-2 cohort was rebuilt straight from the raw photos with the APTOS builders' own code (`finetuning/revision_jobs/build_messidor2_cohort.py`).
+- All 1,057 archived 512 px images are **pixel-identical** to the raw rebuild.
+- So the archived inputs Qwen was scored on are exactly what the raw pipeline produces.
+- Only RetiZero's archived route (raw → 512 → 224) differs from the direct raw → 224 build.
+
 ## Still open
 
 1. **Decision:** the primary comparison and endpoint. Proposed: H1, Qwen at the validation-selected lr 2e-4 against RetiZero, each with its native preprocessing, on accuracy and QWK.
-2. **Optional GPU work.**
-   - A rank sweep at 2e-4 with alpha/r fixed (point 1): about 20 hours.
-   - Qwen timing for the 7 configurations without warm per-image timing: about 2 hours.
-   - Scoring on the raw-built Messidor cohort, which removes the archived raw → 512 → 224 route: under 1 hour. The raw images and grades are now in hand.
+2. **GPU queue, ready to run.** `finetuning/revision_jobs/` (see its README) runs in one command:
+   - every model on the full verified Messidor-2 cohort: 1,744 gradable images, the standard external benchmark, about 6 h
+   - timing and power for the 7 Qwen configurations without a timing record, about 2 h
+   - optionally, the rank sweep at lr 2e-4 including alpha = rank (point 1), about 30 h
+
+   The analysis picks the new results up automatically: Messidor-2 head-to-head with exam-clustered CIs, the archived-vs-verified agreement check, rank at 2e-4, and timing and energy.
 3. Manuscript text for G1–G3 and S1–S14. The tables above are ready to cite.
