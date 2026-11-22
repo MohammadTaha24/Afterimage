@@ -1,4 +1,11 @@
 {
+  "colour_opencv_version": "5.1.0",
+  "colour_images_checked": 361,
+  "colour_qwen_clahe_app_equals_builder": 361,
+  "colour_qwen_no_clahe_app_equals_builder": 361,
+  "colour_retizero_app_equals_builder": 361,
+  "colour_negative_control_identical": 0,
+  "colour_negative_control_mean_abs_diff": 5.182,
   "neardup_pairs_hamming_le_0": 6,
   "neardup_pairs_hamming_le_2": 57,
   "neardup_pairs_hamming_le_4": 469,

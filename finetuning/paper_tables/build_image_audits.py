@@ -273,6 +273,7 @@ def main(argv=None):
     if args.aptos_raw is not None:
         colour = colour_check(args.aptos_raw, splits["test"]["id_code"].tolist())
         colour.to_csv(OUT / "colour_conversion_check.csv", index=False)
+        facts["colour_opencv_version"] = __import__("cv2").__version__
         facts["colour_images_checked"] = len(colour)
         for c in ("qwen_clahe_app_equals_builder", "qwen_no_clahe_app_equals_builder", "retizero_app_equals_builder"):
             facts[f"colour_{c}"] = int(colour[c].sum())
