@@ -1,6 +1,6 @@
 # Remaining work and phases
 
-Updated 17 November 2026. This is the ordered view of what is done and what is left. The item-by-item list is [DELIVERABLES_CHECKLIST.md](DELIVERABLES_CHECKLIST.md) (not yet refreshed for 17 November; see phase 7).
+Updated 17 November 2026; phases 4 and 5 updated 22 November 2026 (CPU analyses, see [REVISION_EVIDENCE.md](REVISION_EVIDENCE.md)). This is the ordered view of what is done and what is left. The item-by-item list is [DELIVERABLES_CHECKLIST.md](DELIVERABLES_CHECKLIST.md) (not yet refreshed for 17 November; see phase 7).
 
 ## Where things stand
 
@@ -58,31 +58,32 @@ Updated 17 November 2026. This is the ordered view of what is done and what is l
 - [x] 224-pixel CLAHE APTOS and 224-pixel archived Messidor datasets built (`finetuning/RetiZero/data/build_retizero_datasets.py`).
 - [x] All 18 jobs: original split, clean split, CLAHE, timing, archived Messidor. Zero skipped steps from non-finite loss.
 - [x] Power logged every 5 s; energy per job in `retizero_01\energy_per_job.csv` (whole-card power, includes about 20 W idle).
-- [ ] RetiZero results into `build_paper_tables.py` (new set; the efficiency tables already read the RetiZero folder but should be rebuilt to include the full runs).
+- [x] RetiZero results into the tables: per-seed, aggregate, class-wise, calibration and efficiency in `output/revision_analysis/` (`build_revision_analysis.py`), alongside Qwen. `build_paper_tables.py` itself is unchanged.
 - [ ] RetiZero on the verified Messidor cohort (after phase 4).
 - [ ] Optional: export a new RetiZero checkpoint in the app's format; Grad-CAM (open questions in the plan).
 
 ## Phase 4. External evaluation on verified Messidor
 
-- [ ] You: download raw Messidor-2 images and eye pairing (ADCIS) and the adjudicated grades (Kaggle), onto D:.
-- [ ] Match them to the archived 1,057 images; document how the 1,057 were chosen.
-- [ ] Reconcile the four duplicate pairs with different patient IDs.
+- [x] Raw Messidor-2 (1,748 images), the Krause 2018 adjudicated grades and `pairs.csv` found in the ICT302 project folder; packaged for the team as `Messidor-2_for_teammate.zip` (not in git).
+- [x] Matched: the 1,057 are the Messidor-Original PNGs minus the one ungradable PNG; every label equals the adjudicated grade; pairing agrees for all 528 complete exams (`messidor_label_audit.csv`).
+- [x] Four duplicate pairs reconciled: pixel-identical in the raw Messidor-2 release too (dataset-level duplicates, p89/p91 and p90/p92), same grade within each pair; merged into one patient for clustered CIs (`image_audits/messidor_duplicate_pairs.csv`).
 - [ ] Freeze the verified cohort; build at 512 pixels (CLAHE on and off) and 224 pixels (direct raw → 224, removing the current raw → 512 → 224 caveat).
-- [ ] Score the chosen Qwen models and RetiZero on it; Mild-versus-Normal analysis.
+- [ ] Score the chosen Qwen models and RetiZero on it (GPU, under 1 hour).
+- [x] Mild-versus-Normal analysis on the archived cohort, whose labels are now verified (`mild_vs_normal.csv`).
 
 ## Phase 5. Analysis and tables
 
-- [ ] **Paired comparison** Qwen vs RetiZero on the same 361 images (paired bootstrap and McNemar). Inputs now exist for both models.
+- [x] **Paired comparison** Qwen vs RetiZero on the same 361 images and on Messidor: per-seed exact McNemar (Holm), paired and hierarchical bootstrap (`head_to_head_*.csv`, `messidor_*.csv`).
 - [ ] **Efficiency, remaining gaps** (from `output/efficiency/GAPS.md`):
-  - [ ] Rebuild the efficiency tables with the full RetiZero training runs.
+  - [x] Efficiency with the full RetiZero training runs (`revision_analysis/efficiency_final.csv`).
   - [ ] Short scoring-only timing job for the 7 Qwen configurations without warm per-image timing (no retraining).
   - [ ] Qwen power/energy: not recorded in past runs; measure during the timing job, or state as a limitation.
-  - [ ] Final Qwen-vs-RetiZero efficiency table (S14).
-- [ ] Misclassified-image lists and exported examples (S11).
-- [ ] Adjacent-grade versus distant-grade error table (S13).
-- [ ] Class counts per split, before and after augmentation, for both models (S9).
-- [ ] Calibration analysis for the headline models.
-- [ ] Near-duplicate check across splits (approximate count is in HEADLINE_VERIFICATION.md section f; decide whether to report it).
+  - [x] Final Qwen-vs-RetiZero efficiency table (S14), same PC for every row (`efficiency_final.csv`; Qwen power remains a stated limitation unless the timing job runs).
+- [x] Misclassified-image lists and exported examples (S11): `misclassified_headline.csv`, contact sheets outside the repo.
+- [x] Adjacent-grade versus distant-grade error table (S13): `error_structure.csv`.
+- [x] Class counts per split, before and after balancing, for both models (S9): `class_counts.csv`.
+- [x] Calibration analysis (ECE, Brier, NLL, reliability bins) for every run.
+- [x] Near-duplicate check reproduced independently (6 / 32 / 120 test images at pHash 0 / ≤2 / ≤4) with a sensitivity analysis: excluding them moves accuracy by under 1 pt at ≤2 (`near_duplicate_sensitivity.csv`).
 - [ ] Excel workbook of the tables for Dr. Noor.
 
 ## Phase 6. Manuscript

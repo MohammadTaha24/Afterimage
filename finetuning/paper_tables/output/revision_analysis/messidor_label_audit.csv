@@ -1,0 +1,17 @@
+fact,value
+archived_images,1057
+archived_patients,529
+adjudicated_rows,1748
+adjudicated_png_rows,1058
+archived_matched_to_adjudicated,1057
+archived_label_equals_adjudicated,1057
+png_not_in_archive,20060411_58550_0200_PP.png (gradable=0)
+archived_grade_counts,468 207 290 71 21
+adjudicated_png_gradable_counts,468 207 290 71 21
+adjudicated_all_gradable_counts,1017 270 347 75 35
+pairs_exams_total,874
+pairs_png_exams,529
+pairs_both_images_archived,528
+pairs_same_patient_id,528
+pairs_one_image_archived,1
+patient_clusters_after_merging_duplicates,527

@@ -1,0 +1,20 @@
+{
+  "neardup_pairs_hamming_le_0": 6,
+  "neardup_pairs_hamming_le_2": 57,
+  "neardup_pairs_hamming_le_4": 469,
+  "neardup_test_images_hamming_le_0": 6,
+  "neardup_test_images_hamming_le_2": 32,
+  "neardup_test_images_hamming_le_4": 120,
+  "neardup_images_hashed": 3504,
+  "neardup_method_check_identical_file_pairs": 134,
+  "neardup_method_check_max_hamming": 0,
+  "messidor_archived_messidor_images": 1057,
+  "messidor_pixel_duplicate_groups": 4,
+  "messidor_groups_spanning_two_patient_ids": 4,
+  "messidor_raw_zip_files": 1748,
+  "messidor_raw_zip_png": 1058,
+  "messidor_raw_zip_jpg": 690,
+  "messidor_duplicate_groups_pixel_identical_in_raw": 4,
+  "messidor_archived_images_found_in_raw_zip": 1057,
+  "examples_exported": 24
+}

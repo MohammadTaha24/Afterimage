@@ -1,0 +1,37 @@
+condition,seed,job,val_loss,accuracy,n_grades_predicted,grades_never_predicted,collapsed,val_loss_above_healthy_mean_plus_3sd,healthy_threshold
+Qwen r16 CLAHE-on lr5e-4 alpha8,44,r16_on_alpha8_t44_a3409,0.01988773793,0.08310249307,1,0 1 2 3,True,True,0.01319069762
+Qwen r32 CLAHE-on lr5e-4,44,full_r32_on_duplicate_excluded_t44_a3409_01,0.01983062923,0.08310249307,1,0 1 2 3,True,True,0.01319069762
+Qwen r8 CLAHE-off lr5e-4,44,full_r8_off_duplicate_excluded_t44_a3409_01,0.01973703876,0.08310249307,1,0 1 2 3,True,True,0.01319069762
+Qwen r8 CLAHE-on lr5e-4,42,full_r8_on_duplicate_excluded_t42_a3407_01,0.01968851499,0.4210526316,2,2 3 4,True,True,0.01319069762
+Qwen r16 CLAHE-on lr5e-4 alpha32,44,r16_on_alpha32_t44_a3409,0.01952933148,0.08310249307,1,0 1 2 3,True,True,0.01319069762
+Qwen r8 CLAHE-on lr5e-4,43,full_r8_on_duplicate_excluded_t43_a3408_01,0.01842140034,0.5013850416,1,1 2 3 4,True,True,0.01319069762
+Qwen r32 CLAHE-off lr5e-4,43,full_r32_off_duplicate_excluded_t43_a3408_01,0.01807957515,0.5013850416,1,1 2 3 4,True,True,0.01319069762
+Qwen r16 CLAHE-on lr5e-4 alpha32,43,r16_on_alpha32_t43_a3408__aptos_test_fp32,0.01786409132,0.5013850416,1,1 2 3 4,True,True,0.01319069762
+Qwen r16 CLAHE-on lr5e-4,42,full_r16_on_duplicate_excluded_t42_a3407_01,0.01506313123,0.5457063712,3,2 3,False,True,0.01319069762
+Qwen r16 CLAHE-on lr5e-4 alpha32,42,r16_on_alpha32_t42_a3407,0.0141728716,0.5096952909,2,2 3 4,True,True,0.01319069762
+Qwen r32 CLAHE-off lr5e-4,42,full_r32_off_duplicate_excluded_t42_a3407_01,0.01065521594,0.703601108,5,,False,False,0.01319069762
+Qwen r16 CLAHE-off lr5e-4,43,full_r16_off_duplicate_excluded_t43_a3408_01,0.009880323894,0.7091412742,4,4,False,False,0.01319069762
+Qwen r32 CLAHE-on lr5e-4,43,full_r32_on_duplicate_excluded_t43_a3408_01,0.009481150657,0.6731301939,5,,False,False,0.01319069762
+Qwen r8 CLAHE-off lr5e-4,42,full_r8_off_duplicate_excluded_t42_a3407_01,0.009291353635,0.6869806094,5,,False,False,0.01319069762
+Qwen r16 CLAHE-off lr5e-4,42,full_r16_off_duplicate_excluded_t42_a3407_01,0.009287144057,0.7396121884,5,,False,False,0.01319069762
+Qwen r32 CLAHE-on lr5e-4,42,full_r32_on_duplicate_excluded_t42_a3407_01,0.00868739374,0.728531856,5,,False,False,0.01319069762
+Qwen r16 CLAHE-on lr5e-4 previous-split control,43,full_r16_on_previous_split_t43_a3408_01,0.008584151044,0.7146814404,5,,False,False,0.01319069762
+Qwen BF16 r16 CLAHE-on lr5e-4,42,full_bf16_r16_on_duplicate_excluded_t42_a3407_paper_controls_01,0.008565352298,0.7590027701,5,,False,False,0.01319069762
+Qwen r16 CLAHE-on lr5e-4,44,full_r16_on_duplicate_excluded_t44_a3409_01,0.008561753668,0.7423822715,5,,False,False,0.01319069762
+Qwen r8 CLAHE-off lr5e-4,43,full_r8_off_duplicate_excluded_t43_a3408_01,0.008295357227,0.7368421053,5,,False,False,0.01319069762
+Qwen r16 CLAHE-on lr1e-4,43,r16_on_lr0p0001_t43_a3408,0.008232859895,0.728531856,5,,False,False,0.01319069762
+Qwen r16 CLAHE-off lr5e-4,44,full_r16_off_duplicate_excluded_t44_a3409_01,0.008186555468,0.7700831025,5,,False,False,0.01319069762
+Qwen r16 CLAHE-on lr5e-4 previous-split control,44,full_r16_on_previous_split_t44_a3409_01,0.008126679808,0.8199445983,5,,False,False,0.01319069762
+Qwen r16 CLAHE-on lr5e-4 alpha8,42,r16_on_alpha8_t42_a3407,0.008023384027,0.7451523546,5,,False,False,0.01319069762
+Qwen r16 CLAHE-on lr2e-4,43,r16_on_lr0p0002_t43_a3408,0.008015700616,0.8033240997,5,,False,False,0.01319069762
+Qwen r16 CLAHE-on lr1e-4,42,r16_on_lr0p0001_t42_a3407,0.007949054241,0.7506925208,5,,False,False,0.01319069762
+Qwen r16 CLAHE-on lr5e-4,43,full_r16_on_duplicate_excluded_t43_a3408_01,0.007917552255,0.8033240997,5,,False,False,0.01319069762
+Qwen r16 CLAHE-on lr5e-4 alpha8,43,r16_on_alpha8_t43_a3408,0.007790579461,0.728531856,5,,False,False,0.01319069762
+Qwen r16 CLAHE-on lr2e-4,42,r16_on_lr0p0002_t42_a3407,0.007671577856,0.7590027701,5,,False,False,0.01319069762
+Qwen BF16 r16 CLAHE-on lr5e-4,43,full_bf16_r16_on_duplicate_excluded_t43_a3408_paper_controls_01,0.00764308311,0.7506925208,5,,False,False,0.01319069762
+Qwen BF16 r16 CLAHE-on lr5e-4,44,full_bf16_r16_on_duplicate_excluded_t44_a3409_paper_controls_01,0.007607492153,0.7867036011,5,,False,False,0.01319069762
+Qwen r32 CLAHE-off lr5e-4,44,full_r32_off_duplicate_excluded_t44_a3409_01,0.007549896836,0.783933518,5,,False,False,0.01319069762
+Qwen r16 CLAHE-on lr1e-4,44,r16_on_lr0p0001_t44_a3409,0.007537152618,0.7700831025,5,,False,False,0.01319069762
+Qwen r8 CLAHE-on lr5e-4,44,full_r8_on_duplicate_excluded_t44_a3409_01,0.00739160087,0.7506925208,5,,False,False,0.01319069762
+Qwen r16 CLAHE-on lr2e-4,44,r16_on_lr0p0002_t44_a3409,0.007348771673,0.7811634349,5,,False,False,0.01319069762
+Qwen r16 CLAHE-on lr5e-4 previous-split control,42,full_r16_on_previous_split_t42_a3407_01,0.006975200027,0.7867036011,4,4,False,False,0.01319069762
