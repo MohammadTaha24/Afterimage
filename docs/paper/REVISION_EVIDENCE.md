@@ -1,6 +1,6 @@
 # Evidence for Dr. Noor's revision plan
 
-22 November 2026. This note answers the four points of the revision plan from results that already exist. **No new training was needed.** Every number comes from `finetuning/paper_tables/output/revision_analysis/` (open `SUMMARY.md` there). Those tables are rebuilt from the saved per-image predictions by `build_revision_analysis.py` and `build_image_audits.py` (see `finetuning/paper_tables/README.md`).
+22 November 2026; the Qwen rank section (point 1) and the S8 failure check updated 24 November 2026 with the lr 2e-4 rank and alpha grid (`final_runs/final_02`, 27 new adapters). Apart from that grid, this note answers the revision plan from results that already existed. Every number comes from `finetuning/paper_tables/output/revision_analysis/` (open `SUMMARY.md` there). Those tables are rebuilt from the saved per-image predictions by `build_revision_analysis.py` and `build_image_audits.py` (see `finetuning/paper_tables/README.md`).
 
 All results are on the 361 clean APTOS test images and give the mean ± SD over three seeds, unless stated otherwise. CIs are 95% bootstrap intervals. "Δ" is a hierarchical bootstrap over images and seeds.
 
@@ -8,7 +8,7 @@ All results are on the 361 clean APTOS test images and give the mean ± SD over 
 
 | Check | Result | File |
 |---|---|---|
-| Recompute every run's accuracy, QWK and macro AUC from its predictions | 73 of 73 runs match the committed tables or the saved run summaries (tolerance 1e-8) | `reproduction_check.csv` |
+| Recompute every run's accuracy, QWK and macro AUC from its predictions | All 85 runs with a stored reference match the committed tables or the saved run summaries (tolerance 1e-8). The 27 runs of the lr 2e-4 grid have no stored reference in this check; they match the queue's own `final_runs/final_02/summary.csv` to within 1e-10 (checked separately, 24 November 2026). | `reproduction_check.csv` |
 | Same images, order and labels for every run in a cohort | All runs on APTOS-361, APTOS-367 and Messidor agree | `image_alignment_check.csv` |
 | ROC-AUC uses each grade's own probability column | An independent scipy Mann-Whitney computation agrees exactly (max difference 0) for every run and grade | `reproduction_check.csv` |
 | Messidor labels | All 1,057 archived labels equal the Krause 2018 adjudicated ICDR grades. The 1,058th Messidor-Original PNG is the only ungradable PNG. The eye pairing agrees for all 528 complete exams. | `messidor_label_audit.csv` |
@@ -17,36 +17,55 @@ The earlier concern that "our Messidor labels do not match the published grade d
 
 ## 1. LoRA rank (reviewer comments 5 and 7; S6)
 
-Ranks 8, 16 and 32 were trained with everything else fixed: alpha 16, lr 5e-4, CLAHE on and off, three seeds each.
+Ranks 8, 16 and 32 were trained at the validation-selected learning rate of 2e-4 (see S8), CLAHE on and off, three seeds each, with everything else fixed. Alpha 16 was kept for every rank, and rank 8 and 32 were also trained with alpha = rank, so that rank can be separated from LoRA scaling (alpha/r).
 
-| Rank, CLAHE | Accuracy | QWK | Collapsed runs | Mean of non-collapsed runs |
+A run **fails** when it predicts at most 3 of the 5 grades. This one definition is used throughout this note.
+
+| Rank, alpha, CLAHE | Accuracy | QWK | Macro AUC | Failed runs |
 |---|---|---|---|---|
-| 8, on | 55.77 ± 17.19% | 0.410 ± 0.461 | 2 of 3 | 75.07% |
-| 16, on | 69.71 ± 13.46% | 0.670 ± 0.337 | 0 of 3 | 69.71% |
-| 32, on | 49.49 ± 35.77% | 0.552 ± 0.479 | 1 of 3 | 70.08% |
-| 8, off | 50.23 ± 36.39% | 0.593 ± 0.513 | 1 of 3 | 71.19% |
-| 16, off | 73.96 ± 3.05% | 0.859 ± 0.059 | 0 of 3 | 73.96% |
-| 32, off | 66.30 ± 14.56% | 0.586 ± 0.508 | 1 of 3 | 74.38% |
+| 8, 16, on | 78.21 ± 1.05% | 0.896 ± 0.001 | 0.937 | 0 of 3 |
+| 8, 8, on | 78.67 ± 1.27% | 0.901 ± 0.008 | 0.939 | 0 of 3 |
+| **16, 16, on** (headline model) | **78.12 ± 2.22%** | **0.894 ± 0.007** | **0.942** | 0 of 3 |
+| 32, 16, on | 74.52 ± 2.64% | 0.887 ± 0.023 | 0.939 | 0 of 3 |
+| 32, 32, on | 72.76 ± 5.77% | 0.880 ± 0.033 | 0.924 | 0 of 3 |
+| 8, 16, off | 76.92 ± 1.05% | 0.900 ± 0.014 | 0.941 | 0 of 3 |
+| 8, 8, off | 76.18 ± 3.46% | 0.889 ± 0.011 | 0.941 | 0 of 3 |
+| 16, 16, off | 75.81 ± 5.21% | 0.895 ± 0.020 | 0.939 | 0 of 3 |
+| 32, 16, off | 76.08 ± 0.42% | 0.898 ± 0.005 | 0.941 | 0 of 3 |
+| 32, 32, off | 78.58 ± 3.04% | 0.892 ± 0.008 | 0.943 | 0 of 3 |
 
-Collapsed = at most 2 of the 5 grades predicted.
+| Comparison at lr 2e-4 | Δ accuracy [95% CI] | Δ QWK [95% CI] |
+|---|---|---|
+| Rank 8 − 16, alpha 16, CLAHE on | +0.09 pt [−3.51, +3.97] | +0.002 [−0.022, +0.028] |
+| Rank 32 − 16, alpha 16, CLAHE on | −3.60 pt [−8.03, +0.83] | −0.007 [−0.045, +0.021] |
+| Rank 8 − 16, alpha 16, CLAHE off | +1.11 pt [−4.25, +6.93] | +0.005 [−0.030, +0.034] |
+| Rank 32 − 16, alpha 16, CLAHE off | +0.28 pt [−4.52, +6.28] | +0.003 [−0.020, +0.031] |
+| Rank 8 (alpha 8) − 16, CLAHE on | +0.55 pt [−3.14, +4.16] | +0.007 [−0.016, +0.032] |
+| Rank 32 (alpha 32) − 16, CLAHE on | −5.36 pt [−11.45, +1.39] | −0.014 [−0.056, +0.023] |
 
-**Answer.** Rank 16 is the only rank with no collapsed run at 5e-4, under both CLAHE settings. Among runs that did not collapse, the three ranks perform about the same (70–75%). Every rank-vs-16 Δ interval includes zero (`rank_aggregate.csv`). So rank 16 is justified as the most stable setting, not as the most accurate one.
+(`rank_lr2e-4_aggregate.csv`; per-seed McNemar tests with Holm adjustment in `rank_lr2e-4_pairs.csv`.)
+
+**Answer.** At the validation-selected learning rate, LoRA rank does not matter. None of the 30 runs fails: every run predicts all five grades. Every rank-vs-16 interval includes zero, for accuracy and QWK, with alpha fixed at 16 and with alpha = rank. Ranks 8 and 16 are within 0.6 pt of each other. Rank 32 is slightly lower and more variable with CLAHE on, but not significantly. Rank 16 is therefore a reasonable choice, not a necessary one; rank 8 would do as well with fewer trainable parameters.
+
+**Why the original sweep looked different.** The first sweep ran at the original paper rate of 5e-4, where training is unstable (S8). There, 6 of the 18 rank runs fail (r8: 2 with CLAHE on, 1 off; r16: 1 on, 0 off; r32: 1 on, 1 off), and the accuracy SDs reach 36 pt (`rank_aggregate.csv`, `condition_summary.csv`). These differences come from the learning rate, not the rank: at 2e-4 they disappear.
 
 **Caveats to state.**
-- Alpha stayed at 16, so alpha/r changes with rank (2, 1, 0.5). This sweep varies rank and LoRA scaling together.
-- The sweep ran at 5e-4, where training is unstable (see S8 below).
-- A rank sweep at the validation-selected rate of 2e-4 would answer the question cleanly. That is the only extra GPU work this point could justify, about 20 hours.
+- Seed-to-seed spread is about ±5 pt for some settings (for example r16 CLAHE-off: 78.39%, 69.81% and 79.22%). In 6 of 21 single-seed comparisons, McNemar's test survives Holm adjustment in one direction or the other, while no three-seed comparison does. Results should be quoted as three-seed means.
+- The grid uses the same 361 test images as every other result. Rank was not chosen on them: the headline rank 16, lr 2e-4 model was fixed on validation loss before this grid was trained.
 
 ## S8 / G2: learning rate, chosen on validation data only
 
-| lr (rank 16, CLAHE on) | Mean val. loss | Test accuracy | QWK | Collapsed |
+| lr (rank 16, CLAHE on) | Mean val. loss | Test accuracy | QWK | Failed runs (≤ 3 grades) |
 |---|---|---|---|---|
 | 1e-4 | 0.00791 | 74.98 ± 2.08% | 0.880 | 0 of 3 |
 | **2e-4** | **0.00768** | **78.12 ± 2.22%** | **0.894** | 0 of 3 |
-| 5e-4 (original paper setting) | 0.01051 | 69.71 ± 13.46% | 0.670 | 0 of 3, but seed 42 predicts only grades 0, 1 and 4 |
+| 5e-4 (original paper setting) | 0.01051 | 69.71 ± 13.46% | 0.670 | 1 of 3 (seed 42 predicts only grades 0, 1 and 4) |
 
 - Validation loss alone picks 2e-4, the same rate that test accuracy ranks first. The test set was not needed to make this choice.
-- Across all 36 fine-tuned Qwen runs, the 10 failed runs (≤ 3 grades predicted) have validation loss 0.0142–0.0199. The 26 working runs have 0.0070–0.0107. The ranges do not overlap, so collapse is visible on validation data (`collapse_vs_validation.csv`).
+- Across all 63 fine-tuned Qwen runs, the 10 failed runs (≤ 3 grades predicted) have validation loss 0.0142–0.0199. The 53 working runs have 0.0069–0.0107. The ranges do not overlap, so failure is visible on validation data (`collapse_vs_validation.csv`).
+- All 30 runs of the lr 2e-4 rank and alpha grid (point 1) work, with validation loss 0.0069–0.0097.
+
+Note: `SUMMARY.md` and the `collapsed` column of the CSV tables still use the narrower flag "at most 2 grades predicted". The two definitions differ for one run only: r16 CLAHE-on lr 5e-4 seed 42, which predicts 3 grades.
 
 ## S7: with and without the LoRA adapter
 
@@ -171,7 +190,8 @@ That is why QWK (0.894) is high while accuracy is about 78%.
 2. **GPU queue, ready to run.** `finetuning/revision_jobs/` (see its README) runs in one command:
    - every model on the full verified Messidor-2 cohort: 1,744 gradable images, the standard external benchmark, about 6 h
    - timing and power for the 7 Qwen configurations without a timing record, about 2 h
-   - optionally, the rank sweep at lr 2e-4 including alpha = rank (point 1), about 30 h
 
-   The analysis picks the new results up automatically: Messidor-2 head-to-head with exam-clustered CIs, the archived-vs-verified agreement check, rank at 2e-4, and timing and energy.
+   The rank sweep at lr 2e-4, including alpha = rank, is done (point 1; `final_runs/final_02`), so the runner's `--rank-sweep` option is not needed.
+
+   The analysis picks the new results up automatically: Messidor-2 head-to-head with exam-clustered CIs, the archived-vs-verified agreement check, and timing and energy.
 3. Manuscript text for G1–G3 and S1–S14. The tables above are ready to cite.

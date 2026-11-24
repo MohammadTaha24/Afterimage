@@ -25,7 +25,7 @@ Built by `build_revision_analysis.py` from the saved per-image predictions only.
 
 Validation loss alone ranks the learning rates in the same order as test accuracy.
 
-Across all 36 fine-tuned Qwen runs, the 10 runs that predict at most 3 of the 5 grades have validation loss 0.01417 to 0.01989; the 26 runs that predict 4 or 5 grades have 0.00698 to 0.01066. The ranges do not overlap, so every failed run is detectable from validation data alone, without the test set. (`collapse_vs_validation.csv`)
+Across all 63 fine-tuned Qwen runs, the 10 runs that predict at most 3 of the 5 grades have validation loss 0.01417 to 0.01989; the 53 runs that predict 4 or 5 grades have 0.00688 to 0.01066. The ranges do not overlap, so every failed run is detectable from validation data alone, without the test set. (`collapse_vs_validation.csv`)
 
 ## Qwen vs RetiZero (S12)
 
@@ -128,6 +128,18 @@ Messidor head-to-head (patient-clustered):
 |---|---|---|---|---|---|
 | Messidor: Qwen lr2e-4 vs RetiZero, native preprocessing | Qwen r16 CLAHE-on lr2e-4 | RetiZero CLAHE-off | +8.07 pt [+0.57, +16.75] | +0.107 [+0.045, +0.173] | +0.054 [+0.028, +0.083] |
 | Messidor: Qwen lr5e-4 vs RetiZero, native preprocessing | Qwen r16 CLAHE-on lr5e-4 | RetiZero CLAHE-off | +7.32 pt [-0.60, +16.40] | -0.056 [-0.300, +0.139] | +0.013 [-0.018, +0.047] |
+
+## LoRA rank at the validation-selected lr 2e-4
+
+| Comparison | A | B | Δ accuracy [95% CI] | Δ QWK [95% CI] | Δ macro AUC [95% CI] |
+|---|---|---|---|---|---|
+| Qwen rank 8 vs 16, CLAHE-on (lr2e-4, alpha 16) | Qwen r8 CLAHE-on lr2e-4 | Qwen r16 CLAHE-on lr2e-4 | +0.09 pt [-3.51, +3.97] | +0.002 [-0.022, +0.028] | -0.004 [-0.020, +0.011] |
+| Qwen rank 32 vs 16, CLAHE-on (lr2e-4, alpha 16) | Qwen r32 CLAHE-on lr2e-4 | Qwen r16 CLAHE-on lr2e-4 | -3.60 pt [-8.03, +0.83] | -0.007 [-0.045, +0.021] | -0.002 [-0.013, +0.009] |
+| Qwen rank 8 vs 16, CLAHE-off (lr2e-4, alpha 16) | Qwen r8 CLAHE-off lr2e-4 | Qwen r16 CLAHE-off lr2e-4 | +1.11 pt [-4.25, +6.93] | +0.005 [-0.030, +0.034] | +0.002 [-0.011, +0.014] |
+| Qwen rank 32 vs 16, CLAHE-off (lr2e-4, alpha 16) | Qwen r32 CLAHE-off lr2e-4 | Qwen r16 CLAHE-off lr2e-4 | +0.28 pt [-4.52, +6.28] | +0.003 [-0.020, +0.031] | +0.002 [-0.012, +0.015] |
+| Qwen rank 8 vs 16 with alpha = rank (alpha/r = 1), CLAHE-on (lr2e-4) | Qwen r8 CLAHE-on lr2e-4 alpha8 | Qwen r16 CLAHE-on lr2e-4 | +0.55 pt [-3.14, +4.16] | +0.007 [-0.016, +0.032] | -0.003 [-0.016, +0.010] |
+| Qwen rank 32 vs 16 with alpha = rank (alpha/r = 1), CLAHE-on (lr2e-4) | Qwen r32 CLAHE-on lr2e-4 alpha32 | Qwen r16 CLAHE-on lr2e-4 | -5.36 pt [-11.45, +1.39] | -0.014 [-0.056, +0.023] | -0.017 [-0.039, +0.006] |
+| CLAHE on vs off, rank 16 (lr2e-4) | Qwen r16 CLAHE-on lr2e-4 | Qwen r16 CLAHE-off lr2e-4 | +2.31 pt [-3.33, +8.40] | -0.001 [-0.028, +0.025] | +0.002 [-0.011, +0.018] |
 
 ## Near-duplicate sensitivity (S10)
 
