@@ -93,6 +93,54 @@ For sets A, B and C the scoring precision is not recorded in `score_result.json`
 - `efficiency/`: `qwen_efficiency_per_run.csv` and `qwen_efficiency_by_condition.csv` (table 10, Qwen only).
 - `final_01/` (set F, `--final-root`, default `D:\Afterimage_Experimentsinal_runsinal_01`; `--skip-final` leaves it out): `SUMMARY.md` (tables F1-F6), `per_job_metrics.csv`, `zero_shot.csv`, `lr_study_*.csv`, `alpha_study_*.csv`, `inference_benchmark*.csv`, `original_adapter_audit.csv`, `messidor_all_models_*.csv`, confusion and class-wise files. Every row of the queue's `summary.csv` and every group row of its `summary.md` is checked against the recomputed values. LoRA scaling is alpha/r from `adapter_config.json`; `train_result.json`'s `effective_scaling` is stored as 16/rank and is wrong for alpha != 16 (kept as `recorded_effective_scaling` with a `scaling_note`). The alpha-32 seed-43 run's FP16 score overflowed; its FP32-fallback rows are flagged and kept out of FP16-only means.
 
+## Revision analyses (added 22 November 2026)
+
+Two CPU-only scripts answer Dr. Noor's revision plan and the reviewer points from the saved predictions. Neither retrains or rescores anything, and neither edits a hash-pinned file. Both need numpy, pandas and scipy; `build_image_audits.py` also needs opencv-python-headless and Pillow.
+
+```powershell
+python -I -B finetuning\paper_tables\test_revision_analysis.py
+python -I -B finetuning\paper_tables\build_image_audits.py --split-dir <run folder with aptos_{train,val,test}.csv> --aptos-512 <...\Res_512\Aptos_messidor_external> --aptos-raw <APTOS train_images> --image-sha <evidence\analysis\image_sha256.csv> --messidor-grades <messidor_data.csv> --image-out <folder outside the repo>
+python -I -B finetuning\paper_tables\build_revision_analysis.py --experiments-root D:\Afterimage_Experiments --messidor-grades <messidor_data.csv> --messidor-pairs <pairs.csv> --original-split D:\Afterimage_Experiments\reference\aptos_split --near-duplicates finetuning\paper_tables\output\revision_analysis\image_audits\near_duplicate_test_ids.csv
+```
+
+`--experiments-root` also accepts the `evidence\` folder built by `build_evidence_folder.py`, because it holds every prediction file.
+
+**`build_revision_analysis.py`** writes to `output/revision_analysis/`. Open `SUMMARY.md` first.
+
+| Output | Answers |
+|---|---|
+| `reproduction_check.csv`, `image_alignment_check.csv` | Every run's accuracy, QWK and macro AUC recomputed and matched to the committed tables or the saved run summaries (1e-8). Per-grade AUC re-derived independently with scipy's Mann-Whitney U. Every run on a cohort scores the same images with the same labels. The build stops on any mismatch. |
+| `per_run_metrics.csv`, `condition_summary.csv` | Accuracy, QWK and macro AUC with bootstrap CIs, plus balanced accuracy, macro-F1, referable DR (grade ≥ 2) AUC, sensitivity and specificity, adjacent vs distant errors, Mild → Normal, ECE, Brier and NLL. Collapsed = at most 2 grades predicted. Collapsed runs are never dropped. |
+| `classwise_per_run.csv`, `classwise_condition_mean.csv` | Per-grade sensitivity, specificity, precision, F1 and AUC for every Qwen and RetiZero run (item 4) |
+| `rank_*.csv` | LoRA rank 8 / 16 / 32 at lr 5e-4, alpha 16 (item 1, S6) |
+| `lr_selection_by_validation_loss.csv`, `collapse_vs_validation.csv` | The learning rate chosen from validation loss alone, and whether validation loss flags the collapsed runs (G2, S8) |
+| `clahe_*.csv` | CLAHE on vs off for Qwen ranks 8/16/32, Qwen zero-shot and RetiZero (item 2, S9) |
+| `training_*.csv` | Learning-rate pairs, and the LoRA adapter against zero-shot (S7) |
+| `head_to_head_*.csv` | Qwen vs RetiZero on the 361 images, H1 to H4 (S12) |
+| `messidor_*.csv`, `mild_vs_normal.csv` | Messidor label audit against the adjudicated grades, patient-clustered CIs, and the Mild-vs-Normal analysis (item 4) |
+| `error_structure.csv` | Off-by-1, off-by-2 and larger errors (S13) |
+| `misclassified_headline.csv` | Images misclassified by the headline conditions, with each seed's prediction (S11) |
+| `class_counts.csv` | Images per split and grade; expected per-epoch draws under Qwen's inverse-frequency sampler; RetiZero's weighted loss and online augmentation (S9) |
+| `calibration_reliability_bins.csv` | Reliability diagram data for the headline conditions |
+| `efficiency_final.csv` | Qwen vs RetiZero parameters, training time, peak memory and inference time, all on the same RTX 5070 Ti. RetiZero training now comes from the full `retizero_01` runs (item 3, S14). |
+| `grade0_fallback_check.csv` | Unparseable generations and their Grade-0 fallback for every generation check (item 4) |
+| `near_duplicate_sensitivity.csv` | The headline metrics recomputed without the near-duplicate test images (S10) |
+
+Statistics:
+- 95% percentile bootstrap, 2,000 resamples, seed 20261122.
+- Paired comparisons give a per-seed exact McNemar test, Holm-adjusted within each family, with a paired bootstrap CI for each Δ.
+- The aggregate Δ uses a hierarchical bootstrap: it resamples the shared images and each arm's seeds. Seed numbers are only a label across models, so this is the interval to quote for Qwen vs RetiZero.
+- Messidor intervals resample patients (both eyes together).
+
+**`build_image_audits.py`** writes ID-level CSVs to `output/revision_analysis/image_audits/`. Its contact sheets go to `--image-out`, which must be outside the repository: they are dataset images and must not be committed.
+
+| Output | Answers |
+|---|---|
+| `colour_conversion_check.csv` | On the 361 raw APTOS test photos, the app's preprocessing (RGB → LAB) gives pixels identical to the dataset builder (BGR → LAB), with CLAHE on and off and at 224 px. A deliberately wrong channel order is the negative control (item 2, S3). |
+| `near_duplicate_pairs.csv`, `near_duplicate_test_ids.csv` | 64-bit DCT perceptual hash, cross-split pairs at Hamming distance ≤ 4. As a check of the method, byte-identical pairs hash to 0 (S10). |
+| `messidor_duplicate_pairs.csv` | Pixel-identical images in the archived Messidor cohort, with patient IDs and adjudicated grades. With `--messidor-raw-parts`, also checked against the raw Messidor-2 zip. |
+| `misclassified_examples_index.csv` | Images misclassified by all three seeds of both Qwen (lr 2e-4) and RetiZero, one or two per error type (S11) |
+
 ## Caveats
 
 - **Workbook:** `paper_tables.xlsx` is not produced, because openpyxl is not installed in `afterimage_env`.

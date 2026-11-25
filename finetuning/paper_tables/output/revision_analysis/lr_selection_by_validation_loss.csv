@@ -1,0 +1,4 @@
+condition,n_runs,val_loss_mean,val_loss_sd,val_loss_max,n_collapsed,test_accuracy_mean,test_accuracy_sd,test_qwk_mean,test_macro_auc_mean,selected_by_validation_loss,rank_by_validation_loss,rank_by_test_accuracy
+Qwen r16 CLAHE-on lr1e-4,3,0.007906355585,0.0003498135719,0.008232859895,0,0.7497691597,0.02079100692,0.8795205657,0.9315043628,False,2,2
+Qwen r16 CLAHE-on lr2e-4,3,0.007678683382,0.000333521244,0.008015700616,0,0.7811634349,0.02216066482,0.8938901901,0.9415027323,True,1,1
+Qwen r16 CLAHE-on lr5e-4,3,0.01051414572,0.003952682728,0.01506313123,0,0.6971375808,0.1346366779,0.6700906983,0.8984479273,False,3,3

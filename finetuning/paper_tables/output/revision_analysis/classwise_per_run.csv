@@ -1,0 +1,636 @@
+model,condition,seed,cohort,job,grade,label,support,predicted,tp,fn,fp,tn,sensitivity,specificity,precision,f1,auc_ovr
+Qwen,Qwen BF16 r16 CLAHE-on lr5e-4,42,aptos361,full_bf16_r16_on_duplicate_excluded_t42_a3407_paper_controls_01,0,No DR,181,179,176,5,3,177,0.9723756906,0.9833333333,0.9832402235,0.9777777778,0.9953959484
+Qwen,Qwen BF16 r16 CLAHE-on lr5e-4,42,aptos361,full_bf16_r16_on_duplicate_excluded_t42_a3407_paper_controls_01,1,Mild,35,79,29,6,50,276,0.8285714286,0.8466257669,0.3670886076,0.5087719298,0.910254163
+Qwen,Qwen BF16 r16 CLAHE-on lr5e-4,42,aptos361,full_bf16_r16_on_duplicate_excluded_t42_a3407_paper_controls_01,2,Moderate,97,69,50,47,19,245,0.5154639175,0.928030303,0.7246376812,0.6024096386,0.9235004686
+Qwen,Qwen BF16 r16 CLAHE-on lr5e-4,42,aptos361,full_bf16_r16_on_duplicate_excluded_t42_a3407_paper_controls_01,3,Severe,18,21,7,11,14,329,0.3888888889,0.9591836735,0.3333333333,0.358974359,0.9131843213
+Qwen,Qwen BF16 r16 CLAHE-on lr5e-4,42,aptos361,full_bf16_r16_on_duplicate_excluded_t42_a3407_paper_controls_01,4,Proliferative DR,30,13,12,18,1,330,0.4,0.996978852,0.9230769231,0.5581395349,0.92306143
+Qwen,Qwen BF16 r16 CLAHE-on lr5e-4,43,aptos361,full_bf16_r16_on_duplicate_excluded_t43_a3408_paper_controls_01,0,No DR,181,177,174,7,3,177,0.9613259669,0.9833333333,0.9830508475,0.9720670391,0.9940454266
+Qwen,Qwen BF16 r16 CLAHE-on lr5e-4,43,aptos361,full_bf16_r16_on_duplicate_excluded_t43_a3408_paper_controls_01,1,Mild,35,44,24,11,20,306,0.6857142857,0.9386503067,0.5454545455,0.6075949367,0.9352322524
+Qwen,Qwen BF16 r16 CLAHE-on lr5e-4,43,aptos361,full_bf16_r16_on_duplicate_excluded_t43_a3408_paper_controls_01,2,Moderate,97,56,43,54,13,251,0.4432989691,0.9507575758,0.7678571429,0.5620915033,0.9167838176
+Qwen,Qwen BF16 r16 CLAHE-on lr5e-4,43,aptos361,full_bf16_r16_on_duplicate_excluded_t43_a3408_paper_controls_01,3,Severe,18,48,11,7,37,306,0.6111111111,0.8921282799,0.2291666667,0.3333333333,0.8927761581
+Qwen,Qwen BF16 r16 CLAHE-on lr5e-4,43,aptos361,full_bf16_r16_on_duplicate_excluded_t43_a3408_paper_controls_01,4,Proliferative DR,30,36,19,11,17,314,0.6333333333,0.9486404834,0.5277777778,0.5757575758,0.941490433
+Qwen,Qwen BF16 r16 CLAHE-on lr5e-4,44,aptos361,full_bf16_r16_on_duplicate_excluded_t44_a3409_paper_controls_01,0,No DR,181,176,174,7,2,178,0.9613259669,0.9888888889,0.9886363636,0.974789916,0.9952731737
+Qwen,Qwen BF16 r16 CLAHE-on lr5e-4,44,aptos361,full_bf16_r16_on_duplicate_excluded_t44_a3409_paper_controls_01,1,Mild,35,31,20,15,11,315,0.5714285714,0.9662576687,0.6451612903,0.6060606061,0.938913234
+Qwen,Qwen BF16 r16 CLAHE-on lr5e-4,44,aptos361,full_bf16_r16_on_duplicate_excluded_t44_a3409_paper_controls_01,2,Moderate,97,93,69,28,24,240,0.7113402062,0.9090909091,0.7419354839,0.7263157895,0.9220946579
+Qwen,Qwen BF16 r16 CLAHE-on lr5e-4,44,aptos361,full_bf16_r16_on_duplicate_excluded_t44_a3409_paper_controls_01,3,Severe,18,48,11,7,37,306,0.6111111111,0.8921282799,0.2291666667,0.3333333333,0.903952057
+Qwen,Qwen BF16 r16 CLAHE-on lr5e-4,44,aptos361,full_bf16_r16_on_duplicate_excluded_t44_a3409_paper_controls_01,4,Proliferative DR,30,13,10,20,3,328,0.3333333333,0.9909365559,0.7692307692,0.4651162791,0.9432024169
+Qwen,Qwen r16 CLAHE-off lr5e-4,42,aptos361,full_r16_off_duplicate_excluded_t42_a3407_01,0,No DR,181,172,171,10,1,179,0.9447513812,0.9944444444,0.9941860465,0.9688385269,0.9952117864
+Qwen,Qwen r16 CLAHE-off lr5e-4,42,aptos361,full_r16_off_duplicate_excluded_t42_a3407_01,1,Mild,35,71,30,5,41,285,0.8571428571,0.8742331288,0.4225352113,0.5660377358,0.9329535495
+Qwen,Qwen r16 CLAHE-off lr5e-4,42,aptos361,full_r16_off_duplicate_excluded_t42_a3407_01,2,Moderate,97,51,38,59,13,251,0.3917525773,0.9507575758,0.7450980392,0.5135135135,0.9177991253
+Qwen,Qwen r16 CLAHE-off lr5e-4,42,aptos361,full_r16_off_duplicate_excluded_t42_a3407_01,3,Severe,18,38,7,11,31,312,0.3888888889,0.9096209913,0.1842105263,0.25,0.8817622287
+Qwen,Qwen r16 CLAHE-off lr5e-4,42,aptos361,full_r16_off_duplicate_excluded_t42_a3407_01,4,Proliferative DR,30,29,21,9,8,323,0.7,0.9758308157,0.724137931,0.7118644068,0.9605236657
+Qwen,Qwen r16 CLAHE-off lr5e-4,43,aptos361,full_r16_off_duplicate_excluded_t43_a3408_01,0,No DR,181,180,175,6,5,175,0.9668508287,0.9722222222,0.9722222222,0.9695290859,0.9960712093
+Qwen,Qwen r16 CLAHE-off lr5e-4,43,aptos361,full_r16_off_duplicate_excluded_t43_a3408_01,1,Mild,35,83,27,8,56,270,0.7714285714,0.8282208589,0.3253012048,0.4576271186,0.8993865031
+Qwen,Qwen r16 CLAHE-off lr5e-4,43,aptos361,full_r16_off_duplicate_excluded_t43_a3408_01,2,Moderate,97,80,50,47,30,234,0.5154639175,0.8863636364,0.625,0.5649717514,0.9118244299
+Qwen,Qwen r16 CLAHE-off lr5e-4,43,aptos361,full_r16_off_duplicate_excluded_t43_a3408_01,3,Severe,18,18,4,14,14,329,0.2222222222,0.9591836735,0.2222222222,0.2222222222,0.8986070619
+Qwen,Qwen r16 CLAHE-off lr5e-4,43,aptos361,full_r16_off_duplicate_excluded_t43_a3408_01,4,Proliferative DR,30,0,0,30,0,331,0,1,,0,0.9005035247
+Qwen,Qwen r16 CLAHE-off lr5e-4,44,aptos361,full_r16_off_duplicate_excluded_t44_a3409_01,0,No DR,181,175,172,9,3,177,0.9502762431,0.9833333333,0.9828571429,0.9662921348,0.9956721915
+Qwen,Qwen r16 CLAHE-off lr5e-4,44,aptos361,full_r16_off_duplicate_excluded_t44_a3409_01,1,Mild,35,65,28,7,37,289,0.8,0.8865030675,0.4307692308,0.56,0.9284837862
+Qwen,Qwen r16 CLAHE-off lr5e-4,44,aptos361,full_r16_off_duplicate_excluded_t44_a3409_01,2,Moderate,97,60,47,50,13,251,0.4845360825,0.9507575758,0.7833333333,0.5987261146,0.9231099656
+Qwen,Qwen r16 CLAHE-off lr5e-4,44,aptos361,full_r16_off_duplicate_excluded_t44_a3409_01,3,Severe,18,34,12,6,22,321,0.6666666667,0.9358600583,0.3529411765,0.4615384615,0.9305150632
+Qwen,Qwen r16 CLAHE-off lr5e-4,44,aptos361,full_r16_off_duplicate_excluded_t44_a3409_01,4,Proliferative DR,30,27,19,11,8,323,0.6333333333,0.9758308157,0.7037037037,0.6666666667,0.9391742195
+Qwen,Qwen r16 CLAHE-on lr5e-4,42,aptos361,full_r16_on_duplicate_excluded_t42_a3407_01,0,No DR,181,258,174,7,84,96,0.9613259669,0.5333333333,0.6744186047,0.7927107062,0.9896869245
+Qwen,Qwen r16 CLAHE-on lr5e-4,42,aptos361,full_r16_on_duplicate_excluded_t42_a3407_01,1,Mild,35,79,21,14,58,268,0.6,0.8220858896,0.2658227848,0.3684210526,0.8699386503
+Qwen,Qwen r16 CLAHE-on lr5e-4,42,aptos361,full_r16_on_duplicate_excluded_t42_a3407_01,2,Moderate,97,0,0,97,0,264,0,1,,0,0.8995626367
+Qwen,Qwen r16 CLAHE-on lr5e-4,42,aptos361,full_r16_on_duplicate_excluded_t42_a3407_01,3,Severe,18,0,0,18,0,343,0,1,,0,0.7768059605
+Qwen,Qwen r16 CLAHE-on lr5e-4,42,aptos361,full_r16_on_duplicate_excluded_t42_a3407_01,4,Proliferative DR,30,24,2,28,22,309,0.06666666667,0.9335347432,0.08333333333,0.07407407407,0.7105740181
+Qwen,Qwen r16 CLAHE-on lr5e-4,43,aptos361,full_r16_on_duplicate_excluded_t43_a3408_01,0,No DR,181,180,175,6,5,175,0.9668508287,0.9722222222,0.9722222222,0.9695290859,0.9938919583
+Qwen,Qwen r16 CLAHE-on lr5e-4,43,aptos361,full_r16_on_duplicate_excluded_t43_a3408_01,1,Mild,35,37,18,17,19,307,0.5142857143,0.9417177914,0.4864864865,0.5,0.9071866784
+Qwen,Qwen r16 CLAHE-on lr5e-4,43,aptos361,full_r16_on_duplicate_excluded_t43_a3408_01,2,Moderate,97,120,82,15,38,226,0.8453608247,0.8560606061,0.6833333333,0.7557603687,0.934083099
+Qwen,Qwen r16 CLAHE-on lr5e-4,43,aptos361,full_r16_on_duplicate_excluded_t43_a3408_01,3,Severe,18,3,0,18,3,340,0,0.9912536443,0,0,0.8558471007
+Qwen,Qwen r16 CLAHE-on lr5e-4,43,aptos361,full_r16_on_duplicate_excluded_t43_a3408_01,4,Proliferative DR,30,21,15,15,6,325,0.5,0.9818731118,0.7142857143,0.5882352941,0.9303121853
+Qwen,Qwen r16 CLAHE-on lr5e-4,44,aptos361,full_r16_on_duplicate_excluded_t44_a3409_01,0,No DR,181,160,159,22,1,179,0.8784530387,0.9944444444,0.99375,0.9325513196,0.9953345611
+Qwen,Qwen r16 CLAHE-on lr5e-4,44,aptos361,full_r16_on_duplicate_excluded_t44_a3409_01,1,Mild,35,32,11,24,21,305,0.3142857143,0.9355828221,0.34375,0.328358209,0.9056967572
+Qwen,Qwen r16 CLAHE-on lr5e-4,44,aptos361,full_r16_on_duplicate_excluded_t44_a3409_01,2,Moderate,97,144,91,6,53,211,0.9381443299,0.7992424242,0.6319444444,0.755186722,0.9249062793
+Qwen,Qwen r16 CLAHE-on lr5e-4,44,aptos361,full_r16_on_duplicate_excluded_t44_a3409_01,3,Severe,18,22,5,13,17,326,0.2777777778,0.9504373178,0.2272727273,0.25,0.9015225138
+Qwen,Qwen r16 CLAHE-on lr5e-4,44,aptos361,full_r16_on_duplicate_excluded_t44_a3409_01,4,Proliferative DR,30,3,2,28,1,330,0.06666666667,0.996978852,0.6666666667,0.1212121212,0.8813695871
+Qwen,Qwen r16 CLAHE-on lr5e-4 previous-split control,42,aptos361,full_r16_on_previous_split_t42_a3407_01,0,No DR,181,178,176,5,2,178,0.9723756906,0.9888888889,0.9887640449,0.9805013928,0.9973603438
+Qwen,Qwen r16 CLAHE-on lr5e-4 previous-split control,42,aptos361,full_r16_on_previous_split_t42_a3407_01,1,Mild,35,52,27,8,25,301,0.7714285714,0.9233128834,0.5192307692,0.6206896552,0.9430324277
+Qwen,Qwen r16 CLAHE-on lr5e-4 previous-split control,42,aptos361,full_r16_on_previous_split_t42_a3407_01,2,Moderate,97,103,74,23,29,235,0.7628865979,0.8901515152,0.7184466019,0.74,0.927366448
+Qwen,Qwen r16 CLAHE-on lr5e-4 previous-split control,42,aptos361,full_r16_on_previous_split_t42_a3407_01,3,Severe,18,28,7,11,21,322,0.3888888889,0.9387755102,0.25,0.3043478261,0.8986070619
+Qwen,Qwen r16 CLAHE-on lr5e-4 previous-split control,42,aptos361,full_r16_on_previous_split_t42_a3407_01,4,Proliferative DR,30,0,0,30,0,331,0,1,,0,0.9179254783
+Qwen,Qwen r16 CLAHE-on lr5e-4 previous-split control,43,aptos361,full_r16_on_previous_split_t43_a3408_01,0,No DR,181,182,177,4,5,175,0.9779005525,0.9722222222,0.9725274725,0.9752066116,0.9941682014
+Qwen,Qwen r16 CLAHE-on lr5e-4 previous-split control,43,aptos361,full_r16_on_previous_split_t43_a3408_01,1,Mild,35,59,22,13,37,289,0.6285714286,0.8865030675,0.3728813559,0.4680851064,0.8851007888
+Qwen,Qwen r16 CLAHE-on lr5e-4 previous-split control,43,aptos361,full_r16_on_previous_split_t43_a3408_01,2,Moderate,97,39,29,68,10,254,0.2989690722,0.9621212121,0.7435897436,0.4264705882,0.9310371759
+Qwen,Qwen r16 CLAHE-on lr5e-4 previous-split control,43,aptos361,full_r16_on_previous_split_t43_a3408_01,3,Severe,18,53,13,5,40,303,0.7222222222,0.8833819242,0.2452830189,0.3661971831,0.9033041788
+Qwen,Qwen r16 CLAHE-on lr5e-4 previous-split control,43,aptos361,full_r16_on_previous_split_t43_a3408_01,4,Proliferative DR,30,28,17,13,11,320,0.5666666667,0.9667673716,0.6071428571,0.5862068966,0.95387714
+Qwen,Qwen r16 CLAHE-on lr5e-4 previous-split control,44,aptos361,full_r16_on_previous_split_t44_a3409_01,0,No DR,181,180,176,5,4,176,0.9723756906,0.9777777778,0.9777777778,0.9750692521,0.996101903
+Qwen,Qwen r16 CLAHE-on lr5e-4 previous-split control,44,aptos361,full_r16_on_previous_split_t44_a3409_01,1,Mild,35,43,21,14,22,304,0.6,0.9325153374,0.488372093,0.5384615385,0.9337423313
+Qwen,Qwen r16 CLAHE-on lr5e-4 previous-split control,44,aptos361,full_r16_on_previous_split_t44_a3409_01,2,Moderate,97,111,79,18,32,232,0.8144329897,0.8787878788,0.7117117117,0.7596153846,0.9363480162
+Qwen,Qwen r16 CLAHE-on lr5e-4 previous-split control,44,aptos361,full_r16_on_previous_split_t44_a3409_01,3,Severe,18,4,2,16,2,341,0.1111111111,0.9941690962,0.5,0.1818181818,0.9185293165
+Qwen,Qwen r16 CLAHE-on lr5e-4 previous-split control,44,aptos361,full_r16_on_previous_split_t44_a3409_01,4,Proliferative DR,30,23,18,12,5,326,0.6,0.9848942598,0.7826086957,0.679245283,0.9453172205
+Qwen,Qwen r32 CLAHE-off lr5e-4,42,aptos361,full_r32_off_duplicate_excluded_t42_a3407_01,0,No DR,181,162,160,21,2,178,0.8839779006,0.9888888889,0.987654321,0.9329446064,0.9885205648
+Qwen,Qwen r32 CLAHE-off lr5e-4,42,aptos361,full_r32_off_duplicate_excluded_t42_a3407_01,1,Mild,35,76,28,7,48,278,0.8,0.8527607362,0.3684210526,0.5045045045,0.9056091148
+Qwen,Qwen r32 CLAHE-off lr5e-4,42,aptos361,full_r32_off_duplicate_excluded_t42_a3407_01,2,Moderate,97,49,38,59,11,253,0.3917525773,0.9583333333,0.7755102041,0.5205479452,0.9247500781
+Qwen,Qwen r32 CLAHE-off lr5e-4,42,aptos361,full_r32_off_duplicate_excluded_t42_a3407_01,3,Severe,18,54,12,6,42,301,0.6666666667,0.8775510204,0.2222222222,0.3333333333,0.8947197927
+Qwen,Qwen r32 CLAHE-off lr5e-4,42,aptos361,full_r32_off_duplicate_excluded_t42_a3407_01,4,Proliferative DR,30,20,16,14,4,327,0.5333333333,0.9879154079,0.8,0.64,0.9488418933
+Qwen,Qwen r32 CLAHE-off lr5e-4,43,aptos361,full_r32_off_duplicate_excluded_t43_a3408_01,0,No DR,181,361,181,0,180,0,1,0,0.5013850416,0.667896679,0.6159300184
+Qwen,Qwen r32 CLAHE-off lr5e-4,43,aptos361,full_r32_off_duplicate_excluded_t43_a3408_01,1,Mild,35,0,0,35,0,326,0,1,,0,0.479491674
+Qwen,Qwen r32 CLAHE-off lr5e-4,43,aptos361,full_r32_off_duplicate_excluded_t43_a3408_01,2,Moderate,97,0,0,97,0,264,0,1,,0,0.5224148704
+Qwen,Qwen r32 CLAHE-off lr5e-4,43,aptos361,full_r32_off_duplicate_excluded_t43_a3408_01,3,Severe,18,0,0,18,0,343,0,1,,0,0.6268221574
+Qwen,Qwen r32 CLAHE-off lr5e-4,43,aptos361,full_r32_off_duplicate_excluded_t43_a3408_01,4,Proliferative DR,30,0,0,30,0,331,0,1,,0,0.6063444109
+Qwen,Qwen r32 CLAHE-off lr5e-4,44,aptos361,full_r32_off_duplicate_excluded_t44_a3409_01,0,No DR,181,176,174,7,2,178,0.9613259669,0.9888888889,0.9886363636,0.974789916,0.9974831185
+Qwen,Qwen r32 CLAHE-off lr5e-4,44,aptos361,full_r32_off_duplicate_excluded_t44_a3409_01,1,Mild,35,67,29,6,38,288,0.8285714286,0.8834355828,0.4328358209,0.568627451,0.9410166521
+Qwen,Qwen r32 CLAHE-off lr5e-4,44,aptos361,full_r32_off_duplicate_excluded_t44_a3409_01,2,Moderate,97,81,61,36,20,244,0.6288659794,0.9242424242,0.7530864198,0.6853932584,0.9331068416
+Qwen,Qwen r32 CLAHE-off lr5e-4,44,aptos361,full_r32_off_duplicate_excluded_t44_a3409_01,3,Severe,18,18,5,13,13,330,0.2777777778,0.9620991254,0.2777777778,0.2777777778,0.9091350826
+Qwen,Qwen r32 CLAHE-off lr5e-4,44,aptos361,full_r32_off_duplicate_excluded_t44_a3409_01,4,Proliferative DR,30,19,14,16,5,326,0.4666666667,0.9848942598,0.7368421053,0.5714285714,0.9482376636
+Qwen,Qwen r32 CLAHE-on lr5e-4,42,aptos361,full_r32_on_duplicate_excluded_t42_a3407_01,0,No DR,181,181,176,5,5,175,0.9723756906,0.9722222222,0.9723756906,0.9723756906,0.9961325967
+Qwen,Qwen r32 CLAHE-on lr5e-4,42,aptos361,full_r32_on_duplicate_excluded_t42_a3407_01,1,Mild,35,90,27,8,63,263,0.7714285714,0.8067484663,0.3,0.432,0.9035933392
+Qwen,Qwen r32 CLAHE-on lr5e-4,42,aptos361,full_r32_on_duplicate_excluded_t42_a3407_01,2,Moderate,97,49,37,60,12,252,0.381443299,0.9545454545,0.7551020408,0.5068493151,0.9251405811
+Qwen,Qwen r32 CLAHE-on lr5e-4,42,aptos361,full_r32_on_duplicate_excluded_t42_a3407_01,3,Severe,18,18,6,12,12,331,0.3333333333,0.9650145773,0.3333333333,0.3333333333,0.902170392
+Qwen,Qwen r32 CLAHE-on lr5e-4,42,aptos361,full_r32_on_duplicate_excluded_t42_a3407_01,4,Proliferative DR,30,23,17,13,6,325,0.5666666667,0.9818731118,0.7391304348,0.641509434,0.9434038268
+Qwen,Qwen r32 CLAHE-on lr5e-4,43,aptos361,full_r32_on_duplicate_excluded_t43_a3408_01,0,No DR,181,187,173,8,14,166,0.955801105,0.9222222222,0.9251336898,0.9402173913,0.9875076734
+Qwen,Qwen r32 CLAHE-on lr5e-4,43,aptos361,full_r32_on_duplicate_excluded_t43_a3408_01,1,Mild,35,54,17,18,37,289,0.4857142857,0.8865030675,0.3148148148,0.3820224719,0.7957055215
+Qwen,Qwen r32 CLAHE-on lr5e-4,43,aptos361,full_r32_on_duplicate_excluded_t43_a3408_01,2,Moderate,97,36,28,69,8,256,0.2886597938,0.9696969697,0.7777777778,0.4210526316,0.9022571072
+Qwen,Qwen r32 CLAHE-on lr5e-4,43,aptos361,full_r32_on_duplicate_excluded_t43_a3408_01,3,Severe,18,1,0,18,1,342,0,0.9970845481,0,0,0.9180434078
+Qwen,Qwen r32 CLAHE-on lr5e-4,43,aptos361,full_r32_on_duplicate_excluded_t43_a3408_01,4,Proliferative DR,30,83,25,5,58,273,0.8333333333,0.8247734139,0.3012048193,0.4424778761,0.9022155086
+Qwen,Qwen r32 CLAHE-on lr5e-4,44,aptos361,full_r32_on_duplicate_excluded_t44_a3409_01,0,No DR,181,0,0,181,0,180,0,1,,0,0.5262124002
+Qwen,Qwen r32 CLAHE-on lr5e-4,44,aptos361,full_r32_on_duplicate_excluded_t44_a3409_01,1,Mild,35,0,0,35,0,326,0,1,,0,0.5524978089
+Qwen,Qwen r32 CLAHE-on lr5e-4,44,aptos361,full_r32_on_duplicate_excluded_t44_a3409_01,2,Moderate,97,0,0,97,0,264,0,1,,0,0.5318650422
+Qwen,Qwen r32 CLAHE-on lr5e-4,44,aptos361,full_r32_on_duplicate_excluded_t44_a3409_01,3,Severe,18,0,0,18,0,343,0,1,,0,0.5080984775
+Qwen,Qwen r32 CLAHE-on lr5e-4,44,aptos361,full_r32_on_duplicate_excluded_t44_a3409_01,4,Proliferative DR,30,361,30,0,331,0,1,0,0.08310249307,0.1534526854,0.4586102719
+Qwen,Qwen r8 CLAHE-off lr5e-4,42,aptos361,full_r8_off_duplicate_excluded_t42_a3407_01,0,No DR,181,173,171,10,2,178,0.9447513812,0.9888888889,0.9884393064,0.9661016949,0.993247391
+Qwen,Qwen r8 CLAHE-off lr5e-4,42,aptos361,full_r8_off_duplicate_excluded_t42_a3407_01,1,Mild,35,36,22,13,14,312,0.6285714286,0.9570552147,0.6111111111,0.6197183099,0.9223488168
+Qwen,Qwen r8 CLAHE-off lr5e-4,42,aptos361,full_r8_off_duplicate_excluded_t42_a3407_01,2,Moderate,97,47,33,64,14,250,0.3402061856,0.946969697,0.7021276596,0.4583333333,0.9126054358
+Qwen,Qwen r8 CLAHE-off lr5e-4,42,aptos361,full_r8_off_duplicate_excluded_t42_a3407_01,3,Severe,18,96,15,3,81,262,0.8333333333,0.7638483965,0.15625,0.2631578947,0.885973437
+Qwen,Qwen r8 CLAHE-off lr5e-4,42,aptos361,full_r8_off_duplicate_excluded_t42_a3407_01,4,Proliferative DR,30,9,7,23,2,329,0.2333333333,0.9939577039,0.7777777778,0.358974359,0.9398791541
+Qwen,Qwen r8 CLAHE-off lr5e-4,43,aptos361,full_r8_off_duplicate_excluded_t43_a3408_01,0,No DR,181,177,173,8,4,176,0.955801105,0.9777777778,0.9774011299,0.9664804469,0.9934929405
+Qwen,Qwen r8 CLAHE-off lr5e-4,43,aptos361,full_r8_off_duplicate_excluded_t43_a3408_01,1,Mild,35,28,16,19,12,314,0.4571428571,0.963190184,0.5714285714,0.5079365079,0.9285714286
+Qwen,Qwen r8 CLAHE-off lr5e-4,43,aptos361,full_r8_off_duplicate_excluded_t43_a3408_01,2,Moderate,97,77,53,44,24,240,0.5463917526,0.9090909091,0.6883116883,0.6091954023,0.8958138082
+Qwen,Qwen r8 CLAHE-off lr5e-4,43,aptos361,full_r8_off_duplicate_excluded_t43_a3408_01,3,Severe,18,48,8,10,40,303,0.4444444444,0.8833819242,0.1666666667,0.2424242424,0.9028182702
+Qwen,Qwen r8 CLAHE-off lr5e-4,43,aptos361,full_r8_off_duplicate_excluded_t43_a3408_01,4,Proliferative DR,30,31,16,14,15,316,0.5333333333,0.9546827795,0.5161290323,0.5245901639,0.9316213494
+Qwen,Qwen r8 CLAHE-off lr5e-4,44,aptos361,full_r8_off_duplicate_excluded_t44_a3409_01,0,No DR,181,0,0,181,0,180,0,1,,0,0.5095150399
+Qwen,Qwen r8 CLAHE-off lr5e-4,44,aptos361,full_r8_off_duplicate_excluded_t44_a3409_01,1,Mild,35,0,0,35,0,326,0,1,,0,0.5160385627
+Qwen,Qwen r8 CLAHE-off lr5e-4,44,aptos361,full_r8_off_duplicate_excluded_t44_a3409_01,2,Moderate,97,0,0,97,0,264,0,1,,0,0.4814901593
+Qwen,Qwen r8 CLAHE-off lr5e-4,44,aptos361,full_r8_off_duplicate_excluded_t44_a3409_01,3,Severe,18,0,0,18,0,343,0,1,,0,0.4781341108
+Qwen,Qwen r8 CLAHE-off lr5e-4,44,aptos361,full_r8_off_duplicate_excluded_t44_a3409_01,4,Proliferative DR,30,361,30,0,331,0,1,0,0.08310249307,0.1534526854,0.5625377644
+Qwen,Qwen r8 CLAHE-on lr5e-4,42,aptos361,full_r8_on_duplicate_excluded_t42_a3407_01,0,No DR,181,127,120,61,7,173,0.6629834254,0.9611111111,0.9448818898,0.7792207792,0.932320442
+Qwen,Qwen r8 CLAHE-on lr5e-4,42,aptos361,full_r8_on_duplicate_excluded_t42_a3407_01,1,Mild,35,234,32,3,202,124,0.9142857143,0.3803680982,0.1367521368,0.2379182156,0.6973707274
+Qwen,Qwen r8 CLAHE-on lr5e-4,42,aptos361,full_r8_on_duplicate_excluded_t42_a3407_01,2,Moderate,97,0,0,97,0,264,0,1,,0,0.8113089659
+Qwen,Qwen r8 CLAHE-on lr5e-4,42,aptos361,full_r8_on_duplicate_excluded_t42_a3407_01,3,Severe,18,0,0,18,0,343,0,1,,0,0.6527372854
+Qwen,Qwen r8 CLAHE-on lr5e-4,42,aptos361,full_r8_on_duplicate_excluded_t42_a3407_01,4,Proliferative DR,30,0,0,30,0,331,0,1,,0,0.7055387714
+Qwen,Qwen r8 CLAHE-on lr5e-4,43,aptos361,full_r8_on_duplicate_excluded_t43_a3408_01,0,No DR,181,361,181,0,180,0,1,0,0.5013850416,0.667896679,0.861694291
+Qwen,Qwen r8 CLAHE-on lr5e-4,43,aptos361,full_r8_on_duplicate_excluded_t43_a3408_01,1,Mild,35,0,0,35,0,326,0,1,,0,0.4072743208
+Qwen,Qwen r8 CLAHE-on lr5e-4,43,aptos361,full_r8_on_duplicate_excluded_t43_a3408_01,2,Moderate,97,0,0,97,0,264,0,1,,0,0.7594111215
+Qwen,Qwen r8 CLAHE-on lr5e-4,43,aptos361,full_r8_on_duplicate_excluded_t43_a3408_01,3,Severe,18,0,0,18,0,343,0,1,,0,0.6370262391
+Qwen,Qwen r8 CLAHE-on lr5e-4,43,aptos361,full_r8_on_duplicate_excluded_t43_a3408_01,4,Proliferative DR,30,0,0,30,0,331,0,1,,0,0.7168177241
+Qwen,Qwen r8 CLAHE-on lr5e-4,44,aptos361,full_r8_on_duplicate_excluded_t44_a3409_01,0,No DR,181,169,168,13,1,179,0.9281767956,0.9944444444,0.9940828402,0.96,0.996101903
+Qwen,Qwen r8 CLAHE-on lr5e-4,44,aptos361,full_r8_on_duplicate_excluded_t44_a3409_01,1,Mild,35,42,19,16,23,303,0.5428571429,0.9294478528,0.4523809524,0.4935064935,0.9168273444
+Qwen,Qwen r8 CLAHE-on lr5e-4,44,aptos361,full_r8_on_duplicate_excluded_t44_a3409_01,2,Moderate,97,85,61,36,24,240,0.6288659794,0.9090909091,0.7176470588,0.6703296703,0.9163542643
+Qwen,Qwen r8 CLAHE-on lr5e-4,44,aptos361,full_r8_on_duplicate_excluded_t44_a3409_01,3,Severe,18,47,9,9,38,305,0.5,0.889212828,0.1914893617,0.2769230769,0.894233884
+Qwen,Qwen r8 CLAHE-on lr5e-4,44,aptos361,full_r8_on_duplicate_excluded_t44_a3409_01,4,Proliferative DR,30,18,14,16,4,327,0.4666666667,0.9879154079,0.7777777778,0.5833333333,0.9509566969
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha32,42,aptos361,r16_on_alpha32_t42_a3407,0,No DR,181,176,155,26,21,159,0.8563535912,0.8833333333,0.8806818182,0.8683473389,0.9109883364
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha32,42,aptos361,r16_on_alpha32_t42_a3407,1,Mild,35,185,29,6,156,170,0.8285714286,0.5214723926,0.1567567568,0.2636363636,0.723225241
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha32,42,aptos361,r16_on_alpha32_t42_a3407,2,Moderate,97,0,0,97,0,264,0,1,,0,0.7925257732
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha32,42,aptos361,r16_on_alpha32_t42_a3407,3,Severe,18,0,0,18,0,343,0,1,,0,0.7159054098
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha32,42,aptos361,r16_on_alpha32_t42_a3407,4,Proliferative DR,30,0,0,30,0,331,0,1,,0,0.7065458207
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha32,43,aptos361,r16_on_alpha32_t43_a3408__aptos_test_fp32,0,No DR,181,361,181,0,180,0,1,0,0.5013850416,0.667896679,0.6507980356
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha32,43,aptos361,r16_on_alpha32_t43_a3408__aptos_test_fp32,1,Mild,35,0,0,35,0,326,0,1,,0,0.4465381245
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha32,43,aptos361,r16_on_alpha32_t43_a3408__aptos_test_fp32,2,Moderate,97,0,0,97,0,264,0,1,,0,0.6665885661
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha32,43,aptos361,r16_on_alpha32_t43_a3408__aptos_test_fp32,3,Severe,18,0,0,18,0,343,0,1,,0,0.4429867185
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha32,43,aptos361,r16_on_alpha32_t43_a3408__aptos_test_fp32,4,Proliferative DR,30,0,0,30,0,331,0,1,,0,0.6099697885
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha32,44,aptos361,r16_on_alpha32_t44_a3409,0,No DR,181,0,0,181,0,180,0,1,,0,0.2754450583
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha32,44,aptos361,r16_on_alpha32_t44_a3409,1,Mild,35,0,0,35,0,326,0,1,,0,0.510254163
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha32,44,aptos361,r16_on_alpha32_t44_a3409,2,Moderate,97,0,0,97,0,264,0,1,,0,0.3250546704
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha32,44,aptos361,r16_on_alpha32_t44_a3409,3,Severe,18,0,0,18,0,343,0,1,,0,0.3658892128
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha32,44,aptos361,r16_on_alpha32_t44_a3409,4,Proliferative DR,30,361,30,0,331,0,1,0,0.08310249307,0.1534526854,0.507653575
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha8,42,aptos361,r16_on_alpha8_t42_a3407,0,No DR,181,172,172,9,0,180,0.9502762431,1,1,0.9745042493,0.9936157152
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha8,42,aptos361,r16_on_alpha8_t42_a3407,1,Mild,35,59,30,5,29,297,0.8571428571,0.9110429448,0.5084745763,0.6382978723,0.951884312
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha8,42,aptos361,r16_on_alpha8_t42_a3407,2,Moderate,97,61,45,52,16,248,0.4639175258,0.9393939394,0.737704918,0.5696202532,0.9283817557
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha8,42,aptos361,r16_on_alpha8_t42_a3407,3,Severe,18,56,12,6,44,299,0.6666666667,0.8717201166,0.2142857143,0.3243243243,0.9033041788
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha8,42,aptos361,r16_on_alpha8_t42_a3407,4,Proliferative DR,30,13,10,20,3,328,0.3333333333,0.9909365559,0.7692307692,0.4651162791,0.9503524673
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha8,43,aptos361,r16_on_alpha8_t43_a3408,0,No DR,181,170,169,12,1,179,0.9337016575,0.9944444444,0.9941176471,0.962962963,0.9966850829
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha8,43,aptos361,r16_on_alpha8_t43_a3408,1,Mild,35,56,26,9,30,296,0.7428571429,0.9079754601,0.4642857143,0.5714285714,0.9428571429
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha8,43,aptos361,r16_on_alpha8_t43_a3408,2,Moderate,97,57,42,55,15,249,0.4329896907,0.9431818182,0.7368421053,0.5454545455,0.9062011871
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha8,43,aptos361,r16_on_alpha8_t43_a3408,3,Severe,18,52,12,6,40,303,0.6666666667,0.8833819242,0.2307692308,0.3428571429,0.8791707159
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha8,43,aptos361,r16_on_alpha8_t43_a3408,4,Proliferative DR,30,26,14,16,12,319,0.4666666667,0.9637462236,0.5384615385,0.5,0.9257804632
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha8,44,aptos361,r16_on_alpha8_t44_a3409,0,No DR,181,0,0,181,0,180,0,1,,0,0.6681092695
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha8,44,aptos361,r16_on_alpha8_t44_a3409,1,Mild,35,0,0,35,0,326,0,1,,0,0.4647677476
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha8,44,aptos361,r16_on_alpha8_t44_a3409,2,Moderate,97,0,0,97,0,264,0,1,,0,0.5747032177
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha8,44,aptos361,r16_on_alpha8_t44_a3409,3,Severe,18,0,0,18,0,343,0,1,,0,0.4919015225
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha8,44,aptos361,r16_on_alpha8_t44_a3409,4,Proliferative DR,30,361,30,0,331,0,1,0,0.08310249307,0.1534526854,0.5097683787
+Qwen,Qwen r16 CLAHE-on lr1e-4,42,aptos361,r16_on_lr0p0001_t42_a3407,0,No DR,181,182,178,3,4,176,0.9834254144,0.9777777778,0.978021978,0.9807162534,0.9972068754
+Qwen,Qwen r16 CLAHE-on lr1e-4,42,aptos361,r16_on_lr0p0001_t42_a3407,1,Mild,35,33,20,15,13,313,0.5714285714,0.9601226994,0.6060606061,0.5882352941,0.9326906223
+Qwen,Qwen r16 CLAHE-on lr1e-4,42,aptos361,r16_on_lr0p0001_t42_a3407,2,Moderate,97,59,43,54,16,248,0.4432989691,0.9393939394,0.7288135593,0.5512820513,0.9144407998
+Qwen,Qwen r16 CLAHE-on lr1e-4,42,aptos361,r16_on_lr0p0001_t42_a3407,3,Severe,18,63,14,4,49,294,0.7777777778,0.8571428571,0.2222222222,0.3456790123,0.9062196307
+Qwen,Qwen r16 CLAHE-on lr1e-4,42,aptos361,r16_on_lr0p0001_t42_a3407,4,Proliferative DR,30,24,16,14,8,323,0.5333333333,0.9758308157,0.6666666667,0.5925925926,0.9280966767
+Qwen,Qwen r16 CLAHE-on lr1e-4,43,aptos361,r16_on_lr0p0001_t43_a3408,0,No DR,181,181,174,7,7,173,0.9613259669,0.9611111111,0.9613259669,0.9613259669,0.9937077962
+Qwen,Qwen r16 CLAHE-on lr1e-4,43,aptos361,r16_on_lr0p0001_t43_a3408,1,Mild,35,65,22,13,43,283,0.6285714286,0.8680981595,0.3384615385,0.44,0.8931638913
+Qwen,Qwen r16 CLAHE-on lr1e-4,43,aptos361,r16_on_lr0p0001_t43_a3408,2,Moderate,97,58,44,53,14,250,0.4536082474,0.946969697,0.7586206897,0.5677419355,0.928420806
+Qwen,Qwen r16 CLAHE-on lr1e-4,43,aptos361,r16_on_lr0p0001_t43_a3408,3,Severe,18,20,4,14,16,327,0.2222222222,0.9533527697,0.2,0.2105263158,0.8772270813
+Qwen,Qwen r16 CLAHE-on lr1e-4,43,aptos361,r16_on_lr0p0001_t43_a3408,4,Proliferative DR,30,37,19,11,18,313,0.6333333333,0.9456193353,0.5135135135,0.5671641791,0.9243705942
+Qwen,Qwen r16 CLAHE-on lr1e-4,44,aptos361,r16_on_lr0p0001_t44_a3409,0,No DR,181,181,176,5,5,175,0.9723756906,0.9722222222,0.9723756906,0.9723756906,0.9967157766
+Qwen,Qwen r16 CLAHE-on lr1e-4,44,aptos361,r16_on_lr0p0001_t44_a3409,1,Mild,35,54,22,13,32,294,0.6285714286,0.9018404908,0.4074074074,0.4943820225,0.9154250657
+Qwen,Qwen r16 CLAHE-on lr1e-4,44,aptos361,r16_on_lr0p0001_t44_a3409,2,Moderate,97,81,58,39,23,241,0.5979381443,0.9128787879,0.7160493827,0.6516853933,0.9262339894
+Qwen,Qwen r16 CLAHE-on lr1e-4,44,aptos361,r16_on_lr0p0001_t44_a3409,3,Severe,18,24,7,11,17,326,0.3888888889,0.9504373178,0.2916666667,0.3333333333,0.9099449304
+Qwen,Qwen r16 CLAHE-on lr1e-4,44,aptos361,r16_on_lr0p0001_t44_a3409,4,Proliferative DR,30,21,15,15,6,325,0.5,0.9818731118,0.7142857143,0.5882352941,0.9287009063
+Qwen,Qwen r16 CLAHE-on lr2e-4,42,aptos361,r16_on_lr0p0002_t42_a3407,0,No DR,181,174,174,7,0,180,0.9613259669,1,1,0.9802816901,0.9955494168
+Qwen,Qwen r16 CLAHE-on lr2e-4,42,aptos361,r16_on_lr0p0002_t42_a3407,1,Mild,35,59,30,5,29,297,0.8571428571,0.9110429448,0.5084745763,0.6382978723,0.9585451358
+Qwen,Qwen r16 CLAHE-on lr2e-4,42,aptos361,r16_on_lr0p0002_t42_a3407,2,Moderate,97,49,37,60,12,252,0.381443299,0.9545454545,0.7551020408,0.5068493151,0.9202983443
+Qwen,Qwen r16 CLAHE-on lr2e-4,42,aptos361,r16_on_lr0p0002_t42_a3407,3,Severe,18,39,8,10,31,312,0.4444444444,0.9096209913,0.2051282051,0.2807017544,0.8780369291
+Qwen,Qwen r16 CLAHE-on lr2e-4,42,aptos361,r16_on_lr0p0002_t42_a3407,4,Proliferative DR,30,40,25,5,15,316,0.8333333333,0.9546827795,0.625,0.7142857143,0.9657603223
+Qwen,Qwen r16 CLAHE-on lr2e-4,43,aptos361,r16_on_lr0p0002_t43_a3408,0,No DR,181,171,169,12,2,178,0.9337016575,0.9888888889,0.9883040936,0.9602272727,0.9933701657
+Qwen,Qwen r16 CLAHE-on lr2e-4,43,aptos361,r16_on_lr0p0002_t43_a3408,1,Mild,35,33,20,15,13,313,0.5714285714,0.9601226994,0.6060606061,0.5882352941,0.9517090272
+Qwen,Qwen r16 CLAHE-on lr2e-4,43,aptos361,r16_on_lr0p0002_t43_a3408,2,Moderate,97,110,77,20,33,231,0.793814433,0.875,0.7,0.7439613527,0.9296704155
+Qwen,Qwen r16 CLAHE-on lr2e-4,43,aptos361,r16_on_lr0p0002_t43_a3408,3,Severe,18,26,8,10,18,325,0.4444444444,0.9475218659,0.3076923077,0.3636363636,0.8858114674
+Qwen,Qwen r16 CLAHE-on lr2e-4,43,aptos361,r16_on_lr0p0002_t43_a3408,4,Proliferative DR,30,21,16,14,5,326,0.5333333333,0.9848942598,0.7619047619,0.6274509804,0.9590130916
+Qwen,Qwen r16 CLAHE-on lr2e-4,44,aptos361,r16_on_lr0p0002_t44_a3409,0,No DR,181,172,170,11,2,178,0.9392265193,0.9888888889,0.988372093,0.9631728045,0.9927869859
+Qwen,Qwen r16 CLAHE-on lr2e-4,44,aptos361,r16_on_lr0p0002_t44_a3409,1,Mild,35,60,27,8,33,293,0.7714285714,0.8987730061,0.45,0.5684210526,0.932427695
+Qwen,Qwen r16 CLAHE-on lr2e-4,44,aptos361,r16_on_lr0p0002_t44_a3409,2,Moderate,97,94,68,29,26,238,0.7010309278,0.9015151515,0.7234042553,0.7120418848,0.9195954389
+Qwen,Qwen r16 CLAHE-on lr2e-4,44,aptos361,r16_on_lr0p0002_t44_a3409,3,Severe,18,18,5,13,13,330,0.2777777778,0.9620991254,0.2777777778,0.2777777778,0.8966634273
+Qwen,Qwen r16 CLAHE-on lr2e-4,44,aptos361,r16_on_lr0p0002_t44_a3409,4,Proliferative DR,30,17,12,18,5,326,0.4,0.9848942598,0.7058823529,0.5106382979,0.9433031219
+Qwen,Qwen BF16 r16 CLAHE-on lr5e-4,42,messidor,bf16_r16_on_p1__messidor_archived,0,No DR,468,617,398,70,219,370,0.8504273504,0.6281833616,0.6450567261,0.733640553,0.7937907216
+Qwen,Qwen BF16 r16 CLAHE-on lr5e-4,42,messidor,bf16_r16_on_p1__messidor_archived,1,Mild,207,363,58,149,305,545,0.2801932367,0.6411764706,0.1597796143,0.2035087719,0.4388348963
+Qwen,Qwen BF16 r16 CLAHE-on lr5e-4,42,messidor,bf16_r16_on_p1__messidor_archived,2,Moderate,290,53,12,278,41,726,0.04137931034,0.9465449804,0.2264150943,0.06997084548,0.7977565976
+Qwen,Qwen BF16 r16 CLAHE-on lr5e-4,42,messidor,bf16_r16_on_p1__messidor_archived,3,Severe,71,19,13,58,6,980,0.1830985915,0.9939148073,0.6842105263,0.2888888889,0.9654601034
+Qwen,Qwen BF16 r16 CLAHE-on lr5e-4,42,messidor,bf16_r16_on_p1__messidor_archived,4,Proliferative DR,21,5,2,19,3,1033,0.09523809524,0.9971042471,0.4,0.1538461538,0.9003493289
+Qwen,Qwen BF16 r16 CLAHE-on lr5e-4,43,messidor,bf16_r16_on_p2__messidor_archived,0,No DR,468,715,438,30,277,312,0.9358974359,0.5297113752,0.6125874126,0.740490279,0.8137615544
+Qwen,Qwen BF16 r16 CLAHE-on lr5e-4,43,messidor,bf16_r16_on_p2__messidor_archived,1,Mild,207,208,14,193,194,656,0.06763285024,0.7717647059,0.06730769231,0.06746987952,0.4369423132
+Qwen,Qwen BF16 r16 CLAHE-on lr5e-4,43,messidor,bf16_r16_on_p2__messidor_archived,2,Moderate,290,66,37,253,29,738,0.1275862069,0.962190352,0.5606060606,0.2078651685,0.818639572
+Qwen,Qwen BF16 r16 CLAHE-on lr5e-4,43,messidor,bf16_r16_on_p2__messidor_archived,3,Severe,71,32,25,46,7,979,0.3521126761,0.9929006085,0.78125,0.4854368932,0.9652886895
+Qwen,Qwen BF16 r16 CLAHE-on lr5e-4,43,messidor,bf16_r16_on_p2__messidor_archived,4,Proliferative DR,21,36,11,10,25,1011,0.5238095238,0.9758687259,0.3055555556,0.3859649123,0.9327541828
+Qwen,Qwen BF16 r16 CLAHE-on lr5e-4,44,messidor,bf16_r16_on_p3__messidor_archived,0,No DR,468,589,393,75,196,393,0.8397435897,0.6672325976,0.6672325976,0.7436140019,0.8130831628
+Qwen,Qwen BF16 r16 CLAHE-on lr5e-4,44,messidor,bf16_r16_on_p3__messidor_archived,1,Mild,207,273,58,149,215,635,0.2801932367,0.7470588235,0.2124542125,0.2416666667,0.4900085251
+Qwen,Qwen BF16 r16 CLAHE-on lr5e-4,44,messidor,bf16_r16_on_p3__messidor_archived,2,Moderate,290,156,91,199,65,702,0.3137931034,0.9152542373,0.5833333333,0.4080717489,0.8118284404
+Qwen,Qwen BF16 r16 CLAHE-on lr5e-4,44,messidor,bf16_r16_on_p3__messidor_archived,3,Severe,71,36,27,44,9,977,0.3802816901,0.990872211,0.75,0.5046728972,0.9686026912
+Qwen,Qwen BF16 r16 CLAHE-on lr5e-4,44,messidor,bf16_r16_on_p3__messidor_archived,4,Proliferative DR,21,3,3,18,0,1036,0.1428571429,1,1,0.25,0.8986486486
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha32,42,messidor,r16_on_alpha32_t42_a3407__messidor_archived,0,No DR,468,1057,468,0,589,0,1,0,0.4427625355,0.6137704918,0.4401491736
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha32,42,messidor,r16_on_alpha32_t42_a3407__messidor_archived,1,Mild,207,0,0,207,0,850,0,1,,0,0.4291503268
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha32,42,messidor,r16_on_alpha32_t42_a3407__messidor_archived,2,Moderate,290,0,0,290,0,767,0,1,,0,0.4641415277
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha32,42,messidor,r16_on_alpha32_t42_a3407__messidor_archived,3,Severe,71,0,0,71,0,986,0,1,,0,0.500057138
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha32,42,messidor,r16_on_alpha32_t42_a3407__messidor_archived,4,Proliferative DR,21,0,0,21,0,1036,0,1,,0,0.4660783232
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha32,43,messidor,r16_on_alpha32_t43_a3408__messidor_archived_fp32,0,No DR,468,1057,468,0,589,0,1,0,0.4427625355,0.6137704918,0.4953020475
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha32,43,messidor,r16_on_alpha32_t43_a3408__messidor_archived_fp32,1,Mild,207,0,0,207,0,850,0,1,,0,0.4987951122
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha32,43,messidor,r16_on_alpha32_t43_a3408__messidor_archived_fp32,2,Moderate,290,0,0,290,0,767,0,1,,0,0.4882749629
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha32,43,messidor,r16_on_alpha32_t43_a3408__messidor_archived_fp32,3,Severe,71,0,0,71,0,986,0,1,,0,0.3768248436
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha32,43,messidor,r16_on_alpha32_t43_a3408__messidor_archived_fp32,4,Proliferative DR,21,0,0,21,0,1036,0,1,,0,0.4761445119
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha32,44,messidor,r16_on_alpha32_t44_a3409__messidor_archived,0,No DR,468,0,0,468,0,589,0,1,,0,0.4802976216
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha32,44,messidor,r16_on_alpha32_t44_a3409__messidor_archived,1,Mild,207,0,0,207,0,850,0,1,,0,0.4764194373
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha32,44,messidor,r16_on_alpha32_t44_a3409__messidor_archived,2,Moderate,290,0,0,290,0,767,0,1,,0,0.4882300049
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha32,44,messidor,r16_on_alpha32_t44_a3409__messidor_archived,3,Severe,71,0,0,71,0,986,0,1,,0,0.4442190669
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha32,44,messidor,r16_on_alpha32_t44_a3409__messidor_archived,4,Proliferative DR,21,1057,21,0,1036,0,1,0,0.01986754967,0.03896103896,0.4576668505
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha8,42,messidor,r16_on_alpha8_t42_a3407__messidor_archived,0,No DR,468,508,355,113,153,436,0.7585470085,0.740237691,0.6988188976,0.7274590164,0.8134749612
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha8,42,messidor,r16_on_alpha8_t42_a3407__messidor_archived,1,Mild,207,438,95,112,343,507,0.4589371981,0.5964705882,0.2168949772,0.2945736434,0.5092355783
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha8,42,messidor,r16_on_alpha8_t42_a3407__messidor_archived,2,Moderate,290,64,28,262,36,731,0.09655172414,0.9530638853,0.4375,0.1581920904,0.7802184957
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha8,42,messidor,r16_on_alpha8_t42_a3407__messidor_archived,3,Severe,71,45,31,40,14,972,0.4366197183,0.985801217,0.6888888889,0.5344827586,0.9718881239
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha8,42,messidor,r16_on_alpha8_t42_a3407__messidor_archived,4,Proliferative DR,21,2,2,19,0,1036,0.09523809524,1,1,0.1739130435,0.9629067843
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha8,43,messidor,r16_on_alpha8_t43_a3408__messidor_archived,0,No DR,468,502,346,122,156,433,0.7393162393,0.7351443124,0.6892430279,0.7134020619,0.8126659701
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha8,43,messidor,r16_on_alpha8_t43_a3408__messidor_archived,1,Mild,207,414,85,122,329,521,0.4106280193,0.6129411765,0.2053140097,0.2737520129,0.5278942882
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha8,43,messidor,r16_on_alpha8_t43_a3408__messidor_archived,2,Moderate,290,85,50,240,35,732,0.1724137931,0.9543676662,0.5882352941,0.2666666667,0.8166569258
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha8,43,messidor,r16_on_alpha8_t43_a3408__messidor_archived,3,Severe,71,39,29,42,10,976,0.4084507042,0.9898580122,0.7435897436,0.5272727273,0.964660172
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha8,43,messidor,r16_on_alpha8_t43_a3408__messidor_archived,4,Proliferative DR,21,17,7,14,10,1026,0.3333333333,0.9903474903,0.4117647059,0.3684210526,0.9436936937
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha8,44,messidor,r16_on_alpha8_t44_a3409__messidor_archived,0,No DR,468,0,0,468,0,589,0,1,,0,0.4562890891
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha8,44,messidor,r16_on_alpha8_t44_a3409__messidor_archived,1,Mild,207,0,0,207,0,850,0,1,,0,0.4670133561
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha8,44,messidor,r16_on_alpha8_t44_a3409__messidor_archived,2,Moderate,290,0,0,290,0,767,0,1,,0,0.5120082723
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha8,44,messidor,r16_on_alpha8_t44_a3409__messidor_archived,3,Severe,71,0,0,71,0,986,0,1,,0,0.4933005742
+Qwen,Qwen r16 CLAHE-on lr5e-4 alpha8,44,messidor,r16_on_alpha8_t44_a3409__messidor_archived,4,Proliferative DR,21,1057,21,0,1036,0,1,0,0.01986754967,0.03896103896,0.472283508
+Qwen,Qwen r16 CLAHE-on lr1e-4,42,messidor,r16_on_lr0p0001_t42_a3407__messidor_archived,0,No DR,468,689,424,44,265,324,0.905982906,0.5500848896,0.6153846154,0.7329299914,0.8178500428
+Qwen,Qwen r16 CLAHE-on lr1e-4,42,messidor,r16_on_lr0p0001_t42_a3407__messidor_archived,1,Mild,207,215,32,175,183,667,0.154589372,0.7847058824,0.1488372093,0.1516587678,0.4904916169
+Qwen,Qwen r16 CLAHE-on lr1e-4,42,messidor,r16_on_lr0p0001_t42_a3407__messidor_archived,2,Moderate,290,93,56,234,37,730,0.1931034483,0.9517601043,0.6021505376,0.2924281984,0.7930225239
+Qwen,Qwen r16 CLAHE-on lr1e-4,42,messidor,r16_on_lr0p0001_t42_a3407__messidor_archived,3,Severe,71,47,33,38,14,972,0.4647887324,0.985801217,0.7021276596,0.5593220339,0.965360112
+Qwen,Qwen r16 CLAHE-on lr1e-4,42,messidor,r16_on_lr0p0001_t42_a3407__messidor_archived,4,Proliferative DR,21,13,5,16,8,1028,0.2380952381,0.9922779923,0.3846153846,0.2941176471,0.9492094135
+Qwen,Qwen r16 CLAHE-on lr1e-4,43,messidor,r16_on_lr0p0001_t43_a3408__messidor_archived,0,No DR,468,720,415,53,305,284,0.8867521368,0.4821731749,0.5763888889,0.6986531987,0.787735986
+Qwen,Qwen r16 CLAHE-on lr1e-4,43,messidor,r16_on_lr0p0001_t43_a3408__messidor_archived,1,Mild,207,241,29,178,212,638,0.1400966184,0.7505882353,0.1203319502,0.1294642857,0.4526683717
+Qwen,Qwen r16 CLAHE-on lr1e-4,43,messidor,r16_on_lr0p0001_t43_a3408__messidor_archived,2,Moderate,290,61,19,271,42,725,0.06551724138,0.9452411995,0.3114754098,0.1082621083,0.7616643438
+Qwen,Qwen r16 CLAHE-on lr1e-4,43,messidor,r16_on_lr0p0001_t43_a3408__messidor_archived,3,Severe,71,14,11,60,3,983,0.1549295775,0.9969574037,0.7857142857,0.2588235294,0.938476702
+Qwen,Qwen r16 CLAHE-on lr1e-4,43,messidor,r16_on_lr0p0001_t43_a3408__messidor_archived,4,Proliferative DR,21,21,9,12,12,1024,0.4285714286,0.9884169884,0.4285714286,0.4285714286,0.9371207943
+Qwen,Qwen r16 CLAHE-on lr1e-4,44,messidor,r16_on_lr0p0001_t44_a3409__messidor_archived,0,No DR,468,673,413,55,260,329,0.8824786325,0.558573854,0.6136701337,0.7239263804,0.8208248081
+Qwen,Qwen r16 CLAHE-on lr1e-4,44,messidor,r16_on_lr0p0001_t44_a3409__messidor_archived,1,Mild,207,269,41,166,228,622,0.1980676329,0.7317647059,0.1524163569,0.1722689076,0.4874339301
+Qwen,Qwen r16 CLAHE-on lr1e-4,44,messidor,r16_on_lr0p0001_t44_a3409__messidor_archived,2,Moderate,290,83,33,257,50,717,0.1137931034,0.9348109518,0.3975903614,0.1769436997,0.7871824844
+Qwen,Qwen r16 CLAHE-on lr1e-4,44,messidor,r16_on_lr0p0001_t44_a3409__messidor_archived,3,Severe,71,23,17,54,6,980,0.2394366197,0.9939148073,0.7391304348,0.3617021277,0.9699454332
+Qwen,Qwen r16 CLAHE-on lr1e-4,44,messidor,r16_on_lr0p0001_t44_a3409__messidor_archived,4,Proliferative DR,21,9,4,17,5,1031,0.1904761905,0.9951737452,0.4444444444,0.2666666667,0.9428203714
+Qwen,Qwen r16 CLAHE-on lr2e-4,42,messidor,r16_on_lr0p0002_t42_a3407__messidor_archived,0,No DR,468,631,412,56,219,370,0.8803418803,0.6281833616,0.6529318542,0.7497725205,0.8359888555
+Qwen,Qwen r16 CLAHE-on lr2e-4,42,messidor,r16_on_lr0p0002_t42_a3407__messidor_archived,1,Mild,207,302,44,163,258,592,0.2125603865,0.6964705882,0.1456953642,0.1728880157,0.4937254902
+Qwen,Qwen r16 CLAHE-on lr2e-4,42,messidor,r16_on_lr0p0002_t42_a3407__messidor_archived,2,Moderate,290,62,29,261,33,734,0.1,0.9569752282,0.4677419355,0.1647727273,0.8078541564
+Qwen,Qwen r16 CLAHE-on lr2e-4,42,messidor,r16_on_lr0p0002_t42_a3407__messidor_archived,3,Severe,71,30,27,44,3,983,0.3802816901,0.9969574037,0.9,0.5346534653,0.9619461189
+Qwen,Qwen r16 CLAHE-on lr2e-4,42,messidor,r16_on_lr0p0002_t42_a3407__messidor_archived,4,Proliferative DR,21,32,12,9,20,1016,0.5714285714,0.9806949807,0.375,0.4528301887,0.9571612429
+Qwen,Qwen r16 CLAHE-on lr2e-4,43,messidor,r16_on_lr0p0002_t43_a3408__messidor_archived,0,No DR,468,565,363,105,202,387,0.7756410256,0.6570458404,0.6424778761,0.7028073572,0.7878049134
+Qwen,Qwen r16 CLAHE-on lr2e-4,43,messidor,r16_on_lr0p0002_t43_a3408__messidor_archived,1,Mild,207,311,67,140,244,606,0.3236714976,0.7129411765,0.2154340836,0.2586872587,0.5094856493
+Qwen,Qwen r16 CLAHE-on lr2e-4,43,messidor,r16_on_lr0p0002_t43_a3408__messidor_archived,2,Moderate,290,152,76,214,76,691,0.2620689655,0.9009126467,0.5,0.3438914027,0.7583779166
+Qwen,Qwen r16 CLAHE-on lr2e-4,43,messidor,r16_on_lr0p0002_t43_a3408__messidor_archived,3,Severe,71,20,16,55,4,982,0.2253521127,0.9959432049,0.8,0.3516483516,0.9520041139
+Qwen,Qwen r16 CLAHE-on lr2e-4,43,messidor,r16_on_lr0p0002_t43_a3408__messidor_archived,4,Proliferative DR,21,9,6,15,3,1033,0.2857142857,0.9971042471,0.6666666667,0.4,0.9481522339
+Qwen,Qwen r16 CLAHE-on lr2e-4,44,messidor,r16_on_lr0p0002_t44_a3409__messidor_archived,0,No DR,468,613,397,71,216,373,0.8482905983,0.6332767402,0.647634584,0.7345050879,0.8109391552
+Qwen,Qwen r16 CLAHE-on lr2e-4,44,messidor,r16_on_lr0p0002_t44_a3409__messidor_archived,1,Mild,207,342,55,152,287,563,0.2657004831,0.6623529412,0.1608187135,0.2003642987,0.449678886
+Qwen,Qwen r16 CLAHE-on lr2e-4,44,messidor,r16_on_lr0p0002_t44_a3409__messidor_archived,2,Moderate,290,85,24,266,61,706,0.08275862069,0.9204693611,0.2823529412,0.128,0.7980263454
+Qwen,Qwen r16 CLAHE-on lr2e-4,44,messidor,r16_on_lr0p0002_t44_a3409__messidor_archived,3,Severe,71,13,8,63,5,981,0.1126760563,0.9949290061,0.6153846154,0.1904761905,0.9685169843
+Qwen,Qwen r16 CLAHE-on lr2e-4,44,messidor,r16_on_lr0p0002_t44_a3409__messidor_archived,4,Proliferative DR,21,4,3,18,1,1035,0.1428571429,0.999034749,0.75,0.24,0.9441073727
+Qwen,Qwen r16 CLAHE-on lr5e-4,42,messidor,r16_on_p1__messidor_archived,0,No DR,468,887,449,19,438,151,0.9594017094,0.2563667233,0.5062006764,0.6627306273,0.7638181475
+Qwen,Qwen r16 CLAHE-on lr5e-4,42,messidor,r16_on_p1__messidor_archived,1,Mild,207,160,10,197,150,700,0.04830917874,0.8235294118,0.0625,0.05449591281,0.3677749361
+Qwen,Qwen r16 CLAHE-on lr5e-4,42,messidor,r16_on_p1__messidor_archived,2,Moderate,290,0,0,290,0,767,0,1,,0,0.7481319966
+Qwen,Qwen r16 CLAHE-on lr5e-4,42,messidor,r16_on_p1__messidor_archived,3,Severe,71,0,0,71,0,986,0,1,,0,0.927163386
+Qwen,Qwen r16 CLAHE-on lr5e-4,42,messidor,r16_on_p1__messidor_archived,4,Proliferative DR,21,10,1,20,9,1027,0.04761904762,0.9913127413,0.1,0.06451612903,0.8831127045
+Qwen,Qwen r16 CLAHE-on lr5e-4,43,messidor,r16_on_p2__messidor_archived,0,No DR,468,765,437,31,328,261,0.9337606838,0.4431239389,0.5712418301,0.7088402271,0.7467386415
+Qwen,Qwen r16 CLAHE-on lr5e-4,43,messidor,r16_on_p2__messidor_archived,1,Mild,207,158,14,193,144,706,0.06763285024,0.8305882353,0.08860759494,0.07671232877,0.3693492469
+Qwen,Qwen r16 CLAHE-on lr5e-4,43,messidor,r16_on_p2__messidor_archived,2,Moderate,290,127,52,238,75,692,0.1793103448,0.9022164276,0.4094488189,0.2494004796,0.7493413658
+Qwen,Qwen r16 CLAHE-on lr5e-4,43,messidor,r16_on_p2__messidor_archived,3,Severe,71,2,2,69,0,986,0.02816901408,1,1,0.05479452055,0.9623889381
+Qwen,Qwen r16 CLAHE-on lr5e-4,43,messidor,r16_on_p2__messidor_archived,4,Proliferative DR,21,5,4,17,1,1035,0.1904761905,0.999034749,0.8,0.3076923077,0.9239290311
+Qwen,Qwen r16 CLAHE-on lr5e-4,44,messidor,r16_on_p3__messidor_archived,0,No DR,468,537,363,105,174,415,0.7756410256,0.7045840407,0.6759776536,0.7223880597,0.7940519205
+Qwen,Qwen r16 CLAHE-on lr5e-4,44,messidor,r16_on_p3__messidor_archived,1,Mild,207,319,71,136,248,602,0.3429951691,0.7082352941,0.2225705329,0.2699619772,0.4863540779
+Qwen,Qwen r16 CLAHE-on lr5e-4,44,messidor,r16_on_p3__messidor_archived,2,Moderate,290,190,104,186,86,681,0.3586206897,0.887874837,0.5473684211,0.4333333333,0.7921233647
+Qwen,Qwen r16 CLAHE-on lr5e-4,44,messidor,r16_on_p3__messidor_archived,3,Severe,71,11,8,63,3,983,0.1126760563,0.9969574037,0.7272727273,0.1951219512,0.9588463846
+Qwen,Qwen r16 CLAHE-on lr5e-4,44,messidor,r16_on_p3__messidor_archived,4,Proliferative DR,21,0,0,21,0,1036,0,1,,0,0.8871575657
+Qwen,Qwen zero-shot 4bit CLAHE-off,,aptos361,zeroshot_4bit__aptos361_off,0,No DR,181,167,150,31,17,163,0.8287292818,0.9055555556,0.8982035928,0.8620689655,0.953898097
+Qwen,Qwen zero-shot 4bit CLAHE-off,,aptos361,zeroshot_4bit__aptos361_off,1,Mild,35,3,2,33,1,325,0.05714285714,0.9969325153,0.6666666667,0.1052631579,0.7440841367
+Qwen,Qwen zero-shot 4bit CLAHE-off,,aptos361,zeroshot_4bit__aptos361_off,2,Moderate,97,58,26,71,32,232,0.2680412371,0.8787878788,0.4482758621,0.335483871,0.7214151828
+Qwen,Qwen zero-shot 4bit CLAHE-off,,aptos361,zeroshot_4bit__aptos361_off,3,Severe,18,102,7,11,95,248,0.3888888889,0.72303207,0.06862745098,0.1166666667,0.7040816327
+Qwen,Qwen zero-shot 4bit CLAHE-off,,aptos361,zeroshot_4bit__aptos361_off,4,Proliferative DR,30,31,12,18,19,312,0.4,0.9425981873,0.3870967742,0.393442623,0.8935548842
+Qwen,Qwen zero-shot 4bit CLAHE-on,,aptos361,zeroshot_4bit__aptos361_on,0,No DR,181,136,129,52,7,173,0.7127071823,0.9611111111,0.9485294118,0.8138801262,0.9574585635
+Qwen,Qwen zero-shot 4bit CLAHE-on,,aptos361,zeroshot_4bit__aptos361_on,1,Mild,35,4,2,33,2,324,0.05714285714,0.9938650307,0.5,0.1025641026,0.7041191937
+Qwen,Qwen zero-shot 4bit CLAHE-on,,aptos361,zeroshot_4bit__aptos361_on,2,Moderate,97,65,17,80,48,216,0.175257732,0.8181818182,0.2615384615,0.2098765432,0.6054748516
+Qwen,Qwen zero-shot 4bit CLAHE-on,,aptos361,zeroshot_4bit__aptos361_on,3,Severe,18,126,8,10,118,225,0.4444444444,0.6559766764,0.06349206349,0.1111111111,0.7092646582
+Qwen,Qwen zero-shot 4bit CLAHE-on,,aptos361,zeroshot_4bit__aptos361_on,4,Proliferative DR,30,30,12,18,18,313,0.4,0.9456193353,0.4,0.4,0.8864048338
+Qwen,Qwen zero-shot 4bit CLAHE-on,,messidor,zeroshot_4bit__messidor_archived,0,No DR,468,578,329,139,249,340,0.702991453,0.5772495756,0.5692041522,0.6290630975,0.700822051
+Qwen,Qwen zero-shot 4bit CLAHE-on,,messidor,zeroshot_4bit__messidor_archived,1,Mild,207,17,1,206,16,834,0.004830917874,0.9811764706,0.05882352941,0.008928571429,0.5324580847
+Qwen,Qwen zero-shot 4bit CLAHE-on,,messidor,zeroshot_4bit__messidor_archived,2,Moderate,290,239,99,191,140,627,0.3413793103,0.8174706649,0.4142259414,0.3742911153,0.670031021
+Qwen,Qwen zero-shot 4bit CLAHE-on,,messidor,zeroshot_4bit__messidor_archived,3,Severe,71,205,53,18,152,834,0.7464788732,0.845841785,0.2585365854,0.384057971,0.8778533269
+Qwen,Qwen zero-shot 4bit CLAHE-on,,messidor,zeroshot_4bit__messidor_archived,4,Proliferative DR,21,18,4,17,14,1022,0.1904761905,0.9864864865,0.2222222222,0.2051282051,0.8933167862
+Qwen,Qwen zero-shot bf16 CLAHE-on,,aptos361,zeroshot_bf16__aptos361_on,0,No DR,181,152,144,37,8,172,0.7955801105,0.9555555556,0.9473684211,0.8648648649,0.9619705341
+Qwen,Qwen zero-shot bf16 CLAHE-on,,aptos361,zeroshot_bf16__aptos361_on,1,Mild,35,1,0,35,1,325,0,0.9969325153,0,0,0.7184925504
+Qwen,Qwen zero-shot bf16 CLAHE-on,,aptos361,zeroshot_bf16__aptos361_on,2,Moderate,97,62,22,75,40,224,0.2268041237,0.8484848485,0.3548387097,0.2767295597,0.635660731
+Qwen,Qwen zero-shot bf16 CLAHE-on,,aptos361,zeroshot_bf16__aptos361_on,3,Severe,18,53,2,16,51,292,0.1111111111,0.8513119534,0.03773584906,0.05633802817,0.6315192744
+Qwen,Qwen zero-shot bf16 CLAHE-on,,aptos361,zeroshot_bf16__aptos361_on,4,Proliferative DR,30,93,22,8,71,260,0.7333333333,0.7854984894,0.2365591398,0.3577235772,0.881570997
+Qwen,Qwen r16 CLAHE-off lr2e-4,42,aptos361,r16_off_alpha16_lr0p0002_t42_a3407,0,No DR,181,179,176,5,3,177,0.9723756906,0.9833333333,0.9832402235,0.9777777778,0.9971147944
+Qwen,Qwen r16 CLAHE-off lr2e-4,42,aptos361,r16_off_alpha16_lr0p0002_t42_a3407,1,Mild,35,57,28,7,29,297,0.8,0.9110429448,0.4912280702,0.6086956522,0.9467134093
+Qwen,Qwen r16 CLAHE-off lr2e-4,42,aptos361,r16_off_alpha16_lr0p0002_t42_a3407,2,Moderate,97,65,52,45,13,251,0.5360824742,0.9507575758,0.8,0.6419753086,0.9265073415
+Qwen,Qwen r16 CLAHE-off lr2e-4,42,aptos361,r16_off_alpha16_lr0p0002_t42_a3407,3,Severe,18,28,8,10,20,323,0.4444444444,0.9416909621,0.2857142857,0.347826087,0.8895367671
+Qwen,Qwen r16 CLAHE-off lr2e-4,42,aptos361,r16_off_alpha16_lr0p0002_t42_a3407,4,Proliferative DR,30,32,19,11,13,318,0.6333333333,0.9607250755,0.59375,0.6129032258,0.9527693857
+Qwen,Qwen r16 CLAHE-off lr2e-4,43,aptos361,r16_off_alpha16_lr0p0002_t43_a3408,0,No DR,181,174,171,10,3,177,0.9447513812,0.9833333333,0.9827586207,0.9633802817,0.9943523634
+Qwen,Qwen r16 CLAHE-off lr2e-4,43,aptos361,r16_off_alpha16_lr0p0002_t43_a3408,1,Mild,35,57,24,11,33,293,0.6857142857,0.8987730061,0.4210526316,0.5217391304,0.9251533742
+Qwen,Qwen r16 CLAHE-off lr2e-4,43,aptos361,r16_off_alpha16_lr0p0002_t43_a3408,2,Moderate,97,50,34,63,16,248,0.3505154639,0.9393939394,0.68,0.462585034,0.910262418
+Qwen,Qwen r16 CLAHE-off lr2e-4,43,aptos361,r16_off_alpha16_lr0p0002_t43_a3408,3,Severe,18,43,5,13,38,305,0.2777777778,0.889212828,0.1162790698,0.1639344262,0.8650793651
+Qwen,Qwen r16 CLAHE-off lr2e-4,43,aptos361,r16_off_alpha16_lr0p0002_t43_a3408,4,Proliferative DR,30,37,18,12,19,312,0.6,0.9425981873,0.4864864865,0.5373134328,0.943101712
+Qwen,Qwen r16 CLAHE-off lr2e-4,44,aptos361,r16_off_alpha16_lr0p0002_t44_a3409,0,No DR,181,170,170,11,0,180,0.9392265193,1,1,0.9686609687,0.996193984
+Qwen,Qwen r16 CLAHE-off lr2e-4,44,aptos361,r16_off_alpha16_lr0p0002_t44_a3409,1,Mild,35,62,31,4,31,295,0.8857142857,0.9049079755,0.5,0.6391752577,0.9462751972
+Qwen,Qwen r16 CLAHE-off lr2e-4,44,aptos361,r16_off_alpha16_lr0p0002_t44_a3409,2,Moderate,97,73,57,40,16,248,0.587628866,0.9393939394,0.7808219178,0.6705882353,0.9308809747
+Qwen,Qwen r16 CLAHE-off lr2e-4,44,aptos361,r16_off_alpha16_lr0p0002_t44_a3409,3,Severe,18,28,8,10,20,323,0.4444444444,0.9416909621,0.2857142857,0.347826087,0.9050858439
+Qwen,Qwen r16 CLAHE-off lr2e-4,44,aptos361,r16_off_alpha16_lr0p0002_t44_a3409,4,Proliferative DR,30,28,20,10,8,323,0.6666666667,0.9758308157,0.7142857143,0.6896551724,0.9579053374
+Qwen,Qwen r32 CLAHE-off lr2e-4,42,aptos361,r32_off_alpha16_lr0p0002_t42_a3407,0,No DR,181,177,174,7,3,177,0.9613259669,0.9833333333,0.9830508475,0.9720670391,0.9936157152
+Qwen,Qwen r32 CLAHE-off lr2e-4,42,aptos361,r32_off_alpha16_lr0p0002_t42_a3407,1,Mild,35,58,27,8,31,295,0.7714285714,0.9049079755,0.4655172414,0.5806451613,0.9482909728
+Qwen,Qwen r32 CLAHE-off lr2e-4,42,aptos361,r32_off_alpha16_lr0p0002_t42_a3407,2,Moderate,97,57,44,53,13,251,0.4536082474,0.9507575758,0.7719298246,0.5714285714,0.9302171197
+Qwen,Qwen r32 CLAHE-off lr2e-4,42,aptos361,r32_off_alpha16_lr0p0002_t42_a3407,3,Severe,18,37,9,9,28,315,0.5,0.9183673469,0.2432432432,0.3272727273,0.8913184321
+Qwen,Qwen r32 CLAHE-off lr2e-4,42,aptos361,r32_off_alpha16_lr0p0002_t42_a3407,4,Proliferative DR,30,32,21,9,11,320,0.7,0.9667673716,0.65625,0.6774193548,0.9695871098
+Qwen,Qwen r32 CLAHE-off lr2e-4,43,aptos361,r32_off_alpha16_lr0p0002_t43_a3408,0,No DR,181,172,171,10,1,179,0.9447513812,0.9944444444,0.9941860465,0.9688385269,0.9961325967
+Qwen,Qwen r32 CLAHE-off lr2e-4,43,aptos361,r32_off_alpha16_lr0p0002_t43_a3408,1,Mild,35,52,27,8,25,301,0.7714285714,0.9233128834,0.5192307692,0.6206896552,0.9337423313
+Qwen,Qwen r32 CLAHE-off lr2e-4,43,aptos361,r32_off_alpha16_lr0p0002_t43_a3408,2,Moderate,97,70,55,42,15,249,0.5670103093,0.9431818182,0.7857142857,0.6586826347,0.9245938769
+Qwen,Qwen r32 CLAHE-off lr2e-4,43,aptos361,r32_off_alpha16_lr0p0002_t43_a3408,3,Severe,18,47,10,8,37,306,0.5555555556,0.8921282799,0.2127659574,0.3076923077,0.887755102
+Qwen,Qwen r32 CLAHE-off lr2e-4,43,aptos361,r32_off_alpha16_lr0p0002_t43_a3408,4,Proliferative DR,30,20,13,17,7,324,0.4333333333,0.9788519637,0.65,0.52,0.9335347432
+Qwen,Qwen r32 CLAHE-off lr2e-4,44,aptos361,r32_off_alpha16_lr0p0002_t44_a3409,0,No DR,181,172,172,9,0,180,0.9502762431,1,1,0.9745042493,0.9961325967
+Qwen,Qwen r32 CLAHE-off lr2e-4,44,aptos361,r32_off_alpha16_lr0p0002_t44_a3409,1,Mild,35,74,32,3,42,284,0.9142857143,0.8711656442,0.4324324324,0.5871559633,0.9506573181
+Qwen,Qwen r32 CLAHE-off lr2e-4,44,aptos361,r32_off_alpha16_lr0p0002_t44_a3409,2,Moderate,97,59,47,50,12,252,0.4845360825,0.9545454545,0.7966101695,0.6025641026,0.9238909716
+Qwen,Qwen r32 CLAHE-off lr2e-4,44,aptos361,r32_off_alpha16_lr0p0002_t44_a3409,3,Severe,18,30,5,13,25,318,0.2777777778,0.9271137026,0.1666666667,0.2083333333,0.8811143505
+Qwen,Qwen r32 CLAHE-off lr2e-4,44,aptos361,r32_off_alpha16_lr0p0002_t44_a3409,4,Proliferative DR,30,26,17,13,9,322,0.5666666667,0.9728096677,0.6538461538,0.6071428571,0.9495468278
+Qwen,Qwen r32 CLAHE-off lr2e-4 alpha32,42,aptos361,r32_off_alpha32_lr0p0002_t42_a3407,0,No DR,181,193,179,2,14,166,0.9889502762,0.9222222222,0.9274611399,0.9572192513,0.9929404543
+Qwen,Qwen r32 CLAHE-off lr2e-4 alpha32,42,aptos361,r32_off_alpha32_lr0p0002_t42_a3407,1,Mild,35,30,16,19,14,312,0.4571428571,0.9570552147,0.5333333333,0.4923076923,0.8651183173
+Qwen,Qwen r32 CLAHE-off lr2e-4 alpha32,42,aptos361,r32_off_alpha32_lr0p0002_t42_a3407,2,Moderate,97,110,84,13,26,238,0.8659793814,0.9015151515,0.7636363636,0.8115942029,0.945915339
+Qwen,Qwen r32 CLAHE-off lr2e-4 alpha32,42,aptos361,r32_off_alpha32_lr0p0002_t42_a3407,3,Severe,18,15,6,12,9,334,0.3333333333,0.9737609329,0.4,0.3636363636,0.9065435698
+Qwen,Qwen r32 CLAHE-off lr2e-4 alpha32,42,aptos361,r32_off_alpha32_lr0p0002_t42_a3407,4,Proliferative DR,30,13,11,19,2,329,0.3666666667,0.9939577039,0.8461538462,0.511627907,0.9540785498
+Qwen,Qwen r32 CLAHE-off lr2e-4 alpha32,43,aptos361,r32_off_alpha32_lr0p0002_t43_a3408,0,No DR,181,173,172,9,1,179,0.9502762431,0.9944444444,0.9942196532,0.9717514124,0.9969306323
+Qwen,Qwen r32 CLAHE-off lr2e-4 alpha32,43,aptos361,r32_off_alpha32_lr0p0002_t43_a3408,1,Mild,35,69,30,5,39,287,0.8571428571,0.8803680982,0.4347826087,0.5769230769,0.9514460999
+Qwen,Qwen r32 CLAHE-off lr2e-4 alpha32,43,aptos361,r32_off_alpha32_lr0p0002_t43_a3408,2,Moderate,97,62,49,48,13,251,0.5051546392,0.9507575758,0.7903225806,0.6163522013,0.9368947204
+Qwen,Qwen r32 CLAHE-off lr2e-4 alpha32,43,aptos361,r32_off_alpha32_lr0p0002_t43_a3408,3,Severe,18,31,8,10,23,320,0.4444444444,0.9329446064,0.2580645161,0.3265306122,0.8947197927
+Qwen,Qwen r32 CLAHE-off lr2e-4 alpha32,43,aptos361,r32_off_alpha32_lr0p0002_t43_a3408,4,Proliferative DR,30,26,16,14,10,321,0.5333333333,0.9697885196,0.6153846154,0.5714285714,0.9510574018
+Qwen,Qwen r32 CLAHE-off lr2e-4 alpha32,44,aptos361,r32_off_alpha32_lr0p0002_t44_a3409,0,No DR,181,176,173,8,3,177,0.955801105,0.9833333333,0.9829545455,0.9691876751,0.9983118478
+Qwen,Qwen r32 CLAHE-off lr2e-4 alpha32,44,aptos361,r32_off_alpha32_lr0p0002_t44_a3409,1,Mild,35,58,28,7,30,296,0.8,0.9079754601,0.4827586207,0.6021505376,0.9595092025
+Qwen,Qwen r32 CLAHE-off lr2e-4 alpha32,44,aptos361,r32_off_alpha32_lr0p0002_t44_a3409,2,Moderate,97,75,56,41,19,245,0.5773195876,0.928030303,0.7466666667,0.6511627907,0.9404873477
+Qwen,Qwen r32 CLAHE-off lr2e-4 alpha32,44,aptos361,r32_off_alpha32_lr0p0002_t44_a3409,3,Severe,18,26,5,13,21,322,0.2777777778,0.9387755102,0.1923076923,0.2272727273,0.8893747975
+Qwen,Qwen r32 CLAHE-off lr2e-4 alpha32,44,aptos361,r32_off_alpha32_lr0p0002_t44_a3409,4,Proliferative DR,30,26,18,12,8,323,0.6,0.9758308157,0.6923076923,0.6428571429,0.9542799597
+Qwen,Qwen r32 CLAHE-on lr2e-4,42,aptos361,r32_on_alpha16_lr0p0002_t42_a3407,0,No DR,181,173,173,8,0,180,0.955801105,1,1,0.9774011299,0.9957028852
+Qwen,Qwen r32 CLAHE-on lr2e-4,42,aptos361,r32_on_alpha16_lr0p0002_t42_a3407,1,Mild,35,42,25,10,17,309,0.7142857143,0.9478527607,0.5952380952,0.6493506494,0.9534618755
+Qwen,Qwen r32 CLAHE-on lr2e-4,42,aptos361,r32_on_alpha16_lr0p0002_t42_a3407,2,Moderate,97,61,44,53,17,247,0.4536082474,0.9356060606,0.7213114754,0.5569620253,0.9128397376
+Qwen,Qwen r32 CLAHE-on lr2e-4,42,aptos361,r32_on_alpha16_lr0p0002_t42_a3407,3,Severe,18,64,12,6,52,291,0.6666666667,0.8483965015,0.1875,0.2926829268,0.9013605442
+Qwen,Qwen r32 CLAHE-on lr2e-4,42,aptos361,r32_on_alpha16_lr0p0002_t42_a3407,4,Proliferative DR,30,21,16,14,5,326,0.5333333333,0.9848942598,0.7619047619,0.6274509804,0.9361530715
+Qwen,Qwen r32 CLAHE-on lr2e-4,43,aptos361,r32_on_alpha16_lr0p0002_t43_a3408,0,No DR,181,183,174,7,9,171,0.9613259669,0.95,0.9508196721,0.956043956,0.9955801105
+Qwen,Qwen r32 CLAHE-on lr2e-4,43,aptos361,r32_on_alpha16_lr0p0002_t43_a3408,1,Mild,35,50,22,13,28,298,0.6285714286,0.9141104294,0.44,0.5176470588,0.9230499562
+Qwen,Qwen r32 CLAHE-on lr2e-4,43,aptos361,r32_on_alpha16_lr0p0002_t43_a3408,2,Moderate,97,48,35,62,13,251,0.3608247423,0.9507575758,0.7291666667,0.4827586207,0.9230709153
+Qwen,Qwen r32 CLAHE-on lr2e-4,43,aptos361,r32_on_alpha16_lr0p0002_t43_a3408,3,Severe,18,50,11,7,39,304,0.6111111111,0.8862973761,0.22,0.3235294118,0.890994493
+Qwen,Qwen r32 CLAHE-on lr2e-4,43,aptos361,r32_on_alpha16_lr0p0002_t43_a3408,4,Proliferative DR,30,30,17,13,13,318,0.5666666667,0.9607250755,0.5666666667,0.5666666667,0.9386706949
+Qwen,Qwen r32 CLAHE-on lr2e-4,44,aptos361,r32_on_alpha16_lr0p0002_t44_a3409,0,No DR,181,168,167,14,1,179,0.9226519337,0.9944444444,0.994047619,0.9570200573,0.9962246777
+Qwen,Qwen r32 CLAHE-on lr2e-4,44,aptos361,r32_on_alpha16_lr0p0002_t44_a3409,1,Mild,35,51,25,10,26,300,0.7142857143,0.9202453988,0.4901960784,0.5813953488,0.937248028
+Qwen,Qwen r32 CLAHE-on lr2e-4,44,aptos361,r32_on_alpha16_lr0p0002_t44_a3409,2,Moderate,97,85,63,34,22,242,0.6494845361,0.9166666667,0.7411764706,0.6923076923,0.9337316464
+Qwen,Qwen r32 CLAHE-on lr2e-4,44,aptos361,r32_on_alpha16_lr0p0002_t44_a3409,3,Severe,18,38,9,9,29,314,0.5,0.915451895,0.2368421053,0.3214285714,0.8986070619
+Qwen,Qwen r32 CLAHE-on lr2e-4,44,aptos361,r32_on_alpha16_lr0p0002_t44_a3409,4,Proliferative DR,30,19,14,16,5,326,0.4666666667,0.9848942598,0.7368421053,0.5714285714,0.9539778449
+Qwen,Qwen r32 CLAHE-on lr2e-4 alpha32,42,aptos361,r32_on_alpha32_lr0p0002_t42_a3407,0,No DR,181,168,165,16,3,177,0.9116022099,0.9833333333,0.9821428571,0.9455587393,0.9848373235
+Qwen,Qwen r32 CLAHE-on lr2e-4 alpha32,42,aptos361,r32_on_alpha32_lr0p0002_t42_a3407,1,Mild,35,61,24,11,37,289,0.6857142857,0.8865030675,0.393442623,0.5,0.8801928133
+Qwen,Qwen r32 CLAHE-on lr2e-4 alpha32,42,aptos361,r32_on_alpha32_lr0p0002_t42_a3407,2,Moderate,97,38,28,69,10,254,0.2886597938,0.9621212121,0.7368421053,0.4148148148,0.9007731959
+Qwen,Qwen r32 CLAHE-on lr2e-4 alpha32,42,aptos361,r32_on_alpha32_lr0p0002_t42_a3407,3,Severe,18,64,11,7,53,290,0.6111111111,0.8454810496,0.171875,0.2682926829,0.8548752834
+Qwen,Qwen r32 CLAHE-on lr2e-4 alpha32,42,aptos361,r32_on_alpha32_lr0p0002_t42_a3407,4,Proliferative DR,30,30,18,12,12,319,0.6,0.9637462236,0.6,0.6,0.9347432024
+Qwen,Qwen r32 CLAHE-on lr2e-4 alpha32,43,aptos361,r32_on_alpha32_lr0p0002_t43_a3408,0,No DR,181,178,173,8,5,175,0.955801105,0.9722222222,0.9719101124,0.9637883008,0.9940761203
+Qwen,Qwen r32 CLAHE-on lr2e-4 alpha32,43,aptos361,r32_on_alpha32_lr0p0002_t43_a3408,1,Mild,35,34,19,16,15,311,0.5428571429,0.9539877301,0.5588235294,0.5507246377,0.9127081507
+Qwen,Qwen r32 CLAHE-on lr2e-4 alpha32,43,aptos361,r32_on_alpha32_lr0p0002_t43_a3408,2,Moderate,97,50,36,61,14,250,0.3711340206,0.946969697,0.72,0.4897959184,0.8818338019
+Qwen,Qwen r32 CLAHE-on lr2e-4 alpha32,43,aptos361,r32_on_alpha32_lr0p0002_t43_a3408,3,Severe,18,47,6,12,41,302,0.3333333333,0.8804664723,0.1276595745,0.1846153846,0.8414318108
+Qwen,Qwen r32 CLAHE-on lr2e-4 alpha32,43,aptos361,r32_on_alpha32_lr0p0002_t43_a3408,4,Proliferative DR,30,52,22,8,30,301,0.7333333333,0.9093655589,0.4230769231,0.5365853659,0.9336354481
+Qwen,Qwen r32 CLAHE-on lr2e-4 alpha32,44,aptos361,r32_on_alpha32_lr0p0002_t44_a3409,0,No DR,181,173,172,9,1,179,0.9502762431,0.9944444444,0.9942196532,0.9717514124,0.9974217311
+Qwen,Qwen r32 CLAHE-on lr2e-4 alpha32,44,aptos361,r32_on_alpha32_lr0p0002_t44_a3409,1,Mild,35,49,28,7,21,305,0.8,0.9355828221,0.5714285714,0.6666666667,0.951884312
+Qwen,Qwen r32 CLAHE-on lr2e-4 alpha32,44,aptos361,r32_on_alpha32_lr0p0002_t44_a3409,2,Moderate,97,82,65,32,17,247,0.6701030928,0.9356060606,0.7926829268,0.7262569832,0.9350203062
+Qwen,Qwen r32 CLAHE-on lr2e-4 alpha32,44,aptos361,r32_on_alpha32_lr0p0002_t44_a3409,3,Severe,18,41,9,9,32,311,0.5,0.9067055394,0.2195121951,0.3050847458,0.9034661484
+Qwen,Qwen r32 CLAHE-on lr2e-4 alpha32,44,aptos361,r32_on_alpha32_lr0p0002_t44_a3409,4,Proliferative DR,30,16,12,18,4,327,0.4,0.9879154079,0.75,0.5217391304,0.9547834844
+Qwen,Qwen r8 CLAHE-off lr2e-4,42,aptos361,r8_off_alpha16_lr0p0002_t42_a3407,0,No DR,181,177,174,7,3,177,0.9613259669,0.9833333333,0.9830508475,0.9720670391,0.9948434622
+Qwen,Qwen r8 CLAHE-off lr2e-4,42,aptos361,r8_off_alpha16_lr0p0002_t42_a3407,1,Mild,35,42,22,13,20,306,0.6285714286,0.9386503067,0.5238095238,0.5714285714,0.9326906223
+Qwen,Qwen r8 CLAHE-off lr2e-4,42,aptos361,r8_off_alpha16_lr0p0002_t42_a3407,2,Moderate,97,67,49,48,18,246,0.5051546392,0.9318181818,0.7313432836,0.5975609756,0.9204935958
+Qwen,Qwen r8 CLAHE-off lr2e-4,42,aptos361,r8_off_alpha16_lr0p0002_t42_a3407,3,Severe,18,54,13,5,41,302,0.7222222222,0.8804664723,0.2407407407,0.3611111111,0.8927761581
+Qwen,Qwen r8 CLAHE-off lr2e-4,42,aptos361,r8_off_alpha16_lr0p0002_t42_a3407,4,Proliferative DR,30,21,17,13,4,327,0.5666666667,0.9879154079,0.8095238095,0.6666666667,0.9531722054
+Qwen,Qwen r8 CLAHE-off lr2e-4,43,aptos361,r8_off_alpha16_lr0p0002_t43_a3408,0,No DR,181,174,173,8,1,179,0.955801105,0.9944444444,0.9942528736,0.9746478873,0.9948434622
+Qwen,Qwen r8 CLAHE-off lr2e-4,43,aptos361,r8_off_alpha16_lr0p0002_t43_a3408,1,Mild,35,49,27,8,22,304,0.7714285714,0.9325153374,0.5510204082,0.6428571429,0.938913234
+Qwen,Qwen r8 CLAHE-off lr2e-4,43,aptos361,r8_off_alpha16_lr0p0002_t43_a3408,2,Moderate,97,60,48,49,12,252,0.4948453608,0.9545454545,0.8,0.6114649682,0.9282646048
+Qwen,Qwen r8 CLAHE-off lr2e-4,43,aptos361,r8_off_alpha16_lr0p0002_t43_a3408,3,Severe,18,49,10,8,39,304,0.5555555556,0.8862973761,0.2040816327,0.2985074627,0.8869452543
+Qwen,Qwen r8 CLAHE-off lr2e-4,43,aptos361,r8_off_alpha16_lr0p0002_t43_a3408,4,Proliferative DR,30,29,18,12,11,320,0.6,0.9667673716,0.6206896552,0.6101694915,0.9500503525
+Qwen,Qwen r8 CLAHE-off lr2e-4,44,aptos361,r8_off_alpha16_lr0p0002_t44_a3409,0,No DR,181,173,173,8,0,180,0.955801105,1,1,0.9774011299,0.9976979742
+Qwen,Qwen r8 CLAHE-off lr2e-4,44,aptos361,r8_off_alpha16_lr0p0002_t44_a3409,1,Mild,35,41,22,13,19,307,0.6285714286,0.9417177914,0.5365853659,0.5789473684,0.9449605609
+Qwen,Qwen r8 CLAHE-off lr2e-4,44,aptos361,r8_off_alpha16_lr0p0002_t44_a3409,2,Moderate,97,81,61,36,20,244,0.6288659794,0.9242424242,0.7530864198,0.6853932584,0.9270540456
+Qwen,Qwen r8 CLAHE-off lr2e-4,44,aptos361,r8_off_alpha16_lr0p0002_t44_a3409,3,Severe,18,35,8,10,27,316,0.4444444444,0.9212827988,0.2285714286,0.3018867925,0.9041140266
+Qwen,Qwen r8 CLAHE-off lr2e-4,44,aptos361,r8_off_alpha16_lr0p0002_t44_a3409,4,Proliferative DR,30,31,18,12,13,318,0.6,0.9607250755,0.5806451613,0.5901639344,0.9447129909
+Qwen,Qwen r8 CLAHE-off lr2e-4 alpha8,42,aptos361,r8_off_alpha8_lr0p0002_t42_a3407,0,No DR,181,183,175,6,8,172,0.9668508287,0.9555555556,0.956284153,0.9615384615,0.9944444444
+Qwen,Qwen r8 CLAHE-off lr2e-4 alpha8,42,aptos361,r8_off_alpha8_lr0p0002_t42_a3407,1,Mild,35,58,22,13,36,290,0.6285714286,0.8895705521,0.3793103448,0.4731182796,0.9128834356
+Qwen,Qwen r8 CLAHE-off lr2e-4 alpha8,42,aptos361,r8_off_alpha8_lr0p0002_t42_a3407,2,Moderate,97,72,55,42,17,247,0.5670103093,0.9356060606,0.7638888889,0.650887574,0.9418931584
+Qwen,Qwen r8 CLAHE-off lr2e-4 alpha8,42,aptos361,r8_off_alpha8_lr0p0002_t42_a3407,3,Severe,18,24,8,10,16,327,0.4444444444,0.9533527697,0.3333333333,0.380952381,0.9013605442
+Qwen,Qwen r8 CLAHE-off lr2e-4 alpha8,42,aptos361,r8_off_alpha8_lr0p0002_t42_a3407,4,Proliferative DR,30,24,19,11,5,326,0.6333333333,0.9848942598,0.7916666667,0.7037037037,0.9483383686
+Qwen,Qwen r8 CLAHE-off lr2e-4 alpha8,43,aptos361,r8_off_alpha8_lr0p0002_t43_a3408,0,No DR,181,171,169,12,2,178,0.9337016575,0.9888888889,0.9883040936,0.9602272727,0.9951810927
+Qwen,Qwen r8 CLAHE-off lr2e-4 alpha8,43,aptos361,r8_off_alpha8_lr0p0002_t43_a3408,1,Mild,35,66,27,8,39,287,0.7714285714,0.8803680982,0.4090909091,0.5346534653,0.9382997371
+Qwen,Qwen r8 CLAHE-off lr2e-4 alpha8,43,aptos361,r8_off_alpha8_lr0p0002_t43_a3408,2,Moderate,97,58,42,55,16,248,0.4329896907,0.9393939394,0.724137931,0.5419354839,0.9235785692
+Qwen,Qwen r8 CLAHE-off lr2e-4 alpha8,43,aptos361,r8_off_alpha8_lr0p0002_t43_a3408,3,Severe,18,47,10,8,37,306,0.5555555556,0.8921282799,0.2127659574,0.3076923077,0.9028182702
+Qwen,Qwen r8 CLAHE-off lr2e-4 alpha8,43,aptos361,r8_off_alpha8_lr0p0002_t43_a3408,4,Proliferative DR,30,19,13,17,6,325,0.4333333333,0.9818731118,0.6842105263,0.5306122449,0.9425981873
+Qwen,Qwen r8 CLAHE-off lr2e-4 alpha8,44,aptos361,r8_off_alpha8_lr0p0002_t44_a3409,0,No DR,181,177,174,7,3,177,0.9613259669,0.9833333333,0.9830508475,0.9720670391,0.9968078576
+Qwen,Qwen r8 CLAHE-off lr2e-4 alpha8,44,aptos361,r8_off_alpha8_lr0p0002_t44_a3409,1,Mild,35,65,29,6,36,290,0.8285714286,0.8895705521,0.4461538462,0.58,0.9482909728
+Qwen,Qwen r8 CLAHE-off lr2e-4 alpha8,44,aptos361,r8_off_alpha8_lr0p0002_t44_a3409,2,Moderate,97,85,63,34,22,242,0.6494845361,0.9166666667,0.7411764706,0.6923076923,0.9300999688
+Qwen,Qwen r8 CLAHE-off lr2e-4 alpha8,44,aptos361,r8_off_alpha8_lr0p0002_t44_a3409,3,Severe,18,14,4,14,10,333,0.2222222222,0.970845481,0.2857142857,0.25,0.8866213152
+Qwen,Qwen r8 CLAHE-off lr2e-4 alpha8,44,aptos361,r8_off_alpha8_lr0p0002_t44_a3409,4,Proliferative DR,30,20,15,15,5,326,0.5,0.9848942598,0.75,0.6,0.9592145015
+Qwen,Qwen r8 CLAHE-on lr2e-4,42,aptos361,r8_on_alpha16_lr0p0002_t42_a3407,0,No DR,181,176,175,6,1,179,0.9668508287,0.9944444444,0.9943181818,0.9803921569,0.9972682627
+Qwen,Qwen r8 CLAHE-on lr2e-4,42,aptos361,r8_on_alpha16_lr0p0002_t42_a3407,1,Mild,35,55,29,6,26,300,0.8285714286,0.9202453988,0.5272727273,0.6444444444,0.963190184
+Qwen,Qwen r8 CLAHE-on lr2e-4,42,aptos361,r8_on_alpha16_lr0p0002_t42_a3407,2,Moderate,97,52,41,56,11,253,0.4226804124,0.9583333333,0.7884615385,0.5503355705,0.9232661668
+Qwen,Qwen r8 CLAHE-on lr2e-4,42,aptos361,r8_on_alpha16_lr0p0002_t42_a3407,3,Severe,18,41,12,6,29,314,0.6666666667,0.915451895,0.2926829268,0.406779661,0.9024943311
+Qwen,Qwen r8 CLAHE-on lr2e-4,42,aptos361,r8_on_alpha16_lr0p0002_t42_a3407,4,Proliferative DR,30,37,21,9,16,315,0.7,0.9516616314,0.5675675676,0.6268656716,0.9502517623
+Qwen,Qwen r8 CLAHE-on lr2e-4,43,aptos361,r8_on_alpha16_lr0p0002_t43_a3408,0,No DR,181,180,176,5,4,176,0.9723756906,0.9777777778,0.9777777778,0.9750692521,0.9978207489
+Qwen,Qwen r8 CLAHE-on lr2e-4,43,aptos361,r8_on_alpha16_lr0p0002_t43_a3408,1,Mild,35,34,20,15,14,312,0.5714285714,0.9570552147,0.5882352941,0.5797101449,0.9197195443
+Qwen,Qwen r8 CLAHE-on lr2e-4,43,aptos361,r8_on_alpha16_lr0p0002_t43_a3408,2,Moderate,97,89,65,32,24,240,0.6701030928,0.9090909091,0.7303370787,0.6989247312,0.9250624805
+Qwen,Qwen r8 CLAHE-on lr2e-4,43,aptos361,r8_on_alpha16_lr0p0002_t43_a3408,3,Severe,18,21,6,12,15,328,0.3333333333,0.9562682216,0.2857142857,0.3076923077,0.8932620667
+Qwen,Qwen r8 CLAHE-on lr2e-4,43,aptos361,r8_on_alpha16_lr0p0002_t43_a3408,4,Proliferative DR,30,37,18,12,19,312,0.6,0.9425981873,0.4864864865,0.5373134328,0.9342396777
+Qwen,Qwen r8 CLAHE-on lr2e-4,44,aptos361,r8_on_alpha16_lr0p0002_t44_a3409,0,No DR,181,176,172,9,4,176,0.9502762431,0.9777777778,0.9772727273,0.9635854342,0.9918968692
+Qwen,Qwen r8 CLAHE-on lr2e-4,44,aptos361,r8_on_alpha16_lr0p0002_t44_a3409,1,Mild,35,37,22,13,15,311,0.6285714286,0.9539877301,0.5945945946,0.6111111111,0.9193689746
+Qwen,Qwen r8 CLAHE-on lr2e-4,44,aptos361,r8_on_alpha16_lr0p0002_t44_a3409,2,Moderate,97,73,57,40,16,248,0.587628866,0.9393939394,0.7808219178,0.6705882353,0.9175257732
+Qwen,Qwen r8 CLAHE-on lr2e-4,44,aptos361,r8_on_alpha16_lr0p0002_t44_a3409,3,Severe,18,32,8,10,24,319,0.4444444444,0.9300291545,0.25,0.32,0.8650793651
+Qwen,Qwen r8 CLAHE-on lr2e-4,44,aptos361,r8_on_alpha16_lr0p0002_t44_a3409,4,Proliferative DR,30,43,25,5,18,313,0.8333333333,0.9456193353,0.5813953488,0.6849315068,0.9548841893
+Qwen,Qwen r8 CLAHE-on lr2e-4 alpha8,42,aptos361,r8_on_alpha8_lr0p0002_t42_a3407,0,No DR,181,183,178,3,5,175,0.9834254144,0.9722222222,0.9726775956,0.978021978,0.9947513812
+Qwen,Qwen r8 CLAHE-on lr2e-4 alpha8,42,aptos361,r8_on_alpha8_lr0p0002_t42_a3407,1,Mild,35,53,26,9,27,299,0.7428571429,0.9171779141,0.4905660377,0.5909090909,0.9467134093
+Qwen,Qwen r8 CLAHE-on lr2e-4 alpha8,42,aptos361,r8_on_alpha8_lr0p0002_t42_a3407,2,Moderate,97,70,51,46,19,245,0.5257731959,0.928030303,0.7285714286,0.6107784431,0.9281474539
+Qwen,Qwen r8 CLAHE-on lr2e-4 alpha8,42,aptos361,r8_on_alpha8_lr0p0002_t42_a3407,3,Severe,18,23,8,10,15,328,0.4444444444,0.9562682216,0.347826087,0.3902439024,0.8953676709
+Qwen,Qwen r8 CLAHE-on lr2e-4 alpha8,42,aptos361,r8_on_alpha8_lr0p0002_t42_a3407,4,Proliferative DR,30,32,20,10,12,319,0.6666666667,0.9637462236,0.625,0.6451612903,0.9579053374
+Qwen,Qwen r8 CLAHE-on lr2e-4 alpha8,43,aptos361,r8_on_alpha8_lr0p0002_t43_a3408,0,No DR,181,185,177,4,8,172,0.9779005525,0.9555555556,0.9567567568,0.9672131148,0.99315531
+Qwen,Qwen r8 CLAHE-on lr2e-4 alpha8,43,aptos361,r8_on_alpha8_lr0p0002_t43_a3408,1,Mild,35,25,15,20,10,316,0.4285714286,0.9693251534,0.6,0.5,0.8991235758
+Qwen,Qwen r8 CLAHE-on lr2e-4 alpha8,43,aptos361,r8_on_alpha8_lr0p0002_t43_a3408,2,Moderate,97,80,60,37,20,244,0.618556701,0.9242424242,0.75,0.6779661017,0.9270149953
+Qwen,Qwen r8 CLAHE-on lr2e-4 alpha8,43,aptos361,r8_on_alpha8_lr0p0002_t43_a3408,3,Severe,18,33,7,11,26,317,0.3888888889,0.9241982507,0.2121212121,0.2745098039,0.8705863298
+Qwen,Qwen r8 CLAHE-on lr2e-4 alpha8,43,aptos361,r8_on_alpha8_lr0p0002_t43_a3408,4,Proliferative DR,30,38,21,9,17,314,0.7,0.9486404834,0.5526315789,0.6176470588,0.9513595166
+Qwen,Qwen r8 CLAHE-on lr2e-4 alpha8,44,aptos361,r8_on_alpha8_lr0p0002_t44_a3409,0,No DR,181,175,174,7,1,179,0.9613259669,0.9944444444,0.9942857143,0.9775280899,0.9964395335
+Qwen,Qwen r8 CLAHE-on lr2e-4 alpha8,44,aptos361,r8_on_alpha8_lr0p0002_t44_a3409,1,Mild,35,62,30,5,32,294,0.8571428571,0.9018404908,0.4838709677,0.618556701,0.9448729185
+Qwen,Qwen r8 CLAHE-on lr2e-4 alpha8,44,aptos361,r8_on_alpha8_lr0p0002_t44_a3409,2,Moderate,97,79,60,37,19,245,0.618556701,0.928030303,0.7594936709,0.6818181818,0.9258044361
+Qwen,Qwen r8 CLAHE-on lr2e-4 alpha8,44,aptos361,r8_on_alpha8_lr0p0002_t44_a3409,3,Severe,18,19,6,12,13,330,0.3333333333,0.9620991254,0.3157894737,0.3243243243,0.9008746356
+Qwen,Qwen r8 CLAHE-on lr2e-4 alpha8,44,aptos361,r8_on_alpha8_lr0p0002_t44_a3409,4,Proliferative DR,30,26,19,11,7,324,0.6333333333,0.9788519637,0.7307692308,0.6785714286,0.9458207452
+Qwen,Qwen r16 CLAHE-off lr2e-4,42,messidor,r16_off_alpha16_lr0p0002_t42_a3407__messidor_archived_off,0,No DR,468,760,454,14,306,283,0.9700854701,0.480475382,0.5973684211,0.7394136808,0.8098036655
+Qwen,Qwen r16 CLAHE-off lr2e-4,42,messidor,r16_off_alpha16_lr0p0002_t42_a3407__messidor_archived_off,1,Mild,207,172,11,196,161,689,0.05314009662,0.8105882353,0.06395348837,0.0580474934,0.3769877806
+Qwen,Qwen r16 CLAHE-off lr2e-4,42,messidor,r16_off_alpha16_lr0p0002_t42_a3407__messidor_archived_off,2,Moderate,290,83,39,251,44,723,0.1344827586,0.9426336375,0.4698795181,0.2091152815,0.8342804478
+Qwen,Qwen r16 CLAHE-off lr2e-4,42,messidor,r16_off_alpha16_lr0p0002_t42_a3407__messidor_archived_off,3,Severe,71,15,14,57,1,985,0.1971830986,0.9989858012,0.9333333333,0.3255813953,0.9649030083
+Qwen,Qwen r16 CLAHE-off lr2e-4,42,messidor,r16_off_alpha16_lr0p0002_t42_a3407__messidor_archived_off,4,Proliferative DR,21,27,14,7,13,1023,0.6666666667,0.9874517375,0.5185185185,0.5833333333,0.952472881
+Qwen,Qwen r16 CLAHE-off lr2e-4,43,messidor,r16_off_alpha16_lr0p0002_t43_a3408__messidor_archived_off,0,No DR,468,677,412,56,265,324,0.8803418803,0.5500848896,0.6085672083,0.719650655,0.778554119
+Qwen,Qwen r16 CLAHE-off lr2e-4,43,messidor,r16_off_alpha16_lr0p0002_t43_a3408__messidor_archived_off,1,Mild,207,244,29,178,215,635,0.1400966184,0.7470588235,0.118852459,0.1286031042,0.4355157715
+Qwen,Qwen r16 CLAHE-off lr2e-4,43,messidor,r16_off_alpha16_lr0p0002_t43_a3408__messidor_archived_off,2,Moderate,290,82,40,250,42,725,0.1379310345,0.9452411995,0.487804878,0.2150537634,0.7740008092
+Qwen,Qwen r16 CLAHE-off lr2e-4,43,messidor,r16_off_alpha16_lr0p0002_t43_a3408__messidor_archived_off,3,Severe,71,31,22,49,9,977,0.3098591549,0.990872211,0.7096774194,0.431372549,0.9585035568
+Qwen,Qwen r16 CLAHE-off lr2e-4,43,messidor,r16_off_alpha16_lr0p0002_t43_a3408__messidor_archived_off,4,Proliferative DR,21,23,6,15,17,1019,0.2857142857,0.9835907336,0.2608695652,0.2727272727,0.9265030336
+Qwen,Qwen r16 CLAHE-off lr2e-4,44,messidor,r16_off_alpha16_lr0p0002_t44_a3409__messidor_archived_off,0,No DR,468,660,416,52,244,345,0.8888888889,0.5857385399,0.6303030303,0.7375886525,0.8255082495
+Qwen,Qwen r16 CLAHE-off lr2e-4,44,messidor,r16_off_alpha16_lr0p0002_t44_a3409__messidor_archived_off,1,Mild,207,291,35,172,256,594,0.1690821256,0.6988235294,0.1202749141,0.140562249,0.4675362319
+Qwen,Qwen r16 CLAHE-off lr2e-4,44,messidor,r16_off_alpha16_lr0p0002_t44_a3409__messidor_archived_off,2,Moderate,290,70,22,268,48,719,0.07586206897,0.9374185137,0.3142857143,0.1222222222,0.7957424808
+Qwen,Qwen r16 CLAHE-off lr2e-4,44,messidor,r16_off_alpha16_lr0p0002_t44_a3409__messidor_archived_off,3,Severe,71,17,13,58,4,982,0.1830985915,0.9959432049,0.7647058824,0.2954545455,0.9597605919
+Qwen,Qwen r16 CLAHE-off lr2e-4,44,messidor,r16_off_alpha16_lr0p0002_t44_a3409__messidor_archived_off,4,Proliferative DR,21,19,6,15,13,1023,0.2857142857,0.9874517375,0.3157894737,0.3,0.925859533
+Qwen,Qwen r32 CLAHE-off lr2e-4,42,messidor,r32_off_alpha16_lr0p0002_t42_a3407__messidor_archived_off,0,No DR,468,743,453,15,290,299,0.9679487179,0.5076400679,0.6096904441,0.7481420314,0.8183071409
+Qwen,Qwen r32 CLAHE-off lr2e-4,42,messidor,r32_off_alpha16_lr0p0002_t42_a3407__messidor_archived_off,1,Mild,207,196,14,193,182,668,0.06763285024,0.7858823529,0.07142857143,0.06947890819,0.4244558113
+Qwen,Qwen r32 CLAHE-off lr2e-4,42,messidor,r32_off_alpha16_lr0p0002_t42_a3407__messidor_archived_off,2,Moderate,290,76,32,258,44,723,0.1103448276,0.9426336375,0.4210526316,0.174863388,0.8253248213
+Qwen,Qwen r32 CLAHE-off lr2e-4,42,messidor,r32_off_alpha16_lr0p0002_t42_a3407__messidor_archived_off,3,Severe,71,22,20,51,2,984,0.2816901408,0.9979716024,0.9090909091,0.4301075269,0.9704596749
+Qwen,Qwen r32 CLAHE-off lr2e-4,42,messidor,r32_off_alpha16_lr0p0002_t42_a3407__messidor_archived_off,4,Proliferative DR,21,20,11,10,9,1027,0.5238095238,0.9913127413,0.55,0.5365853659,0.953989704
+Qwen,Qwen r32 CLAHE-off lr2e-4,43,messidor,r32_off_alpha16_lr0p0002_t43_a3408__messidor_archived_off,0,No DR,468,595,387,81,208,381,0.8269230769,0.6468590832,0.6504201681,0.7281279398,0.8044236936
+Qwen,Qwen r32 CLAHE-off lr2e-4,43,messidor,r32_off_alpha16_lr0p0002_t43_a3408__messidor_archived_off,1,Mild,207,341,59,148,282,568,0.2850241546,0.6682352941,0.1730205279,0.2153284672,0.4576015914
+Qwen,Qwen r32 CLAHE-off lr2e-4,43,messidor,r32_off_alpha16_lr0p0002_t43_a3408__messidor_archived_off,2,Moderate,290,77,34,256,43,724,0.1172413793,0.9439374185,0.4415584416,0.1852861035,0.8115856674
+Qwen,Qwen r32 CLAHE-off lr2e-4,43,messidor,r32_off_alpha16_lr0p0002_t43_a3408__messidor_archived_off,3,Severe,71,36,25,46,11,975,0.3521126761,0.9888438134,0.6944444444,0.4672897196,0.9642459218
+Qwen,Qwen r32 CLAHE-off lr2e-4,43,messidor,r32_off_alpha16_lr0p0002_t43_a3408__messidor_archived_off,4,Proliferative DR,21,8,4,17,4,1032,0.1904761905,0.9961389961,0.5,0.275862069,0.9504964148
+Qwen,Qwen r32 CLAHE-off lr2e-4,44,messidor,r32_off_alpha16_lr0p0002_t44_a3409__messidor_archived_off,0,No DR,468,579,389,79,190,399,0.8311965812,0.6774193548,0.6718480138,0.7430754537,0.7799471798
+Qwen,Qwen r32 CLAHE-off lr2e-4,44,messidor,r32_off_alpha16_lr0p0002_t44_a3409__messidor_archived_off,1,Mild,207,363,66,141,297,553,0.3188405797,0.6505882353,0.1818181818,0.2315789474,0.4543620347
+Qwen,Qwen r32 CLAHE-off lr2e-4,44,messidor,r32_off_alpha16_lr0p0002_t44_a3409__messidor_archived_off,2,Moderate,290,55,19,271,36,731,0.06551724138,0.9530638853,0.3454545455,0.1101449275,0.7548037585
+Qwen,Qwen r32 CLAHE-off lr2e-4,44,messidor,r32_off_alpha16_lr0p0002_t44_a3409__messidor_archived_off,3,Severe,71,29,22,49,7,979,0.3098591549,0.9929006085,0.7586206897,0.44,0.9566322887
+Qwen,Qwen r32 CLAHE-off lr2e-4,44,messidor,r32_off_alpha16_lr0p0002_t44_a3409__messidor_archived_off,4,Proliferative DR,21,31,4,17,27,1009,0.1904761905,0.9739382239,0.1290322581,0.1538461538,0.9208494208
+Qwen,Qwen r32 CLAHE-off lr2e-4 alpha32,42,messidor,r32_off_alpha32_lr0p0002_t42_a3407__messidor_archived_off,0,No DR,468,784,445,23,339,250,0.9508547009,0.4244482173,0.5676020408,0.7108626198,0.7956118584
+Qwen,Qwen r32 CLAHE-off lr2e-4 alpha32,42,messidor,r32_off_alpha32_lr0p0002_t42_a3407__messidor_archived_off,1,Mild,207,127,15,192,112,738,0.07246376812,0.8682352941,0.1181102362,0.08982035928,0.4289684569
+Qwen,Qwen r32 CLAHE-off lr2e-4 alpha32,42,messidor,r32_off_alpha32_lr0p0002_t42_a3407__messidor_archived_off,2,Moderate,290,127,61,229,66,701,0.2103448276,0.9139504563,0.4803149606,0.2925659472,0.7814818145
+Qwen,Qwen r32 CLAHE-off lr2e-4 alpha32,42,messidor,r32_off_alpha32_lr0p0002_t42_a3407__messidor_archived_off,3,Severe,71,16,9,62,7,979,0.1267605634,0.9929006085,0.5625,0.2068965517,0.9654315344
+Qwen,Qwen r32 CLAHE-off lr2e-4 alpha32,42,messidor,r32_off_alpha32_lr0p0002_t42_a3407__messidor_archived_off,4,Proliferative DR,21,3,2,19,1,1035,0.09523809524,0.999034749,0.6666666667,0.1666666667,0.9121621622
+Qwen,Qwen r32 CLAHE-off lr2e-4 alpha32,43,messidor,r32_off_alpha32_lr0p0002_t43_a3408__messidor_archived_off,0,No DR,468,615,401,67,214,375,0.8568376068,0.636672326,0.6520325203,0.7405355494,0.8254683441
+Qwen,Qwen r32 CLAHE-off lr2e-4 alpha32,43,messidor,r32_off_alpha32_lr0p0002_t43_a3408__messidor_archived_off,1,Mild,207,342,42,165,300,550,0.2028985507,0.6470588235,0.1228070175,0.1530054645,0.456152316
+Qwen,Qwen r32 CLAHE-off lr2e-4 alpha32,43,messidor,r32_off_alpha32_lr0p0002_t43_a3408__messidor_archived_off,2,Moderate,290,66,21,269,45,722,0.0724137931,0.9413298566,0.3181818182,0.1179775281,0.8103762982
+Qwen,Qwen r32 CLAHE-off lr2e-4 alpha32,43,messidor,r32_off_alpha32_lr0p0002_t43_a3408__messidor_archived_off,3,Severe,71,17,12,59,5,981,0.1690140845,0.9949290061,0.7058823529,0.2727272727,0.9663314573
+Qwen,Qwen r32 CLAHE-off lr2e-4 alpha32,43,messidor,r32_off_alpha32_lr0p0002_t43_a3408__messidor_archived_off,4,Proliferative DR,21,17,6,15,11,1025,0.2857142857,0.9893822394,0.3529411765,0.3157894737,0.9450726236
+Qwen,Qwen r32 CLAHE-off lr2e-4 alpha32,44,messidor,r32_off_alpha32_lr0p0002_t44_a3409__messidor_archived_off,0,No DR,468,695,437,31,258,331,0.9337606838,0.5619694397,0.6287769784,0.7515047291,0.8262628241
+Qwen,Qwen r32 CLAHE-off lr2e-4 alpha32,44,messidor,r32_off_alpha32_lr0p0002_t44_a3409__messidor_archived_off,1,Mild,207,253,26,181,227,623,0.1256038647,0.7329411765,0.1027667984,0.1130434783,0.4422790566
+Qwen,Qwen r32 CLAHE-off lr2e-4 alpha32,44,messidor,r32_off_alpha32_lr0p0002_t44_a3409__messidor_archived_off,2,Moderate,290,78,26,264,52,715,0.08965517241,0.9322033898,0.3333333333,0.1413043478,0.8071977701
+Qwen,Qwen r32 CLAHE-off lr2e-4 alpha32,44,messidor,r32_off_alpha32_lr0p0002_t44_a3409__messidor_archived_off,3,Severe,71,19,16,55,3,983,0.2253521127,0.9969574037,0.8421052632,0.3555555556,0.9636459732
+Qwen,Qwen r32 CLAHE-off lr2e-4 alpha32,44,messidor,r32_off_alpha32_lr0p0002_t44_a3409__messidor_archived_off,4,Proliferative DR,21,12,6,15,6,1030,0.2857142857,0.9942084942,0.5,0.3636363636,0.9572531715
+Qwen,Qwen r32 CLAHE-on lr2e-4,42,messidor,r32_on_alpha16_lr0p0002_t42_a3407__messidor_archived,0,No DR,468,529,360,108,169,420,0.7692307692,0.7130730051,0.6805293006,0.7221664995,0.8038505072
+Qwen,Qwen r32 CLAHE-on lr2e-4,42,messidor,r32_on_alpha16_lr0p0002_t42_a3407__messidor_archived,1,Mild,207,372,79,128,293,557,0.3816425121,0.6552941176,0.2123655914,0.2728842832,0.5230520034
+Qwen,Qwen r32 CLAHE-on lr2e-4,42,messidor,r32_on_alpha16_lr0p0002_t42_a3407__messidor_archived,2,Moderate,290,92,60,230,32,735,0.2068965517,0.9582790091,0.652173913,0.3141361257,0.8201007058
+Qwen,Qwen r32 CLAHE-on lr2e-4,42,messidor,r32_on_alpha16_lr0p0002_t42_a3407__messidor_archived,3,Severe,71,51,40,31,11,975,0.5633802817,0.9888438134,0.7843137255,0.6557377049,0.9674742165
+Qwen,Qwen r32 CLAHE-on lr2e-4,42,messidor,r32_on_alpha16_lr0p0002_t42_a3407__messidor_archived,4,Proliferative DR,21,13,7,14,6,1030,0.3333333333,0.9942084942,0.5384615385,0.4117647059,0.9639179996
+Qwen,Qwen r32 CLAHE-on lr2e-4,43,messidor,r32_on_alpha16_lr0p0002_t43_a3408__messidor_archived,0,No DR,468,755,449,19,306,283,0.9594017094,0.480475382,0.5947019868,0.7342600164,0.8027331563
+Qwen,Qwen r32 CLAHE-on lr2e-4,43,messidor,r32_on_alpha16_lr0p0002_t43_a3408__messidor_archived,1,Mild,207,182,15,192,167,683,0.07246376812,0.8035294118,0.08241758242,0.07712082262,0.4433759591
+Qwen,Qwen r32 CLAHE-on lr2e-4,43,messidor,r32_on_alpha16_lr0p0002_t43_a3408__messidor_archived,2,Moderate,290,60,33,257,27,740,0.1137931034,0.964797914,0.55,0.1885714286,0.7887650047
+Qwen,Qwen r32 CLAHE-on lr2e-4,43,messidor,r32_on_alpha16_lr0p0002_t43_a3408__messidor_archived,3,Severe,71,39,32,39,7,979,0.4507042254,0.9929006085,0.8205128205,0.5818181818,0.9647173099
+Qwen,Qwen r32 CLAHE-on lr2e-4,43,messidor,r32_on_alpha16_lr0p0002_t43_a3408__messidor_archived,4,Proliferative DR,21,21,8,13,13,1023,0.380952381,0.9874517375,0.380952381,0.380952381,0.9567475639
+Qwen,Qwen r32 CLAHE-on lr2e-4,44,messidor,r32_on_alpha16_lr0p0002_t44_a3409__messidor_archived,0,No DR,468,528,370,98,158,431,0.7905982906,0.7317487267,0.7007575758,0.7429718876,0.8327927967
+Qwen,Qwen r32 CLAHE-on lr2e-4,44,messidor,r32_on_alpha16_lr0p0002_t44_a3409__messidor_archived,1,Mild,207,384,79,128,305,545,0.3816425121,0.6411764706,0.2057291667,0.2673434856,0.530190395
+Qwen,Qwen r32 CLAHE-on lr2e-4,44,messidor,r32_on_alpha16_lr0p0002_t44_a3409__messidor_archived,2,Moderate,290,101,49,241,52,715,0.1689655172,0.9322033898,0.4851485149,0.2506393862,0.8025940745
+Qwen,Qwen r32 CLAHE-on lr2e-4,44,messidor,r32_on_alpha16_lr0p0002_t44_a3409__messidor_archived,3,Severe,71,33,27,44,6,980,0.3802816901,0.9939148073,0.8181818182,0.5192307692,0.9751449876
+Qwen,Qwen r32 CLAHE-on lr2e-4,44,messidor,r32_on_alpha16_lr0p0002_t44_a3409__messidor_archived,4,Proliferative DR,21,11,7,14,4,1032,0.3333333333,0.9961389961,0.6363636364,0.4375,0.9407979408
+Qwen,Qwen r32 CLAHE-on lr2e-4 alpha32,42,messidor,r32_on_alpha32_lr0p0002_t42_a3407__messidor_archived,0,No DR,468,571,363,105,208,381,0.7756410256,0.6468590832,0.6357267951,0.6987487969,0.7829364561
+Qwen,Qwen r32 CLAHE-on lr2e-4 alpha32,42,messidor,r32_on_alpha32_lr0p0002_t42_a3407__messidor_archived,1,Mild,207,358,62,145,296,554,0.2995169082,0.6517647059,0.1731843575,0.2194690265,0.4980733163
+Qwen,Qwen r32 CLAHE-on lr2e-4 alpha32,42,messidor,r32_on_alpha32_lr0p0002_t42_a3407__messidor_archived,2,Moderate,290,51,24,266,27,740,0.08275862069,0.964797914,0.4705882353,0.1407624633,0.7636784606
+Qwen,Qwen r32 CLAHE-on lr2e-4 alpha32,42,messidor,r32_on_alpha32_lr0p0002_t42_a3407__messidor_archived,3,Severe,71,41,26,45,15,971,0.3661971831,0.9847870183,0.6341463415,0.4642857143,0.9302631203
+Qwen,Qwen r32 CLAHE-on lr2e-4 alpha32,42,messidor,r32_on_alpha32_lr0p0002_t42_a3407__messidor_archived,4,Proliferative DR,21,36,10,11,26,1010,0.4761904762,0.9749034749,0.2777777778,0.350877193,0.890237176
+Qwen,Qwen r32 CLAHE-on lr2e-4 alpha32,43,messidor,r32_on_alpha32_lr0p0002_t43_a3408__messidor_archived,0,No DR,468,612,388,80,224,365,0.8290598291,0.6196943973,0.6339869281,0.7185185185,0.7815288842
+Qwen,Qwen r32 CLAHE-on lr2e-4 alpha32,43,messidor,r32_on_alpha32_lr0p0002_t43_a3408__messidor_archived,1,Mild,207,229,36,171,193,657,0.1739130435,0.7729411765,0.1572052402,0.1651376147,0.5045296959
+Qwen,Qwen r32 CLAHE-on lr2e-4 alpha32,43,messidor,r32_on_alpha32_lr0p0002_t43_a3408__messidor_archived,2,Moderate,290,127,66,224,61,706,0.2275862069,0.9204693611,0.5196850394,0.3165467626,0.7810367307
+Qwen,Qwen r32 CLAHE-on lr2e-4 alpha32,43,messidor,r32_on_alpha32_lr0p0002_t43_a3408__messidor_archived,3,Severe,71,53,35,36,18,968,0.4929577465,0.9817444219,0.6603773585,0.564516129,0.9613747393
+Qwen,Qwen r32 CLAHE-on lr2e-4 alpha32,43,messidor,r32_on_alpha32_lr0p0002_t43_a3408__messidor_archived,4,Proliferative DR,21,36,8,13,28,1008,0.380952381,0.972972973,0.2222222222,0.2807017544,0.9313752528
+Qwen,Qwen r32 CLAHE-on lr2e-4 alpha32,44,messidor,r32_on_alpha32_lr0p0002_t44_a3409__messidor_archived,0,No DR,468,650,415,53,235,354,0.8867521368,0.6010186757,0.6384615385,0.7423971377,0.8164823763
+Qwen,Qwen r32 CLAHE-on lr2e-4 alpha32,44,messidor,r32_on_alpha32_lr0p0002_t44_a3409__messidor_archived,1,Mild,207,294,39,168,255,595,0.1884057971,0.7,0.1326530612,0.1556886228,0.4529184427
+Qwen,Qwen r32 CLAHE-on lr2e-4 alpha32,44,messidor,r32_on_alpha32_lr0p0002_t44_a3409__messidor_archived,2,Moderate,290,82,35,255,47,720,0.1206896552,0.9387222947,0.4268292683,0.188172043,0.8015645372
+Qwen,Qwen r32 CLAHE-on lr2e-4 alpha32,44,messidor,r32_on_alpha32_lr0p0002_t44_a3409__messidor_archived,3,Severe,71,26,21,50,5,981,0.2957746479,0.9949290061,0.8076923077,0.4329896907,0.9726737708
+Qwen,Qwen r32 CLAHE-on lr2e-4 alpha32,44,messidor,r32_on_alpha32_lr0p0002_t44_a3409__messidor_archived,4,Proliferative DR,21,5,3,18,2,1034,0.1428571429,0.9980694981,0.6,0.2307692308,0.9281577496
+Qwen,Qwen r8 CLAHE-off lr2e-4,42,messidor,r8_off_alpha16_lr0p0002_t42_a3407__messidor_archived_off,0,No DR,468,640,410,58,230,359,0.8760683761,0.6095076401,0.640625,0.7400722022,0.796137884
+Qwen,Qwen r8 CLAHE-off lr2e-4,42,messidor,r8_off_alpha16_lr0p0002_t42_a3407__messidor_archived_off,1,Mild,207,275,45,162,230,620,0.2173913043,0.7294117647,0.1636363636,0.1867219917,0.4357772094
+Qwen,Qwen r8 CLAHE-off lr2e-4,42,messidor,r8_off_alpha16_lr0p0002_t42_a3407__messidor_archived_off,2,Moderate,290,88,43,247,45,722,0.1482758621,0.9413298566,0.4886363636,0.2275132275,0.7981971856
+Qwen,Qwen r8 CLAHE-off lr2e-4,42,messidor,r8_off_alpha16_lr0p0002_t42_a3407__messidor_archived_off,3,Severe,71,44,31,40,13,973,0.4366197183,0.9868154158,0.7045454545,0.5391304348,0.9665457247
+Qwen,Qwen r8 CLAHE-off lr2e-4,42,messidor,r8_off_alpha16_lr0p0002_t42_a3407__messidor_archived_off,4,Proliferative DR,21,10,5,16,5,1031,0.2380952381,0.9951737452,0.5,0.3225806452,0.9564258136
+Qwen,Qwen r8 CLAHE-off lr2e-4,43,messidor,r8_off_alpha16_lr0p0002_t43_a3408__messidor_archived_off,0,No DR,468,670,412,56,258,331,0.8803418803,0.5619694397,0.6149253731,0.7240773286,0.7909393003
+Qwen,Qwen r8 CLAHE-off lr2e-4,43,messidor,r8_off_alpha16_lr0p0002_t43_a3408__messidor_archived_off,1,Mild,207,257,38,169,219,631,0.1835748792,0.7423529412,0.1478599222,0.1637931034,0.4448309179
+Qwen,Qwen r8 CLAHE-off lr2e-4,43,messidor,r8_off_alpha16_lr0p0002_t43_a3408__messidor_archived_off,2,Moderate,290,78,40,250,38,729,0.1379310345,0.9504563233,0.5128205128,0.2173913043,0.785181855
+Qwen,Qwen r8 CLAHE-off lr2e-4,43,messidor,r8_off_alpha16_lr0p0002_t43_a3408__messidor_archived_off,3,Severe,71,36,27,44,9,977,0.3802816901,0.990872211,0.75,0.5046728972,0.9614175928
+Qwen,Qwen r8 CLAHE-off lr2e-4,43,messidor,r8_off_alpha16_lr0p0002_t43_a3408__messidor_archived_off,4,Proliferative DR,21,16,5,16,11,1025,0.2380952381,0.9893822394,0.3125,0.2702702703,0.9236072808
+Qwen,Qwen r8 CLAHE-off lr2e-4,44,messidor,r8_off_alpha16_lr0p0002_t44_a3409__messidor_archived_off,0,No DR,468,548,371,97,177,412,0.7927350427,0.6994906621,0.6770072993,0.7303149606,0.8228527274
+Qwen,Qwen r8 CLAHE-off lr2e-4,44,messidor,r8_off_alpha16_lr0p0002_t44_a3409__messidor_archived_off,1,Mild,207,357,68,139,289,561,0.3285024155,0.66,0.1904761905,0.2411347518,0.4922421142
+Qwen,Qwen r8 CLAHE-off lr2e-4,44,messidor,r8_off_alpha16_lr0p0002_t44_a3409__messidor_archived_off,2,Moderate,290,97,52,238,45,722,0.1793103448,0.9413298566,0.5360824742,0.2687338501,0.8196196556
+Qwen,Qwen r8 CLAHE-off lr2e-4,44,messidor,r8_off_alpha16_lr0p0002_t44_a3409__messidor_archived_off,3,Severe,71,28,21,50,7,979,0.2957746479,0.9929006085,0.75,0.4242424242,0.9605462389
+Qwen,Qwen r8 CLAHE-off lr2e-4,44,messidor,r8_off_alpha16_lr0p0002_t44_a3409__messidor_archived_off,4,Proliferative DR,21,27,6,15,21,1015,0.2857142857,0.9797297297,0.2222222222,0.25,0.9135410921
+Qwen,Qwen r8 CLAHE-off lr2e-4 alpha8,42,messidor,r8_off_alpha8_lr0p0002_t42_a3407__messidor_archived_off,0,No DR,468,756,448,20,308,281,0.9572649573,0.4770797963,0.5925925926,0.7320261438,0.7952128046
+Qwen,Qwen r8 CLAHE-off lr2e-4 alpha8,42,messidor,r8_off_alpha8_lr0p0002_t42_a3407__messidor_archived_off,1,Mild,207,210,16,191,194,656,0.07729468599,0.7717647059,0.07619047619,0.07673860911,0.3925319693
+Qwen,Qwen r8 CLAHE-off lr2e-4 alpha8,42,messidor,r8_off_alpha8_lr0p0002_t42_a3407__messidor_archived_off,2,Moderate,290,69,17,273,52,715,0.05862068966,0.9322033898,0.2463768116,0.09470752089,0.7923931124
+Qwen,Qwen r8 CLAHE-off lr2e-4 alpha8,42,messidor,r8_off_alpha8_lr0p0002_t42_a3407__messidor_archived_off,3,Severe,71,18,13,58,5,981,0.1830985915,0.9949290061,0.7222222222,0.2921348315,0.9682027255
+Qwen,Qwen r8 CLAHE-off lr2e-4 alpha8,42,messidor,r8_off_alpha8_lr0p0002_t42_a3407__messidor_archived_off,4,Proliferative DR,21,4,2,19,2,1034,0.09523809524,0.9980694981,0.5,0.16,0.9431421217
+Qwen,Qwen r8 CLAHE-off lr2e-4 alpha8,43,messidor,r8_off_alpha8_lr0p0002_t43_a3408__messidor_archived_off,0,No DR,468,633,406,62,227,362,0.8675213675,0.6146010187,0.6413902054,0.7375113533,0.7998744794
+Qwen,Qwen r8 CLAHE-off lr2e-4 alpha8,43,messidor,r8_off_alpha8_lr0p0002_t43_a3408__messidor_archived_off,1,Mild,207,309,41,166,268,582,0.1980676329,0.6847058824,0.1326860841,0.1589147287,0.4460414891
+Qwen,Qwen r8 CLAHE-off lr2e-4 alpha8,43,messidor,r8_off_alpha8_lr0p0002_t43_a3408__messidor_archived_off,2,Moderate,290,66,27,263,39,728,0.09310344828,0.9491525424,0.4090909091,0.1516853933,0.7781594209
+Qwen,Qwen r8 CLAHE-off lr2e-4 alpha8,43,messidor,r8_off_alpha8_lr0p0002_t43_a3408__messidor_archived_off,3,Severe,71,36,23,48,13,973,0.323943662,0.9868154158,0.6388888889,0.4299065421,0.9545324686
+Qwen,Qwen r8 CLAHE-off lr2e-4 alpha8,43,messidor,r8_off_alpha8_lr0p0002_t43_a3408__messidor_archived_off,4,Proliferative DR,21,13,3,18,10,1026,0.1428571429,0.9903474903,0.2307692308,0.1764705882,0.9252619967
+Qwen,Qwen r8 CLAHE-off lr2e-4 alpha8,44,messidor,r8_off_alpha8_lr0p0002_t44_a3409__messidor_archived_off,0,No DR,468,720,437,31,283,306,0.9337606838,0.519524618,0.6069444444,0.7356902357,0.8121689667
+Qwen,Qwen r8 CLAHE-off lr2e-4 alpha8,44,messidor,r8_off_alpha8_lr0p0002_t44_a3409__messidor_archived_off,1,Mild,207,237,21,186,216,634,0.1014492754,0.7458823529,0.08860759494,0.09459459459,0.4097073032
+Qwen,Qwen r8 CLAHE-off lr2e-4 alpha8,44,messidor,r8_off_alpha8_lr0p0002_t44_a3409__messidor_archived_off,2,Moderate,290,80,25,265,55,712,0.08620689655,0.9282920469,0.3125,0.1351351351,0.7927977341
+Qwen,Qwen r8 CLAHE-off lr2e-4 alpha8,44,messidor,r8_off_alpha8_lr0p0002_t44_a3409__messidor_archived_off,3,Severe,71,12,10,61,2,984,0.1408450704,0.9979716024,0.8333333333,0.2409638554,0.9605605234
+Qwen,Qwen r8 CLAHE-off lr2e-4 alpha8,44,messidor,r8_off_alpha8_lr0p0002_t44_a3409__messidor_archived_off,4,Proliferative DR,21,8,6,15,2,1034,0.2857142857,0.9980694981,0.75,0.4137931034,0.9594134951
+Qwen,Qwen r8 CLAHE-on lr2e-4,42,messidor,r8_on_alpha16_lr0p0002_t42_a3407__messidor_archived,0,No DR,468,569,379,89,190,399,0.8098290598,0.6774193548,0.6660808436,0.730954677,0.8092268512
+Qwen,Qwen r8 CLAHE-on lr2e-4,42,messidor,r8_on_alpha16_lr0p0002_t42_a3407__messidor_archived,1,Mild,207,348,70,137,278,572,0.3381642512,0.6729411765,0.2011494253,0.2522522523,0.5071724922
+Qwen,Qwen r8 CLAHE-on lr2e-4,42,messidor,r8_on_alpha16_lr0p0002_t42_a3407__messidor_archived,2,Moderate,290,83,46,244,37,730,0.1586206897,0.9517601043,0.5542168675,0.2466487936,0.8149440273
+Qwen,Qwen r8 CLAHE-on lr2e-4,42,messidor,r8_on_alpha16_lr0p0002_t42_a3407__messidor_archived,3,Severe,71,37,31,40,6,980,0.4366197183,0.9939148073,0.8378378378,0.5740740741,0.9759592035
+Qwen,Qwen r8 CLAHE-on lr2e-4,42,messidor,r8_on_alpha16_lr0p0002_t42_a3407__messidor_archived,4,Proliferative DR,21,20,7,14,13,1023,0.3333333333,0.9874517375,0.35,0.3414634146,0.9349145063
+Qwen,Qwen r8 CLAHE-on lr2e-4,43,messidor,r8_on_alpha16_lr0p0002_t43_a3408__messidor_archived,0,No DR,468,704,437,31,267,322,0.9337606838,0.5466893039,0.6207386364,0.7457337884,0.8209808019
+Qwen,Qwen r8 CLAHE-on lr2e-4,43,messidor,r8_on_alpha16_lr0p0002_t43_a3408__messidor_archived,1,Mild,207,186,20,187,166,684,0.09661835749,0.8047058824,0.1075268817,0.1017811705,0.4126740551
+Qwen,Qwen r8 CLAHE-on lr2e-4,43,messidor,r8_on_alpha16_lr0p0002_t43_a3408__messidor_archived,2,Moderate,290,127,74,216,53,714,0.2551724138,0.9308996089,0.5826771654,0.3549160671,0.8333588095
+Qwen,Qwen r8 CLAHE-on lr2e-4,43,messidor,r8_on_alpha16_lr0p0002_t43_a3408__messidor_archived,3,Severe,71,14,10,61,4,982,0.1408450704,0.9959432049,0.7142857143,0.2352941176,0.9689740879
+Qwen,Qwen r8 CLAHE-on lr2e-4,43,messidor,r8_on_alpha16_lr0p0002_t43_a3408__messidor_archived,4,Proliferative DR,21,26,7,14,19,1017,0.3333333333,0.9816602317,0.2692307692,0.2978723404,0.9281117853
+Qwen,Qwen r8 CLAHE-on lr2e-4,44,messidor,r8_on_alpha16_lr0p0002_t44_a3409__messidor_archived,0,No DR,468,579,384,84,195,394,0.8205128205,0.6689303905,0.6632124352,0.7335243553,0.8098181765
+Qwen,Qwen r8 CLAHE-on lr2e-4,44,messidor,r8_on_alpha16_lr0p0002_t44_a3409__messidor_archived,1,Mild,207,287,59,148,228,622,0.2850241546,0.7317647059,0.2055749129,0.2388663968,0.4891616937
+Qwen,Qwen r8 CLAHE-on lr2e-4,44,messidor,r8_on_alpha16_lr0p0002_t44_a3409__messidor_archived,2,Moderate,290,124,72,218,52,715,0.2482758621,0.9322033898,0.5806451613,0.347826087,0.7900642899
+Qwen,Qwen r8 CLAHE-on lr2e-4,44,messidor,r8_on_alpha16_lr0p0002_t44_a3409__messidor_archived,3,Severe,71,5,5,66,0,986,0.07042253521,1,1,0.1315789474,0.9663457418
+Qwen,Qwen r8 CLAHE-on lr2e-4,44,messidor,r8_on_alpha16_lr0p0002_t44_a3409__messidor_archived,4,Proliferative DR,21,62,14,7,48,988,0.6666666667,0.9536679537,0.2258064516,0.3373493976,0.9370748299
+Qwen,Qwen r8 CLAHE-on lr2e-4 alpha8,42,messidor,r8_on_alpha8_lr0p0002_t42_a3407__messidor_archived,0,No DR,468,573,381,87,192,397,0.8141025641,0.6740237691,0.664921466,0.7319884726,0.8131121849
+Qwen,Qwen r8 CLAHE-on lr2e-4 alpha8,42,messidor,r8_on_alpha8_lr0p0002_t42_a3407__messidor_archived,1,Mild,207,377,68,139,309,541,0.3285024155,0.6364705882,0.1803713528,0.2328767123,0.5095709008
+Qwen,Qwen r8 CLAHE-on lr2e-4 alpha8,42,messidor,r8_on_alpha8_lr0p0002_t42_a3407__messidor_archived,2,Moderate,290,66,25,265,41,726,0.08620689655,0.9465449804,0.3787878788,0.1404494382,0.7853122331
+Qwen,Qwen r8 CLAHE-on lr2e-4 alpha8,42,messidor,r8_on_alpha8_lr0p0002_t42_a3407__messidor_archived,3,Severe,71,18,16,55,2,984,0.2253521127,0.9979716024,0.8888888889,0.3595505618,0.9477901894
+Qwen,Qwen r8 CLAHE-on lr2e-4 alpha8,42,messidor,r8_on_alpha8_lr0p0002_t42_a3407__messidor_archived,4,Proliferative DR,21,23,8,13,15,1021,0.380952381,0.9855212355,0.347826087,0.3636363636,0.9501287001
+Qwen,Qwen r8 CLAHE-on lr2e-4 alpha8,43,messidor,r8_on_alpha8_lr0p0002_t43_a3408__messidor_archived,0,No DR,468,742,431,37,311,278,0.9209401709,0.4719864177,0.5808625337,0.7123966942,0.800904764
+Qwen,Qwen r8 CLAHE-on lr2e-4 alpha8,43,messidor,r8_on_alpha8_lr0p0002_t43_a3408__messidor_archived,1,Mild,207,158,23,184,135,715,0.1111111111,0.8411764706,0.1455696203,0.1260273973,0.4481273089
+Qwen,Qwen r8 CLAHE-on lr2e-4 alpha8,43,messidor,r8_on_alpha8_lr0p0002_t43_a3408__messidor_archived,2,Moderate,290,110,63,227,47,720,0.2172413793,0.9387222947,0.5727272727,0.315,0.7944971452
+Qwen,Qwen r8 CLAHE-on lr2e-4 alpha8,43,messidor,r8_on_alpha8_lr0p0002_t43_a3408__messidor_archived,3,Severe,71,16,15,56,1,985,0.2112676056,0.9989858012,0.9375,0.3448275862,0.9664457332
+Qwen,Qwen r8 CLAHE-on lr2e-4 alpha8,43,messidor,r8_on_alpha8_lr0p0002_t43_a3408__messidor_archived,4,Proliferative DR,21,31,8,13,23,1013,0.380952381,0.9777992278,0.2580645161,0.3076923077,0.9322485751
+Qwen,Qwen r8 CLAHE-on lr2e-4 alpha8,44,messidor,r8_on_alpha8_lr0p0002_t44_a3409__messidor_archived,0,No DR,468,646,406,62,240,349,0.8675213675,0.5925297114,0.6284829721,0.7289048474,0.8127494087
+Qwen,Qwen r8 CLAHE-on lr2e-4 alpha8,44,messidor,r8_on_alpha8_lr0p0002_t44_a3409__messidor_archived,1,Mild,207,291,41,166,250,600,0.1980676329,0.7058823529,0.1408934708,0.1646586345,0.4714066496
+Qwen,Qwen r8 CLAHE-on lr2e-4 alpha8,44,messidor,r8_on_alpha8_lr0p0002_t44_a3409__messidor_archived,2,Moderate,290,90,27,263,63,704,0.09310344828,0.9178617992,0.3,0.1421052632,0.7689070719
+Qwen,Qwen r8 CLAHE-on lr2e-4 alpha8,44,messidor,r8_on_alpha8_lr0p0002_t44_a3409__messidor_archived,3,Severe,71,15,11,60,4,982,0.1549295775,0.9959432049,0.7333333333,0.2558139535,0.9598605834
+Qwen,Qwen r8 CLAHE-on lr2e-4 alpha8,44,messidor,r8_on_alpha8_lr0p0002_t44_a3409__messidor_archived,4,Proliferative DR,21,15,5,16,10,1026,0.2380952381,0.9903474903,0.3333333333,0.2777777778,0.935558007
+RetiZero,RetiZero CLAHE-on,42,aptos361,clahe_t42,0,No DR,181,175,173,8,2,178,0.955801105,0.9888888889,0.9885714286,0.9719101124,0.9960405157
+RetiZero,RetiZero CLAHE-on,42,aptos361,clahe_t42,1,Mild,35,40,22,13,18,308,0.6285714286,0.9447852761,0.55,0.5866666667,0.9290972831
+RetiZero,RetiZero CLAHE-on,42,aptos361,clahe_t42,2,Moderate,97,87,67,30,20,244,0.6907216495,0.9242424242,0.7701149425,0.7282608696,0.9306857232
+RetiZero,RetiZero CLAHE-on,42,aptos361,clahe_t42,3,Severe,18,33,10,8,23,320,0.5555555556,0.9329446064,0.303030303,0.3921568627,0.9026563006
+RetiZero,RetiZero CLAHE-on,42,aptos361,clahe_t42,4,Proliferative DR,30,26,17,13,9,322,0.5666666667,0.9728096677,0.6538461538,0.6071428571,0.9335347432
+RetiZero,RetiZero CLAHE-on,43,aptos361,clahe_t43,0,No DR,181,177,173,8,4,176,0.955801105,0.9777777778,0.9774011299,0.9664804469,0.995150399
+RetiZero,RetiZero CLAHE-on,43,aptos361,clahe_t43,1,Mild,35,40,21,14,19,307,0.6,0.9417177914,0.525,0.56,0.9241893076
+RetiZero,RetiZero CLAHE-on,43,aptos361,clahe_t43,2,Moderate,97,99,73,24,26,238,0.7525773196,0.9015151515,0.7373737374,0.7448979592,0.9262339894
+RetiZero,RetiZero CLAHE-on,43,aptos361,clahe_t43,3,Severe,18,11,6,12,5,338,0.3333333333,0.9854227405,0.5454545455,0.4137931034,0.905409783
+RetiZero,RetiZero CLAHE-on,43,aptos361,clahe_t43,4,Proliferative DR,30,34,17,13,17,314,0.5666666667,0.9486404834,0.5,0.53125,0.9410876133
+RetiZero,RetiZero CLAHE-on,44,aptos361,clahe_t44,0,No DR,181,176,173,8,3,177,0.955801105,0.9833333333,0.9829545455,0.9691876751,0.9954266421
+RetiZero,RetiZero CLAHE-on,44,aptos361,clahe_t44,1,Mild,35,39,21,14,18,308,0.6,0.9447852761,0.5384615385,0.5675675676,0.9240140228
+RetiZero,RetiZero CLAHE-on,44,aptos361,clahe_t44,2,Moderate,97,85,62,35,23,241,0.6391752577,0.9128787879,0.7294117647,0.6813186813,0.9221337082
+RetiZero,RetiZero CLAHE-on,44,aptos361,clahe_t44,3,Severe,18,40,10,8,30,313,0.5555555556,0.9125364431,0.25,0.3448275862,0.9099449304
+RetiZero,RetiZero CLAHE-on,44,aptos361,clahe_t44,4,Proliferative DR,30,21,14,16,7,324,0.4666666667,0.9788519637,0.6666666667,0.5490196078,0.9388721047
+RetiZero,RetiZero CLAHE-off original split,42,aptos367,historical_t42,0,No DR,181,177,175,6,2,184,0.9668508287,0.9892473118,0.988700565,0.9776536313,0.9977722331
+RetiZero,RetiZero CLAHE-off original split,42,aptos367,historical_t42,1,Mild,37,39,24,13,15,315,0.6486486486,0.9545454545,0.6153846154,0.6315789474,0.9467649468
+RetiZero,RetiZero CLAHE-off original split,42,aptos367,historical_t42,2,Moderate,100,93,70,30,23,244,0.7,0.9138576779,0.752688172,0.725388601,0.9420599251
+RetiZero,RetiZero CLAHE-off original split,42,aptos367,historical_t42,3,Severe,19,35,10,9,25,323,0.5263157895,0.9281609195,0.2857142857,0.3703703704,0.9192377495
+RetiZero,RetiZero CLAHE-off original split,42,aptos367,historical_t42,4,Proliferative DR,30,23,16,14,7,330,0.5333333333,0.9792284866,0.6956521739,0.6037735849,0.9394658754
+RetiZero,RetiZero CLAHE-off original split,43,aptos367,historical_t43,0,No DR,181,174,173,8,1,185,0.955801105,0.9946236559,0.9942528736,0.9746478873,0.9986930434
+RetiZero,RetiZero CLAHE-off original split,43,aptos367,historical_t43,1,Mild,37,50,26,11,24,306,0.7027027027,0.9272727273,0.52,0.5977011494,0.947993448
+RetiZero,RetiZero CLAHE-off original split,43,aptos367,historical_t43,2,Moderate,100,100,76,24,24,243,0.76,0.9101123596,0.76,0.76,0.949588015
+RetiZero,RetiZero CLAHE-off original split,43,aptos367,historical_t43,3,Severe,19,13,5,14,8,340,0.2631578947,0.9770114943,0.3846153846,0.3125,0.916061706
+RetiZero,RetiZero CLAHE-off original split,43,aptos367,historical_t43,4,Proliferative DR,30,30,19,11,11,326,0.6333333333,0.9673590504,0.6333333333,0.6333333333,0.9325420376
+RetiZero,RetiZero CLAHE-off original split,44,aptos367,historical_t44,0,No DR,181,176,173,8,3,183,0.955801105,0.9838709677,0.9829545455,0.9691876751,0.9955147627
+RetiZero,RetiZero CLAHE-off original split,44,aptos367,historical_t44,1,Mild,37,42,24,13,18,312,0.6486486486,0.9454545455,0.5714285714,0.6075949367,0.9251433251
+RetiZero,RetiZero CLAHE-off original split,44,aptos367,historical_t44,2,Moderate,100,92,71,29,21,246,0.71,0.9213483146,0.7717391304,0.7395833333,0.9394007491
+RetiZero,RetiZero CLAHE-off original split,44,aptos367,historical_t44,3,Severe,19,32,10,9,22,326,0.5263157895,0.9367816092,0.3125,0.3921568627,0.9029038113
+RetiZero,RetiZero CLAHE-off original split,44,aptos367,historical_t44,4,Proliferative DR,30,25,16,14,9,328,0.5333333333,0.9732937685,0.64,0.5818181818,0.9457962413
+RetiZero,RetiZero CLAHE-off,42,aptos361,matched_t42,0,No DR,181,176,175,6,1,179,0.9668508287,0.9944444444,0.9943181818,0.9803921569,0.9983118478
+RetiZero,RetiZero CLAHE-off,42,aptos361,matched_t42,1,Mild,35,41,26,9,15,311,0.7428571429,0.9539877301,0.6341463415,0.6842105263,0.9561787905
+RetiZero,RetiZero CLAHE-off,42,aptos361,matched_t42,2,Moderate,97,90,69,28,21,243,0.7113402062,0.9204545455,0.7666666667,0.7379679144,0.9502108716
+RetiZero,RetiZero CLAHE-off,42,aptos361,matched_t42,3,Severe,18,25,6,12,19,324,0.3333333333,0.944606414,0.24,0.2790697674,0.9157758341
+RetiZero,RetiZero CLAHE-off,42,aptos361,matched_t42,4,Proliferative DR,30,29,16,14,13,318,0.5333333333,0.9607250755,0.5517241379,0.5423728814,0.9266868077
+RetiZero,RetiZero CLAHE-off,43,aptos361,matched_t43,0,No DR,181,174,173,8,1,179,0.955801105,0.9944444444,0.9942528736,0.9746478873,0.996193984
+RetiZero,RetiZero CLAHE-off,43,aptos361,matched_t43,1,Mild,35,65,28,7,37,289,0.8,0.8865030675,0.4307692308,0.56,0.9284837862
+RetiZero,RetiZero CLAHE-off,43,aptos361,matched_t43,2,Moderate,97,79,59,38,20,244,0.6082474227,0.9242424242,0.746835443,0.6704545455,0.9349422056
+RetiZero,RetiZero CLAHE-off,43,aptos361,matched_t43,3,Severe,18,24,6,12,18,325,0.3333333333,0.9475218659,0.25,0.2857142857,0.8990929705
+RetiZero,RetiZero CLAHE-off,43,aptos361,matched_t43,4,Proliferative DR,30,19,14,16,5,326,0.4666666667,0.9848942598,0.7368421053,0.5714285714,0.9420946626
+RetiZero,RetiZero CLAHE-off,44,aptos361,matched_t44,0,No DR,181,179,175,6,4,176,0.9668508287,0.9777777778,0.9776536313,0.9722222222,0.9966543892
+RetiZero,RetiZero CLAHE-off,44,aptos361,matched_t44,1,Mild,35,48,24,11,24,302,0.6857142857,0.9263803681,0.5,0.578313253,0.922173532
+RetiZero,RetiZero CLAHE-off,44,aptos361,matched_t44,2,Moderate,97,73,58,39,15,249,0.5979381443,0.9431818182,0.7945205479,0.6823529412,0.9410340519
+RetiZero,RetiZero CLAHE-off,44,aptos361,matched_t44,3,Severe,18,33,10,8,23,320,0.5555555556,0.9329446064,0.303030303,0.3921568627,0.8997408487
+RetiZero,RetiZero CLAHE-off,44,aptos361,matched_t44,4,Proliferative DR,30,28,17,13,11,320,0.5666666667,0.9667673716,0.6071428571,0.5862068966,0.9320241692
+RetiZero,RetiZero CLAHE-off,42,messidor,matched_t42__messidor_archived,0,No DR,468,515,287,181,228,361,0.6132478632,0.6129032258,0.5572815534,0.5839267548,0.6841742487
+RetiZero,RetiZero CLAHE-off,42,messidor,matched_t42__messidor_archived,1,Mild,207,383,69,138,314,536,0.3333333333,0.6305882353,0.180156658,0.2338983051,0.4737823245
+RetiZero,RetiZero CLAHE-off,42,messidor,matched_t42__messidor_archived,2,Moderate,290,126,67,223,59,708,0.2310344828,0.9230769231,0.5317460317,0.3221153846,0.6885357191
+RetiZero,RetiZero CLAHE-off,42,messidor,matched_t42__messidor_archived,3,Severe,71,21,15,56,6,980,0.2112676056,0.9939148073,0.7142857143,0.3260869565,0.909436334
+RetiZero,RetiZero CLAHE-off,42,messidor,matched_t42__messidor_archived,4,Proliferative DR,21,12,7,14,5,1031,0.3333333333,0.9951737452,0.5833333333,0.4242424242,0.9306398235
+RetiZero,RetiZero CLAHE-off,43,messidor,matched_t43__messidor_archived,0,No DR,468,309,174,294,135,454,0.3717948718,0.7707979626,0.5631067961,0.4478764479,0.6605756534
+RetiZero,RetiZero CLAHE-off,43,messidor,matched_t43__messidor_archived,1,Mild,207,635,115,92,520,330,0.5555555556,0.3882352941,0.1811023622,0.2731591449,0.4736345553
+RetiZero,RetiZero CLAHE-off,43,messidor,matched_t43__messidor_archived,2,Moderate,290,88,37,253,51,716,0.1275862069,0.9335071708,0.4204545455,0.1957671958,0.665769006
+RetiZero,RetiZero CLAHE-off,43,messidor,matched_t43__messidor_archived,3,Severe,71,16,11,60,5,981,0.1549295775,0.9949290061,0.6875,0.2528735632,0.9346770277
+RetiZero,RetiZero CLAHE-off,43,messidor,matched_t43__messidor_archived,4,Proliferative DR,21,9,6,15,3,1033,0.2857142857,0.9971042471,0.6666666667,0.4,0.9592756021
+RetiZero,RetiZero CLAHE-off,44,messidor,matched_t44__messidor_archived,0,No DR,468,659,382,86,277,312,0.8162393162,0.5297113752,0.5796661608,0.677905945,0.7217723797
+RetiZero,RetiZero CLAHE-off,44,messidor,matched_t44__messidor_archived,1,Mild,207,271,43,164,228,622,0.2077294686,0.7317647059,0.1586715867,0.179916318,0.4708553566
+RetiZero,RetiZero CLAHE-off,44,messidor,matched_t44__messidor_archived,2,Moderate,290,91,44,246,47,720,0.1517241379,0.9387222947,0.4835164835,0.2309711286,0.6941060109
+RetiZero,RetiZero CLAHE-off,44,messidor,matched_t44__messidor_archived,3,Severe,71,22,17,54,5,981,0.2394366197,0.9949290061,0.7727272727,0.3655913978,0.9340913636
+RetiZero,RetiZero CLAHE-off,44,messidor,matched_t44__messidor_archived,4,Proliferative DR,21,14,9,12,5,1031,0.4285714286,0.9951737452,0.6428571429,0.5142857143,0.9652509653
+RetiZero,RetiZero saved app checkpoint,,aptos361,saved_checkpoint__aptos361_clean,0,No DR,181,178,175,6,3,177,0.9668508287,0.9833333333,0.9831460674,0.9749303621,0.9976672805
+RetiZero,RetiZero saved app checkpoint,,aptos361,saved_checkpoint__aptos361_clean,1,Mild,35,39,25,10,14,312,0.7142857143,0.9570552147,0.641025641,0.6756756757,0.9404907975
+RetiZero,RetiZero saved app checkpoint,,aptos361,saved_checkpoint__aptos361_clean,2,Moderate,97,93,73,24,20,244,0.7525773196,0.9242424242,0.7849462366,0.7684210526,0.9435332709
+RetiZero,RetiZero saved app checkpoint,,aptos361,saved_checkpoint__aptos361_clean,3,Severe,18,21,7,11,14,329,0.3888888889,0.9591836735,0.3333333333,0.358974359,0.9068675089
+RetiZero,RetiZero saved app checkpoint,,aptos361,saved_checkpoint__aptos361_clean,4,Proliferative DR,30,30,18,12,12,319,0.6,0.9637462236,0.6,0.6,0.9425981873
+RetiZero,RetiZero saved app checkpoint,,aptos367,saved_checkpoint__aptos367_original,0,No DR,181,178,175,6,3,183,0.9668508287,0.9838709677,0.9831460674,0.9749303621,0.9977425296
+RetiZero,RetiZero saved app checkpoint,,aptos367,saved_checkpoint__aptos367_original,1,Mild,37,40,26,11,14,316,0.7027027027,0.9575757576,0.65,0.6753246753,0.9398034398
+RetiZero,RetiZero saved app checkpoint,,aptos367,saved_checkpoint__aptos367_original,2,Moderate,100,97,76,24,21,246,0.76,0.9213483146,0.7835051546,0.7715736041,0.9419475655
+RetiZero,RetiZero saved app checkpoint,,aptos367,saved_checkpoint__aptos367_original,3,Severe,19,21,7,12,14,334,0.3684210526,0.9597701149,0.3333333333,0.35,0.9051724138
+RetiZero,RetiZero saved app checkpoint,,aptos367,saved_checkpoint__aptos367_original,4,Proliferative DR,30,31,18,12,13,324,0.6,0.9614243323,0.5806451613,0.5901639344,0.9410484669
+RetiZero,RetiZero saved app checkpoint,,messidor,saved_checkpoint__messidor_archived,0,No DR,468,656,384,84,272,317,0.8205128205,0.5382003396,0.5853658537,0.6832740214,0.7209924107
+RetiZero,RetiZero saved app checkpoint,,messidor,saved_checkpoint__messidor_archived,1,Mild,207,184,29,178,155,695,0.1400966184,0.8176470588,0.1576086957,0.1483375959,0.4678772379
+RetiZero,RetiZero saved app checkpoint,,messidor,saved_checkpoint__messidor_archived,2,Moderate,290,181,100,190,81,686,0.3448275862,0.8943937419,0.5524861878,0.4246284501,0.7243762082
+RetiZero,RetiZero saved app checkpoint,,messidor,saved_checkpoint__messidor_archived,3,Severe,71,12,8,63,4,982,0.1126760563,0.9959432049,0.6666666667,0.1927710843,0.9438048167
+RetiZero,RetiZero saved app checkpoint,,messidor,saved_checkpoint__messidor_archived,4,Proliferative DR,21,24,10,11,14,1022,0.4761904762,0.9864864865,0.4166666667,0.4444444444,0.9595513881

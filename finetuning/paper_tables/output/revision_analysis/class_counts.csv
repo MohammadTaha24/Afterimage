@@ -1,0 +1,11 @@
+split_set,split,n,g0,g1,g2,g3,g4,view
+clean (duplicate-excluded),train,2786,1436,267,729,140,214,images on disk (both models)
+clean (duplicate-excluded),train,2786,557.2,557.2,557.2,557.2,557.2,"Qwen: expected draws per epoch (inverse-frequency WeightedRandomSampler, with replacement, num_samples = n)"
+clean (duplicate-excluded),train,2786,1436,267,729,140,214,"RetiZero: same images per epoch; loss weighted by inverse class frequency; online augmentation (RandomResizedCrop 0.8-1.0, flip, rotation 180)"
+clean (duplicate-excluded),val,357,179,36,96,19,27,images on disk (both models)
+clean (duplicate-excluded),test,361,181,35,97,18,30,images on disk (both models)
+original 80/10/10,train,2929,1444,296,799,154,236,images on disk (both models)
+original 80/10/10,train,2929,585.8,585.8,585.8,585.8,585.8,"Qwen: expected draws per epoch (inverse-frequency WeightedRandomSampler, with replacement, num_samples = n)"
+original 80/10/10,train,2929,1444,296,799,154,236,"RetiZero: same images per epoch; loss weighted by inverse class frequency; online augmentation (RandomResizedCrop 0.8-1.0, flip, rotation 180)"
+original 80/10/10,val,366,180,37,100,20,29,images on disk (both models)
+original 80/10/10,test,367,181,37,100,19,30,images on disk (both models)
