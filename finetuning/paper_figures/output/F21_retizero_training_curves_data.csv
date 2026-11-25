@@ -1,0 +1,253 @@
+condition,group,seed,folder,kind,epoch,value,best_epoch
+RetiZero CLAHE-on,clahe,42,clahe_t42,train_loss,1.0,1.2801547636627637,5
+RetiZero CLAHE-on,clahe,42,clahe_t42,val_loss,1.0,1.0850966564413547,5
+RetiZero CLAHE-on,clahe,42,clahe_t42,val_accuracy,1.0,0.6890756302521008,5
+RetiZero CLAHE-on,clahe,42,clahe_t42,train_loss,2.0,0.8856998002945532,5
+RetiZero CLAHE-on,clahe,42,clahe_t42,val_loss,2.0,1.0226713051649035,5
+RetiZero CLAHE-on,clahe,42,clahe_t42,val_accuracy,2.0,0.7198879551820728,5
+RetiZero CLAHE-on,clahe,42,clahe_t42,train_loss,3.0,0.8085832476953284,5
+RetiZero CLAHE-on,clahe,42,clahe_t42,val_loss,3.0,1.0462536254182917,5
+RetiZero CLAHE-on,clahe,42,clahe_t42,val_accuracy,3.0,0.7759103641456583,5
+RetiZero CLAHE-on,clahe,42,clahe_t42,train_loss,4.0,0.7387087887409761,5
+RetiZero CLAHE-on,clahe,42,clahe_t42,val_loss,4.0,0.9847797809862623,5
+RetiZero CLAHE-on,clahe,42,clahe_t42,val_accuracy,4.0,0.7619047619047619,5
+RetiZero CLAHE-on,clahe,42,clahe_t42,train_loss,5.0,0.6664817806031442,5
+RetiZero CLAHE-on,clahe,42,clahe_t42,val_loss,5.0,0.9229886261354975,5
+RetiZero CLAHE-on,clahe,42,clahe_t42,val_accuracy,5.0,0.7871148459383753,5
+RetiZero CLAHE-on,clahe,42,clahe_t42,train_loss,6.0,0.6082514410133808,5
+RetiZero CLAHE-on,clahe,42,clahe_t42,val_loss,6.0,0.905521258586595,5
+RetiZero CLAHE-on,clahe,42,clahe_t42,val_accuracy,6.0,0.7703081232492998,5
+RetiZero CLAHE-on,clahe,42,clahe_t42,train_loss,7.0,0.5673805622317764,5
+RetiZero CLAHE-on,clahe,42,clahe_t42,val_loss,7.0,0.8947990499958605,5
+RetiZero CLAHE-on,clahe,42,clahe_t42,val_accuracy,7.0,0.7759103641456583,5
+RetiZero CLAHE-on,clahe,42,clahe_t42,train_loss,8.0,0.5286954365448872,5
+RetiZero CLAHE-on,clahe,42,clahe_t42,val_loss,8.0,0.9263806750460499,5
+RetiZero CLAHE-on,clahe,42,clahe_t42,val_accuracy,8.0,0.7478991596638656,5
+RetiZero CLAHE-on,clahe,42,clahe_t42,train_loss,9.0,0.4486057851567185,5
+RetiZero CLAHE-on,clahe,42,clahe_t42,val_loss,9.0,0.9735463036208594,5
+RetiZero CLAHE-on,clahe,42,clahe_t42,val_accuracy,9.0,0.7815126050420168,5
+RetiZero CLAHE-on,clahe,43,clahe_t43,train_loss,1.0,1.3416280239185001,5
+RetiZero CLAHE-on,clahe,43,clahe_t43,val_loss,1.0,1.2449769085528803,5
+RetiZero CLAHE-on,clahe,43,clahe_t43,val_accuracy,1.0,0.6722689075630253,5
+RetiZero CLAHE-on,clahe,43,clahe_t43,train_loss,2.0,0.9402793257479116,5
+RetiZero CLAHE-on,clahe,43,clahe_t43,val_loss,2.0,1.036708821769522,5
+RetiZero CLAHE-on,clahe,43,clahe_t43,val_accuracy,2.0,0.7563025210084033,5
+RetiZero CLAHE-on,clahe,43,clahe_t43,train_loss,3.0,0.8445973938728141,5
+RetiZero CLAHE-on,clahe,43,clahe_t43,val_loss,3.0,1.1006653919941236,5
+RetiZero CLAHE-on,clahe,43,clahe_t43,val_accuracy,3.0,0.6918767507002801,5
+RetiZero CLAHE-on,clahe,43,clahe_t43,train_loss,4.0,0.7646793714983219,5
+RetiZero CLAHE-on,clahe,43,clahe_t43,val_loss,4.0,0.9451749501775961,5
+RetiZero CLAHE-on,clahe,43,clahe_t43,val_accuracy,4.0,0.7675070028011205,5
+RetiZero CLAHE-on,clahe,43,clahe_t43,train_loss,5.0,0.6926679126757859,5
+RetiZero CLAHE-on,clahe,43,clahe_t43,val_loss,5.0,0.9868078882954702,5
+RetiZero CLAHE-on,clahe,43,clahe_t43,val_accuracy,5.0,0.7843137254901961,5
+RetiZero CLAHE-on,clahe,43,clahe_t43,train_loss,6.0,0.6680265523828245,5
+RetiZero CLAHE-on,clahe,43,clahe_t43,val_loss,6.0,1.000744352487623,5
+RetiZero CLAHE-on,clahe,43,clahe_t43,val_accuracy,6.0,0.7759103641456583,5
+RetiZero CLAHE-on,clahe,43,clahe_t43,train_loss,7.0,0.6054594170346853,5
+RetiZero CLAHE-on,clahe,43,clahe_t43,val_loss,7.0,0.977554858899584,5
+RetiZero CLAHE-on,clahe,43,clahe_t43,val_accuracy,7.0,0.7787114845938375,5
+RetiZero CLAHE-on,clahe,43,clahe_t43,train_loss,8.0,0.5601072942323992,5
+RetiZero CLAHE-on,clahe,43,clahe_t43,val_loss,8.0,1.0274712935883124,5
+RetiZero CLAHE-on,clahe,43,clahe_t43,val_accuracy,8.0,0.7759103641456583,5
+RetiZero CLAHE-on,clahe,43,clahe_t43,train_loss,9.0,0.5318287681421828,5
+RetiZero CLAHE-on,clahe,43,clahe_t43,val_loss,9.0,1.0059919524259593,5
+RetiZero CLAHE-on,clahe,43,clahe_t43,val_accuracy,9.0,0.7619047619047619,5
+RetiZero CLAHE-on,clahe,44,clahe_t44,train_loss,1.0,1.2236779100299737,5
+RetiZero CLAHE-on,clahe,44,clahe_t44,val_loss,1.0,1.056568019864272,5
+RetiZero CLAHE-on,clahe,44,clahe_t44,val_accuracy,1.0,0.7450980392156863,5
+RetiZero CLAHE-on,clahe,44,clahe_t44,train_loss,2.0,0.9048201484874436,5
+RetiZero CLAHE-on,clahe,44,clahe_t44,val_loss,2.0,1.0587637524644868,5
+RetiZero CLAHE-on,clahe,44,clahe_t44,val_accuracy,2.0,0.7170868347338936,5
+RetiZero CLAHE-on,clahe,44,clahe_t44,train_loss,3.0,0.7660033657387358,5
+RetiZero CLAHE-on,clahe,44,clahe_t44,val_loss,3.0,1.0180077729772787,5
+RetiZero CLAHE-on,clahe,44,clahe_t44,val_accuracy,3.0,0.7619047619047619,5
+RetiZero CLAHE-on,clahe,44,clahe_t44,train_loss,4.0,0.714899948838903,5
+RetiZero CLAHE-on,clahe,44,clahe_t44,val_loss,4.0,1.031516674519921,5
+RetiZero CLAHE-on,clahe,44,clahe_t44,val_accuracy,4.0,0.7086834733893558,5
+RetiZero CLAHE-on,clahe,44,clahe_t44,train_loss,5.0,0.6475794111785986,5
+RetiZero CLAHE-on,clahe,44,clahe_t44,val_loss,5.0,0.9236614852726293,5
+RetiZero CLAHE-on,clahe,44,clahe_t44,val_accuracy,5.0,0.7955182072829131,5
+RetiZero CLAHE-on,clahe,44,clahe_t44,train_loss,6.0,0.6288123828427812,5
+RetiZero CLAHE-on,clahe,44,clahe_t44,val_loss,6.0,0.9524312027696133,5
+RetiZero CLAHE-on,clahe,44,clahe_t44,val_accuracy,6.0,0.7366946778711485,5
+RetiZero CLAHE-on,clahe,44,clahe_t44,train_loss,7.0,0.5532739766193481,5
+RetiZero CLAHE-on,clahe,44,clahe_t44,val_loss,7.0,0.9807990008041638,5
+RetiZero CLAHE-on,clahe,44,clahe_t44,val_accuracy,7.0,0.7675070028011205,5
+RetiZero CLAHE-on,clahe,44,clahe_t44,train_loss,8.0,0.4866561469610904,5
+RetiZero CLAHE-on,clahe,44,clahe_t44,val_loss,8.0,0.9974286052025333,5
+RetiZero CLAHE-on,clahe,44,clahe_t44,val_accuracy,8.0,0.7759103641456583,5
+RetiZero CLAHE-on,clahe,44,clahe_t44,train_loss,9.0,0.4339390367168958,5
+RetiZero CLAHE-on,clahe,44,clahe_t44,val_loss,9.0,0.9670725700234165,5
+RetiZero CLAHE-on,clahe,44,clahe_t44,val_accuracy,9.0,0.7507002801120448,5
+RetiZero CLAHE-off,matched,42,matched_t42,train_loss,1.0,1.2218347769744988,10
+RetiZero CLAHE-off,matched,42,matched_t42,val_loss,1.0,1.1159693503580173,10
+RetiZero CLAHE-off,matched,42,matched_t42,val_accuracy,1.0,0.6414565826330533,10
+RetiZero CLAHE-off,matched,42,matched_t42,train_loss,2.0,0.8697430496689064,10
+RetiZero CLAHE-off,matched,42,matched_t42,val_loss,2.0,0.9842674221311297,10
+RetiZero CLAHE-off,matched,42,matched_t42,val_accuracy,2.0,0.7282913165266106,10
+RetiZero CLAHE-off,matched,42,matched_t42,train_loss,3.0,0.765008335940663,10
+RetiZero CLAHE-off,matched,42,matched_t42,val_loss,3.0,0.9556447287567523,10
+RetiZero CLAHE-off,matched,42,matched_t42,val_accuracy,3.0,0.7787114845938375,10
+RetiZero CLAHE-off,matched,42,matched_t42,train_loss,4.0,0.6686761289860382,10
+RetiZero CLAHE-off,matched,42,matched_t42,val_loss,4.0,0.9268882798881424,10
+RetiZero CLAHE-off,matched,42,matched_t42,val_accuracy,4.0,0.7899159663865546,10
+RetiZero CLAHE-off,matched,42,matched_t42,train_loss,5.0,0.6049025126952512,10
+RetiZero CLAHE-off,matched,42,matched_t42,val_loss,5.0,0.8743465661334724,10
+RetiZero CLAHE-off,matched,42,matched_t42,val_accuracy,5.0,0.7703081232492998,10
+RetiZero CLAHE-off,matched,42,matched_t42,train_loss,6.0,0.5211555280765132,10
+RetiZero CLAHE-off,matched,42,matched_t42,val_loss,6.0,0.8553012612821007,10
+RetiZero CLAHE-off,matched,42,matched_t42,val_accuracy,6.0,0.7927170868347339,10
+RetiZero CLAHE-off,matched,42,matched_t42,train_loss,7.0,0.4629842471755902,10
+RetiZero CLAHE-off,matched,42,matched_t42,val_loss,7.0,0.8809337489077357,10
+RetiZero CLAHE-off,matched,42,matched_t42,val_accuracy,7.0,0.7815126050420168,10
+RetiZero CLAHE-off,matched,42,matched_t42,train_loss,8.0,0.4183658141772261,10
+RetiZero CLAHE-off,matched,42,matched_t42,val_loss,8.0,0.9103328624025446,10
+RetiZero CLAHE-off,matched,42,matched_t42,val_accuracy,8.0,0.7478991596638656,10
+RetiZero CLAHE-off,matched,42,matched_t42,train_loss,9.0,0.36038127455889457,10
+RetiZero CLAHE-off,matched,42,matched_t42,val_loss,9.0,0.9805231688737202,10
+RetiZero CLAHE-off,matched,42,matched_t42,val_accuracy,9.0,0.7759103641456583,10
+RetiZero CLAHE-off,matched,42,matched_t42,train_loss,10.0,0.27589975116639553,10
+RetiZero CLAHE-off,matched,42,matched_t42,val_loss,10.0,1.0522562819702619,10
+RetiZero CLAHE-off,matched,42,matched_t42,val_accuracy,10.0,0.7955182072829131,10
+RetiZero CLAHE-off,matched,42,matched_t42,train_loss,11.0,0.23750665143546684,10
+RetiZero CLAHE-off,matched,42,matched_t42,val_loss,11.0,1.0644516787943052,10
+RetiZero CLAHE-off,matched,42,matched_t42,val_accuracy,11.0,0.7619047619047619,10
+RetiZero CLAHE-off,matched,42,matched_t42,train_loss,12.0,0.21669431093500577,10
+RetiZero CLAHE-off,matched,42,matched_t42,val_loss,12.0,1.1028481297800188,10
+RetiZero CLAHE-off,matched,42,matched_t42,val_accuracy,12.0,0.7619047619047619,10
+RetiZero CLAHE-off,matched,42,matched_t42,train_loss,13.0,0.19856960456058573,10
+RetiZero CLAHE-off,matched,42,matched_t42,val_loss,13.0,1.1116640571118737,10
+RetiZero CLAHE-off,matched,42,matched_t42,val_accuracy,13.0,0.773109243697479,10
+RetiZero CLAHE-off,matched,42,matched_t42,train_loss,14.0,0.1834111673151247,10
+RetiZero CLAHE-off,matched,42,matched_t42,val_loss,14.0,1.1116686024251772,10
+RetiZero CLAHE-off,matched,42,matched_t42,val_accuracy,14.0,0.7787114845938375,10
+RetiZero CLAHE-off,matched,43,matched_t43,train_loss,1.0,1.2439197612558148,5
+RetiZero CLAHE-off,matched,43,matched_t43,val_loss,1.0,1.0923247975127703,5
+RetiZero CLAHE-off,matched,43,matched_t43,val_accuracy,1.0,0.7226890756302521,5
+RetiZero CLAHE-off,matched,43,matched_t43,train_loss,2.0,0.8826644023078409,5
+RetiZero CLAHE-off,matched,43,matched_t43,val_loss,2.0,0.9086010125504822,5
+RetiZero CLAHE-off,matched,43,matched_t43,val_accuracy,2.0,0.7675070028011205,5
+RetiZero CLAHE-off,matched,43,matched_t43,train_loss,3.0,0.76690425886923,5
+RetiZero CLAHE-off,matched,43,matched_t43,val_loss,3.0,1.0451842726779585,5
+RetiZero CLAHE-off,matched,43,matched_t43,val_accuracy,3.0,0.6666666666666666,5
+RetiZero CLAHE-off,matched,43,matched_t43,train_loss,4.0,0.7139798736885693,5
+RetiZero CLAHE-off,matched,43,matched_t43,val_loss,4.0,0.9653398723495441,5
+RetiZero CLAHE-off,matched,43,matched_t43,val_accuracy,4.0,0.7450980392156863,5
+RetiZero CLAHE-off,matched,43,matched_t43,train_loss,5.0,0.6247611968866326,5
+RetiZero CLAHE-off,matched,43,matched_t43,val_loss,5.0,0.9850419359046871,5
+RetiZero CLAHE-off,matched,43,matched_t43,val_accuracy,5.0,0.7815126050420168,5
+RetiZero CLAHE-off,matched,43,matched_t43,train_loss,6.0,0.5546971005817998,5
+RetiZero CLAHE-off,matched,43,matched_t43,val_loss,6.0,0.9347298342306741,5
+RetiZero CLAHE-off,matched,43,matched_t43,val_accuracy,6.0,0.7815126050420168,5
+RetiZero CLAHE-off,matched,43,matched_t43,train_loss,7.0,0.4992146126996971,5
+RetiZero CLAHE-off,matched,43,matched_t43,val_loss,7.0,0.9932784339626964,5
+RetiZero CLAHE-off,matched,43,matched_t43,val_accuracy,7.0,0.773109243697479,5
+RetiZero CLAHE-off,matched,43,matched_t43,train_loss,8.0,0.45767684169039363,5
+RetiZero CLAHE-off,matched,43,matched_t43,val_loss,8.0,1.0148411561794977,5
+RetiZero CLAHE-off,matched,43,matched_t43,val_accuracy,8.0,0.7507002801120448,5
+RetiZero CLAHE-off,matched,43,matched_t43,train_loss,9.0,0.39889313514516217,5
+RetiZero CLAHE-off,matched,43,matched_t43,val_loss,9.0,1.0410079378373815,5
+RetiZero CLAHE-off,matched,43,matched_t43,val_accuracy,9.0,0.773109243697479,5
+RetiZero CLAHE-off,matched,44,matched_t44,train_loss,1.0,1.2337681415884596,3
+RetiZero CLAHE-off,matched,44,matched_t44,val_loss,1.0,1.0714636844079368,3
+RetiZero CLAHE-off,matched,44,matched_t44,val_accuracy,1.0,0.7310924369747899,3
+RetiZero CLAHE-off,matched,44,matched_t44,train_loss,2.0,0.8209893370925717,3
+RetiZero CLAHE-off,matched,44,matched_t44,val_loss,2.0,1.0465715846427683,3
+RetiZero CLAHE-off,matched,44,matched_t44,val_accuracy,2.0,0.7507002801120448,3
+RetiZero CLAHE-off,matched,44,matched_t44,train_loss,3.0,0.7208144951615769,3
+RetiZero CLAHE-off,matched,44,matched_t44,val_loss,3.0,0.8983680467311742,3
+RetiZero CLAHE-off,matched,44,matched_t44,val_accuracy,3.0,0.7815126050420168,3
+RetiZero CLAHE-off,matched,44,matched_t44,train_loss,4.0,0.6493801947372878,3
+RetiZero CLAHE-off,matched,44,matched_t44,val_loss,4.0,1.0391871832332022,3
+RetiZero CLAHE-off,matched,44,matched_t44,val_accuracy,4.0,0.7030812324929971,3
+RetiZero CLAHE-off,matched,44,matched_t44,train_loss,5.0,0.6109892781509644,3
+RetiZero CLAHE-off,matched,44,matched_t44,val_loss,5.0,0.8859792824218921,3
+RetiZero CLAHE-off,matched,44,matched_t44,val_accuracy,5.0,0.7703081232492998,3
+RetiZero CLAHE-off,matched,44,matched_t44,train_loss,6.0,0.5666301350168782,3
+RetiZero CLAHE-off,matched,44,matched_t44,val_loss,6.0,0.8918640633591083,3
+RetiZero CLAHE-off,matched,44,matched_t44,val_accuracy,6.0,0.7591036414565826,3
+RetiZero CLAHE-off,matched,44,matched_t44,train_loss,7.0,0.4736028722076134,3
+RetiZero CLAHE-off,matched,44,matched_t44,val_loss,7.0,0.9793252373943809,3
+RetiZero CLAHE-off,matched,44,matched_t44,val_accuracy,7.0,0.7619047619047619,3
+RetiZero CLAHE-off original split,historical,42,historical_t42,train_loss,1.0,1.2073766330060556,6
+RetiZero CLAHE-off original split,historical,42,historical_t42,val_loss,1.0,1.0732944878072685,6
+RetiZero CLAHE-off original split,historical,42,historical_t42,val_accuracy,1.0,0.7076502732240437,6
+RetiZero CLAHE-off original split,historical,42,historical_t42,train_loss,2.0,0.8627807923391354,6
+RetiZero CLAHE-off original split,historical,42,historical_t42,val_loss,2.0,1.0076446051154633,6
+RetiZero CLAHE-off original split,historical,42,historical_t42,val_accuracy,2.0,0.7431693989071039,6
+RetiZero CLAHE-off original split,historical,42,historical_t42,train_loss,3.0,0.7454800890620636,6
+RetiZero CLAHE-off original split,historical,42,historical_t42,val_loss,3.0,0.9659415678899796,6
+RetiZero CLAHE-off original split,historical,42,historical_t42,val_accuracy,3.0,0.76775956284153,6
+RetiZero CLAHE-off original split,historical,42,historical_t42,train_loss,4.0,0.6734272617682657,6
+RetiZero CLAHE-off original split,historical,42,historical_t42,val_loss,4.0,0.9045502996184135,6
+RetiZero CLAHE-off original split,historical,42,historical_t42,val_accuracy,4.0,0.7377049180327869,6
+RetiZero CLAHE-off original split,historical,42,historical_t42,train_loss,5.0,0.5901578408041152,6
+RetiZero CLAHE-off original split,historical,42,historical_t42,val_loss,5.0,0.9391180237785715,6
+RetiZero CLAHE-off original split,historical,42,historical_t42,val_accuracy,5.0,0.76775956284153,6
+RetiZero CLAHE-off original split,historical,42,historical_t42,train_loss,6.0,0.5490181020166268,6
+RetiZero CLAHE-off original split,historical,42,historical_t42,val_loss,6.0,0.9443139880081344,6
+RetiZero CLAHE-off original split,historical,42,historical_t42,val_accuracy,6.0,0.7786885245901639,6
+RetiZero CLAHE-off original split,historical,42,historical_t42,train_loss,7.0,0.4766257539462742,6
+RetiZero CLAHE-off original split,historical,42,historical_t42,val_loss,7.0,0.9366420318520134,6
+RetiZero CLAHE-off original split,historical,42,historical_t42,val_accuracy,7.0,0.773224043715847,6
+RetiZero CLAHE-off original split,historical,42,historical_t42,train_loss,8.0,0.41830140880708727,6
+RetiZero CLAHE-off original split,historical,42,historical_t42,val_loss,8.0,1.0113116802413606,6
+RetiZero CLAHE-off original split,historical,42,historical_t42,val_accuracy,8.0,0.7622950819672131,6
+RetiZero CLAHE-off original split,historical,42,historical_t42,train_loss,9.0,0.3842554546691688,6
+RetiZero CLAHE-off original split,historical,42,historical_t42,val_loss,9.0,1.0212181949876045,6
+RetiZero CLAHE-off original split,historical,42,historical_t42,val_accuracy,9.0,0.7786885245901639,6
+RetiZero CLAHE-off original split,historical,42,historical_t42,train_loss,10.0,0.3284376153055313,6
+RetiZero CLAHE-off original split,historical,42,historical_t42,val_loss,10.0,1.000546310117336,6
+RetiZero CLAHE-off original split,historical,42,historical_t42,val_accuracy,10.0,0.76775956284153,6
+RetiZero CLAHE-off original split,historical,43,historical_t43,train_loss,1.0,1.2424048460020307,7
+RetiZero CLAHE-off original split,historical,43,historical_t43,val_loss,1.0,1.166471782929259,7
+RetiZero CLAHE-off original split,historical,43,historical_t43,val_accuracy,1.0,0.6994535519125683,7
+RetiZero CLAHE-off original split,historical,43,historical_t43,train_loss,2.0,0.8764273107087461,7
+RetiZero CLAHE-off original split,historical,43,historical_t43,val_loss,2.0,0.9350241683219951,7
+RetiZero CLAHE-off original split,historical,43,historical_t43,val_accuracy,2.0,0.6885245901639344,7
+RetiZero CLAHE-off original split,historical,43,historical_t43,train_loss,3.0,0.7412837366727726,7
+RetiZero CLAHE-off original split,historical,43,historical_t43,val_loss,3.0,0.9796911360787564,7
+RetiZero CLAHE-off original split,historical,43,historical_t43,val_accuracy,3.0,0.7704918032786885,7
+RetiZero CLAHE-off original split,historical,43,historical_t43,train_loss,4.0,0.6859095699553523,7
+RetiZero CLAHE-off original split,historical,43,historical_t43,val_loss,4.0,0.9568405001541305,7
+RetiZero CLAHE-off original split,historical,43,historical_t43,val_accuracy,4.0,0.7076502732240437,7
+RetiZero CLAHE-off original split,historical,43,historical_t43,train_loss,5.0,0.6157147497366052,7
+RetiZero CLAHE-off original split,historical,43,historical_t43,val_loss,5.0,0.9262043576422936,7
+RetiZero CLAHE-off original split,historical,43,historical_t43,val_accuracy,5.0,0.76775956284153,7
+RetiZero CLAHE-off original split,historical,43,historical_t43,train_loss,6.0,0.5432825809266429,7
+RetiZero CLAHE-off original split,historical,43,historical_t43,val_loss,6.0,0.937327414913907,7
+RetiZero CLAHE-off original split,historical,43,historical_t43,val_accuracy,6.0,0.7841530054644809,7
+RetiZero CLAHE-off original split,historical,43,historical_t43,train_loss,7.0,0.507789481964157,7
+RetiZero CLAHE-off original split,historical,43,historical_t43,val_loss,7.0,1.049185621282442,7
+RetiZero CLAHE-off original split,historical,43,historical_t43,val_accuracy,7.0,0.7978142076502732,7
+RetiZero CLAHE-off original split,historical,43,historical_t43,train_loss,8.0,0.440656996650393,7
+RetiZero CLAHE-off original split,historical,43,historical_t43,val_loss,8.0,1.0354081007952247,7
+RetiZero CLAHE-off original split,historical,43,historical_t43,val_accuracy,8.0,0.7759562841530054,7
+RetiZero CLAHE-off original split,historical,43,historical_t43,train_loss,9.0,0.3946520771529842,7
+RetiZero CLAHE-off original split,historical,43,historical_t43,val_loss,9.0,1.0354506252893334,7
+RetiZero CLAHE-off original split,historical,43,historical_t43,val_accuracy,9.0,0.7814207650273224,7
+RetiZero CLAHE-off original split,historical,43,historical_t43,train_loss,10.0,0.3145466954178648,7
+RetiZero CLAHE-off original split,historical,43,historical_t43,val_loss,10.0,1.1059030633155114,7
+RetiZero CLAHE-off original split,historical,43,historical_t43,val_accuracy,10.0,0.7786885245901639,7
+RetiZero CLAHE-off original split,historical,43,historical_t43,train_loss,11.0,0.2899812504969672,7
+RetiZero CLAHE-off original split,historical,43,historical_t43,val_loss,11.0,1.0907062239985648,7
+RetiZero CLAHE-off original split,historical,43,historical_t43,val_accuracy,11.0,0.773224043715847,7
+RetiZero CLAHE-off original split,historical,44,historical_t44,train_loss,1.0,1.143338134739333,2
+RetiZero CLAHE-off original split,historical,44,historical_t44,val_loss,1.0,1.182007764206558,2
+RetiZero CLAHE-off original split,historical,44,historical_t44,val_accuracy,1.0,0.6857923497267759,2
+RetiZero CLAHE-off original split,historical,44,historical_t44,train_loss,2.0,0.841654194862963,2
+RetiZero CLAHE-off original split,historical,44,historical_t44,val_loss,2.0,0.8955882826789481,2
+RetiZero CLAHE-off original split,historical,44,historical_t44,val_accuracy,2.0,0.7814207650273224,2
+RetiZero CLAHE-off original split,historical,44,historical_t44,train_loss,3.0,0.7023005117813285,2
+RetiZero CLAHE-off original split,historical,44,historical_t44,val_loss,3.0,0.8741360407709424,2
+RetiZero CLAHE-off original split,historical,44,historical_t44,val_accuracy,3.0,0.7814207650273224,2
+RetiZero CLAHE-off original split,historical,44,historical_t44,train_loss,4.0,0.6275351812567634,2
+RetiZero CLAHE-off original split,historical,44,historical_t44,val_loss,4.0,0.9465337841888595,2
+RetiZero CLAHE-off original split,historical,44,historical_t44,val_accuracy,4.0,0.7650273224043715,2
+RetiZero CLAHE-off original split,historical,44,historical_t44,train_loss,5.0,0.5803785968219595,2
+RetiZero CLAHE-off original split,historical,44,historical_t44,val_loss,5.0,0.8865231412356017,2
+RetiZero CLAHE-off original split,historical,44,historical_t44,val_accuracy,5.0,0.7759562841530054,2
+RetiZero CLAHE-off original split,historical,44,historical_t44,train_loss,6.0,0.5791190175467402,2
+RetiZero CLAHE-off original split,historical,44,historical_t44,val_loss,6.0,0.9218787443442423,2
+RetiZero CLAHE-off original split,historical,44,historical_t44,val_accuracy,6.0,0.7213114754098361,2
