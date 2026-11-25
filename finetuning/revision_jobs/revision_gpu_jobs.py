@@ -7,18 +7,18 @@
   build-messidor  the verified Messidor-2 cohort from the raw images (CPU, about 5 minutes)
   pilot           every kind of job on a few images (about 15 minutes)
   run             the full queue; finished jobs are skipped, so rerunning resumes
-  summarize       status table, energy per job, then the CPU analysis tables
+  summarize       status table, energy per job (revision_energy_per_job.csv), then the CPU analysis tables
 
 Each step can also be run on its own: `... revision_gpu_jobs.py status`, `... run`, and so on.
 
-GPU jobs (all scoring-only unless --rank-sweep is given):
+GPU jobs (scoring only; nothing is trained):
   messidor2   verified Messidor-2 (1,744 gradable images, adjudicated grades, raw -> model input in one step)
-              Qwen: r16 CLAHE-on lr2e-4 x3, r16 CLAHE-on lr5e-4 x3, r16 CLAHE-off lr5e-4 x3, zero-shot on/off
-              RetiZero: matched x3, CLAHE x3, saved app checkpoint                            about 6 h
+              Qwen: r16 CLAHE-on lr2e-4 x3, r16 CLAHE-on lr5e-4 x3, r16 CLAHE-off lr5e-4 x3,
+                    r16 CLAHE-off lr2e-4 x3 (final_02), zero-shot on/off
+              RetiZero: matched x3, CLAHE x3, saved app checkpoint                            about 7 h
   timing      warm per-image timing, greedy-generation check and power for the 7 Qwen
               configurations that have no timing record (361 images each)                        about 2 h
-  rank_sweep  OPTIONAL (--rank-sweep): ranks 8/16/32 x CLAHE on/off at lr 2e-4, plus rank 8 and 32 with
-              alpha = rank (fixed alpha/r), three seeds each; trains 21 new adapters            about 30 h
+The rank sweep at lr 2e-4 is already in final_02/train (the owner's lr 2e-4 queue, orchestrator_02.py).
 
 Every job goes through the existing launchers in finetuning/Qwen3/paper_revision/final_runs.py and
 finetuning/RetiZero/paper_revision/retizero_runs.py, so each keeps its log, hardware specs, 5-second utilisation
@@ -52,7 +52,8 @@ import retizero_runs as rz  # noqa: E402
 
 EXPERIMENTS = final.EXPERIMENTS
 MESSIDOR2 = EXPERIMENTS / "datasets" / "messidor2_verified"
-QWEN_TAG, RETIZERO_TAG, PILOT_TAG = "final_02", "retizero_02", "pilot_01"
+QWEN_TAG, RETIZERO_TAG = "final_02", "retizero_02"
+PILOT_TAG = "revision_pilot_01"  # final_02__pilot_01 belongs to the lr 2e-4 training queue
 LR_SELECTED = 2e-4           # chosen on validation loss (revision_analysis/lr_selection_by_validation_loss.csv)
 PAIRS = (1, 2, 3)            # seed pairs 42/3407, 43/3408, 44/3409
 MESSIDOR2_MINUTES = 30
@@ -77,9 +78,14 @@ def final01_train(rank, clahe, pair, overrides):
     return final.FINAL / "final_01" / "train" / final.variant_name(rank, clahe, pair, overrides)
 
 
+def final02_train(rank, clahe, pair, overrides):
+    """An adapter trained by the lr 2e-4 queue (orchestrator_02.py) in final_02/train."""
+    return final.FINAL / QWEN_TAG / "train" / final.variant_name(rank, clahe, pair, overrides)
+
+
 # --------------------------------------------------------------------------- queue
 
-def build_jobs(pilot=False, rank_sweep=False):
+def build_jobs(pilot=False):
     """[(queue, job)] in run order. queue is 'qwen' or 'retizero'."""
     final.COHORTS.update({k: v for k, v in COHORT_CSV.items() if k.startswith("messidor2_o")})
     qs = final.default_settings()
@@ -107,6 +113,9 @@ def build_jobs(pilot=False, rank_sweep=False):
         for pair in PAIRS:
             run = final.RUNS / remaining.qwen_run_name(condition, pair, "duplicate_excluded", qs["run_tag"])
             qwen.append((f"{condition}_p{pair}", run / "best_lora", cohort, None))
+    for pair in PAIRS:  # CLAHE-off at the selected learning rate, from the lr 2e-4 queue
+        run = final02_train(16, "off", pair, {"lr": LR_SELECTED, "lora_alpha": 16})
+        qwen.append((run.name, run / "best_lora", "messidor2_off", None))
     qwen += [("zeroshot_4bit", None, "messidor2_on", None), ("zeroshot_4bit", None, "messidor2_off", None)]
     for label, adapter, cohort, _ in (qwen[:1] + qwen[-1:] if pilot else qwen):
         job = final.score_job("messidor2", label, cohort, base, where=wq, adapter=adapter, limit=limit,
@@ -132,15 +141,6 @@ def build_jobs(pilot=False, rank_sweep=False):
         job.minutes = final.MINUTES["pilot_score"] if pilot else 16
         jobs.append(("qwen", job))
 
-    # Optional rank sweep at the validation-selected learning rate.
-    if rank_sweep:
-        sweep = [(r, c, p, {"lr": LR_SELECTED}) for r in (8, 16, 32) for c in ("on", "off") for p in PAIRS
-                 if not (r == 16 and c == "on")]                      # rank 16 CLAHE-on lr2e-4 exists in final_01
-        sweep += [(r, "on", p, {"lr": LR_SELECTED, "lora_alpha": r}) for r in (8, 32) for p in PAIRS]
-        if pilot:
-            sweep = sweep[-1:]
-        for rank, clahe, pair, overrides in sweep:
-            jobs.append(("qwen", final.train_job("rank_sweep", rank, clahe, pair, overrides, where=wq, pilot=pilot)))
     return jobs
 
 
@@ -274,16 +274,14 @@ def check(args) -> bool:
         lock_free = False
         print(f"    (could not test the GPU lock: {error})")
     need("GPU lock free", lock_free, "wait for the running job to finish")
-    if args.rank_sweep:
-        need("legacy project for 4-bit training (C: copy)", remaining.LEGACY.is_dir(), str(remaining.LEGACY))
     free = shutil.disk_usage(EXPERIMENTS.anchor if EXPERIMENTS.exists() else REPO.anchor).free / 2**30
-    need(f"free disk {free:.0f} GiB (need 10, or 40 with --rank-sweep)", free > (40 if args.rank_sweep else 10), "free some space")
+    need(f"free disk {free:.0f} GiB (need 10)", free > 10, "free some space")
     built = all(p.is_file() for p in COHORT_CSV.values())
     print(f"  [{'ok' if built else 'later':<7}] verified Messidor-2 cohort at {MESSIDOR2}"
           + ("" if built else "  -> built by the build-messidor step"))
     print("\nPlanned jobs:")
     try:
-        show(build_jobs(rank_sweep=args.rank_sweep))
+        show(build_jobs())
     except Exception as error:
         need("queue can be built", False, str(error))
     print("\nCheck passed." if ok else "\nCheck FAILED: fix the items marked MISSING, then run again.")
@@ -309,7 +307,7 @@ def build_messidor(args) -> bool:
 
 
 def pilot(args) -> bool:
-    jobs = build_jobs(pilot=True, rank_sweep=args.rank_sweep)
+    jobs = build_jobs(pilot=True)
     print("Pilot queue:")
     show(jobs)
     run_jobs(jobs, qwen_root(pilot=True) / "revision_queue_state.json")
@@ -327,7 +325,7 @@ def pilot(args) -> bool:
 
 
 def run(args) -> bool:
-    jobs = build_jobs(rank_sweep=args.rank_sweep)
+    jobs = build_jobs()
     print("Full queue:")
     show(jobs)
     outcomes = run_jobs(jobs, qwen_root() / "revision_queue_state.json")
@@ -359,13 +357,13 @@ def energy_per_job(state_path: Path) -> Path | None:
         rows.append({"queue": record["queue"], "job": record["job"], "outcome": record["outcome"], "seconds": seconds,
                      "samples": len(window), "mean_w": window["w"].mean() if len(window) else None,
                      "energy_wh": window["w"].mean() * seconds / 3600 if len(window) else None})
-    out = state_path.with_name("energy_per_job.csv")
+    out = state_path.with_name("revision_energy_per_job.csv")  # energy_per_job.csv is the lr 2e-4 queue's file
     pd.DataFrame(rows).to_csv(out, index=False)
     return out
 
 
 def summarize(args) -> bool:
-    jobs = build_jobs(rank_sweep=args.rank_sweep)
+    jobs = build_jobs()
     show(jobs)
     energy = energy_per_job(qwen_root() / "revision_queue_state.json")
     if energy:
@@ -389,9 +387,9 @@ def summarize(args) -> bool:
 
 def status(args) -> bool:
     print("Pilot:")
-    show(build_jobs(pilot=True, rank_sweep=args.rank_sweep))
+    show(build_jobs(pilot=True))
     print("\nFull queue:")
-    show(build_jobs(rank_sweep=args.rank_sweep))
+    show(build_jobs())
     return True
 
 
@@ -401,7 +399,6 @@ def main(argv=None):
     ap.add_argument("step", choices=("all", "check", "status", "build-messidor", "pilot", "run", "summarize"))
     ap.add_argument("--messidor-package", type=Path, default=None,
                     help="the unzipped Messidor-2_for_teammate folder (01_raw_images, 02_adjudicated_grades, 03_eye_pairing)")
-    ap.add_argument("--rank-sweep", action="store_true", help="also train the optional rank sweep at lr 2e-4 (about 30 h)")
     ap.add_argument("--skip-pilot", action="store_true", help="for `all`: skip the pilot (only if it already passed)")
     args = ap.parse_args(argv)
     steps = {"check": check, "status": status, "build-messidor": build_messidor, "pilot": pilot, "run": run, "summarize": summarize}

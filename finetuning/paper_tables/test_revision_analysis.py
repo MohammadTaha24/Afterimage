@@ -125,6 +125,28 @@ class VariantNames(unittest.TestCase):
         self.assertEqual(bra.variant("r16_on_lr0p0002_t42_a3407")["condition"], bra.Q_ON_2E4)
 
 
+class Final02Runs(unittest.TestCase):
+    def test_clahe_off_messidor_scores_are_read(self):
+        # The lr 2e-4 queue scored its CLAHE-off adapters on the archived images read without CLAHE.
+        r = bra.qwen_messidor("r16_off_alpha16_lr0p0002_t43_a3408__messidor_archived_off", Path("x"), "final_02")
+        self.assertEqual((r["condition"], r["seed"], r["cohort"]), ("Qwen r16 CLAHE-off lr2e-4", 43, "messidor"))
+        r = bra.qwen_messidor("r16_off_alpha16_lr0p0002_t44_a3409__messidor2_off", Path("x"), "final_02")
+        self.assertEqual((r["condition"], r["cohort"]), (bra.Q_OFF_2E4, "messidor2"))
+
+    def test_queue_summary_is_a_reproduction_reference(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp) / "final_runs" / "final_02"
+            folder.mkdir(parents=True)
+            (folder / "summary.csv").write_text(
+                "source,run,aptos_accuracy,aptos_qwk,aptos_macro_auc\n"
+                "final_02,r8_on_alpha16_lr0p0002_t42_a3407,0.77,0.89,0.94\n"
+                "final_01,r16_on_lr0p0002_t42_a3407,0.75,0.88,0.94\n", encoding="utf-8")
+            table = bra.queue_lookup(Path(tmp))
+        self.assertEqual(list(table), ["r8_on_alpha16_lr0p0002_t42_a3407"])   # linked final_01 rows have their own reference
+        self.assertEqual(table["r8_on_alpha16_lr0p0002_t42_a3407"]["qwk"], 0.89)
+
+
 class IdNormalisation(unittest.TestCase):
     def test_ids(self):
         self.assertEqual(bra.normalise_id("messidor_messidor_p_0_20051109_57451_0400_PP"), "20051109_57451_0400_PP")

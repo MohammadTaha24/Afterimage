@@ -53,6 +53,7 @@ TOL = 1e-8
 Q_ON_5E4 = "Qwen r16 CLAHE-on lr5e-4"
 Q_OFF_5E4 = "Qwen r16 CLAHE-off lr5e-4"
 Q_ON_2E4 = "Qwen r16 CLAHE-on lr2e-4"
+Q_OFF_2E4 = "Qwen r16 CLAHE-off lr2e-4"
 Q_ON_1E4 = "Qwen r16 CLAHE-on lr1e-4"
 R_OFF = "RetiZero CLAHE-off"
 R_ON = "RetiZero CLAHE-on"
@@ -67,9 +68,10 @@ class AnalysisError(RuntimeError):
 PILOT_RE = re.compile(r"^full_(bf16_)?r(\d+)_(on|off)_(duplicate_excluded|previous_split)_t(\d+)_a(\d+)_(paper_controls_)?01$")
 # Training variants named by final_runs.variant_name, e.g. r16_on_lr0p0002_t42_a3407 or r8_on_alpha8_lr0p0002_t42_a3407.
 VARIANT_RE = re.compile(r"^r(\d+)_(on|off)_(?:alpha(\d+)_)?(?:lr(0p\d+)_)?t(\d+)_a(\d+)$")
-QWEN_CAMPAIGNS = ("final_01", "final_02")      # final_02: verified Messidor-2, timing and the optional rank sweep
+QWEN_CAMPAIGNS = ("final_01", "final_02")      # final_02: the lr 2e-4 rank/alpha/CLAHE grid, verified Messidor-2 and timing
 RETIZERO_CAMPAIGNS = ("retizero_01", "retizero_02")
 MESSIDOR_COHORTS = {"messidor_archived": "messidor", "messidor_archived_fp32": "messidor",
+                    "messidor_archived_off": "messidor",  # same 1,057 archived images, read without CLAHE
                     "messidor2_on": "messidor2", "messidor2_off": "messidor2",
                     "messidor2_224_off": "messidor2", "messidor2_224_on": "messidor2"}
 
@@ -358,8 +360,22 @@ def find_metric(obj, key):
     return None
 
 
+def queue_lookup(experiments: Path) -> dict[str, dict]:
+    """APTOS metrics the lr 2e-4 queue saved in final_02/summary.csv, for the runs it trained itself."""
+    path = experiments / "final_runs" / "final_02" / "summary.csv"
+    if not path.is_file():
+        return {}
+    table = {}
+    for row in csv.DictReader(open(bpt.track(path), encoding="utf-8")):
+        if row.get("source") == "final_02" and row.get("aptos_accuracy"):
+            table[row["run"]] = {"accuracy": float(row["aptos_accuracy"]), "qwk": float(row["aptos_qwk"]),
+                                 "macro_auc": float(row["aptos_macro_auc"])}
+    return table
+
+
 def reproduction_table(runs: list[dict], experiments: Path) -> pd.DataFrame:
     committed = committed_lookup()
+    queue = queue_lookup(experiments)
     rows = []
     for r in runs:
         m = r["metrics"]
@@ -368,6 +384,8 @@ def reproduction_table(runs: list[dict], experiments: Path) -> pd.DataFrame:
             c = committed[r["name"]]
             ref = {"accuracy": float(c["accuracy"]), "qwk": float(c["qwk"]), "macro_auc": float(c["macro_auc"])}
             source = "committed paper table"
+        elif r["source"] == "final_02" and r["cohort"] == "aptos361" and r["name"] in queue:
+            ref, source = queue[r["name"]], "final_02 queue summary"
         elif r.get("summary"):
             s = bpt.read_json(r["summary"])
             s = s.get("metrics", s)  # score jobs nest the metrics; training evaluations keep them at the top
@@ -609,11 +627,12 @@ MESSIDOR2 = [
     ("messidor2", "Messidor-2: Qwen lr2e-4 vs RetiZero, native preprocessing", Q_ON_2E4, R_OFF, "messidor2", True),
     ("messidor2", "Messidor-2: Qwen lr5e-4 vs RetiZero, native preprocessing", Q_ON_5E4, R_OFF, "messidor2", True),
     ("messidor2", "Messidor-2: both CLAHE-off", Q_OFF_5E4, R_OFF, "messidor2", True),
+    ("messidor2", "Messidor-2: both CLAHE-off, Qwen lr2e-4", Q_OFF_2E4, R_OFF, "messidor2", True),
     ("messidor2", "Messidor-2: both CLAHE-on", Q_ON_2E4, R_ON, "messidor2", True),
     ("messidor2", "Messidor-2: Qwen adapter (lr2e-4) vs zero-shot, CLAHE-on", Q_ON_2E4, "Qwen zero-shot 4bit CLAHE-on", "messidor2", True),
     ("messidor2", "Messidor-2: RetiZero CLAHE on vs off", R_ON, R_OFF, "messidor2", True),
 ]
-# Optional rank sweep at the validation-selected learning rate (revision_gpu_jobs.py --rank-sweep).
+# Rank sweep at the validation-selected learning rate (final_02, trained by orchestrator_02.py).
 RANK_2E4 = [
     ("rank_lr2e-4", f"Qwen rank {r} vs 16, CLAHE-{c} (lr2e-4, alpha 16)", f"Qwen r{r} CLAHE-{c} lr2e-4", f"Qwen r16 CLAHE-{c} lr2e-4", "aptos361", True)
     for c in ("on", "off") for r in (8, 32)
@@ -1030,8 +1049,13 @@ def timing_table(experiments: Path) -> pd.DataFrame:
     scores = experiments / "final_runs" / "final_02" / "scores"
     if not scores.is_dir():
         return pd.DataFrame()
-    energy_path = experiments / "final_runs" / "final_02" / "energy_per_job.csv"
-    energy = pd.read_csv(bpt.track(energy_path)).set_index("job") if energy_path.is_file() else pd.DataFrame()
+    # energy_per_job.csv is the lr 2e-4 training queue's (orchestrator_02.py); revision_gpu_jobs.py writes its own file.
+    queue_energy = experiments / "final_runs" / "final_02" / "energy_per_job.csv"
+    revision_energy = experiments / "final_runs" / "final_02" / "revision_energy_per_job.csv"
+    energy = pd.read_csv(bpt.track(queue_energy)).set_index("job") if queue_energy.is_file() else pd.DataFrame()
+    if revision_energy.is_file():
+        extra = pd.read_csv(bpt.track(revision_energy))
+        energy = pd.concat([energy, extra[~extra["job"].isin(energy.index)].set_index("job")])
     rows = []
     for d in sorted(scores.glob("*")):
         if not (d / "summary.json").is_file():

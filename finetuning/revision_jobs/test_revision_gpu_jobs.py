@@ -65,17 +65,31 @@ class Queue(unittest.TestCase):
         jobs = gpu.build_jobs()
         stages = [(q, j.stage) for q, j in jobs]
         self.assertEqual(stages.count(("retizero", "messidor2")), 7)   # saved + 3 matched + 3 CLAHE
-        self.assertEqual(stages.count(("qwen", "messidor2")), 11)      # 3 lr2e-4 + 3 on + 3 off + 2 zero-shot
+        self.assertEqual(stages.count(("qwen", "messidor2")), 14)      # 3 on lr2e-4 + 3 on + 3 off lr5e-4 + 3 off lr2e-4 + 2 zero-shot
         self.assertEqual(stages.count(("qwen", "timing")), 7)          # the 7 configurations in GAPS.md
-        self.assertFalse(any(j.kind == "train" for _, j in jobs))     # scoring only without --rank-sweep
+        self.assertEqual(len(jobs), 28)
+        self.assertFalse(any(j.kind == "train" for _, j in jobs))     # scoring only: nothing is trained
         names = [j.name for _, j in jobs]
         self.assertEqual(len(names), len(set(names)))
         self.assertIn("r16_on_lr0p0002_t43_a3408__messidor2_on", names)
         self.assertIn("r16_off_p2__messidor2_off", names)
         self.assertIn("timing_r16_on_previous_split_p1__aptos361_on", names)
+        self.assertIn("r16_off_alpha16_lr0p0002_t44_a3409__messidor2_off", names)
+
+    def test_clahe_off_lr2e4_scores_use_the_final_02_adapters(self):
+        jobs = {j.name: j for _, j in gpu.build_jobs()}
+        for seeds in ("t42_a3407", "t43_a3408", "t44_a3409"):
+            run = f"r16_off_alpha16_lr0p0002_{seeds}"
+            args = [str(a) for a in jobs[f"{run}__messidor2_off"].arguments]
+            self.assertIn(str(gpu.final.FINAL / "final_02" / "train" / run / "best_lora"), args)
+            self.assertIn(str(gpu.COHORT_CSV["messidor2_off"]), args)
+
+    def test_no_rank_sweep_option(self):
+        with self.assertRaises(SystemExit):
+            gpu.main(["run", "--rank-sweep"])
 
     def test_every_job_writes_inside_the_new_campaigns(self):
-        for queue, job in gpu.build_jobs(rank_sweep=True):
+        for queue, job in gpu.build_jobs():
             root = gpu.qwen_root() if queue == "qwen" else gpu.retizero_root()
             self.assertTrue(str(job.output).startswith(str(root)), job.output)
 
@@ -95,29 +109,17 @@ class Queue(unittest.TestCase):
         self.assertIn(str(gpu.COHORT_CSV["messidor2_224_on"]), [str(a) for a in jobs["clahe_t44__messidor2_224_on"].arguments])
         self.assertIn(str(gpu.COHORT_CSV["messidor2_224_off"]), [str(a) for a in jobs["matched_t42__messidor2_224_off"].arguments])
 
-    def test_rank_sweep(self):
-        train = [j for _, j in gpu.build_jobs(rank_sweep=True) if j.kind == "train"]
-        names = [j.name for j in train]
-        self.assertEqual(len(train), 21)   # 5 rank/CLAHE cells x 3 seeds + rank 8 and 32 with alpha = rank x 3 seeds
-        self.assertNotIn("r16_on_lr0p0002_t42_a3407", names)  # exists in final_01
-        self.assertIn("r8_on_alpha8_lr0p0002_t42_a3407", names)
-        self.assertIn("r32_off_lr0p0002_t44_a3409", names)
-        args = [str(a) for a in train[names.index("r32_on_alpha32_lr0p0002_t43_a3408")].arguments]
-        self.assertEqual(args[args.index("--lr") + 1], "0.0002")
-        self.assertEqual(args[args.index("--lora-alpha") + 1], "32")
-
     def test_pilot_is_small_and_separate(self):
-        jobs = gpu.build_jobs(pilot=True, rank_sweep=True)
-        self.assertEqual(len(jobs), 5)   # 1 RetiZero, 2 Qwen Messidor-2, 1 timing, 1 ten-step training
+        jobs = gpu.build_jobs(pilot=True)
+        self.assertEqual(len(jobs), 4)   # 1 RetiZero, 2 Qwen Messidor-2, 1 timing
         for queue, job in jobs:
-            self.assertIn("pilot_01", str(job.output))
-            if job.kind == "score":
-                self.assertIn("--limit", [str(a) for a in job.arguments])
-            else:
-                self.assertIn("--steps", [str(a) for a in job.arguments])
+            # Its own folder: final_02__pilot_01 belongs to the lr 2e-4 training queue.
+            self.assertIn("__revision_pilot_01", str(job.output))
+            self.assertEqual(job.kind, "score")
+            self.assertIn("--limit", [str(a) for a in job.arguments])
 
     def test_missing_inputs_wait_instead_of_failing(self):
-        jobs = gpu.build_jobs(rank_sweep=True)
+        jobs = gpu.build_jobs()
         self.assertEqual({gpu.state_of(j) for _, j in jobs}, {"waiting"})   # nothing exists in the fake folder
         zero = next(j for _, j in jobs if j.name == "zeroshot_4bit__messidor2_on")
         self.assertIn(str(gpu.COHORT_CSV["messidor2_on"]), gpu.missing_inputs(zero))
@@ -153,7 +155,10 @@ class Energy(unittest.TestCase):
             state = tmp / "revision_queue_state.json"
             state.write_text(json.dumps([{"queue": "qwen", "job": "j", "stage": "s", "outcome": "passed",
                                           "started": start.isoformat(), "ended": (start + timedelta(seconds=120)).isoformat()}]))
+            (tmp / "energy_per_job.csv").write_text("the training queue's own file\n", encoding="utf-8")
             out = gpu.energy_per_job(state)
+            self.assertEqual(out.name, "revision_energy_per_job.csv")
+            self.assertEqual((tmp / "energy_per_job.csv").read_text(encoding="utf-8"), "the training queue's own file\n")
             with open(out, encoding="utf-8") as stream:
                 row = next(csv.DictReader(stream))
             self.assertAlmostEqual(float(row["energy_wh"]), 100 * 120 / 3600, places=6)
