@@ -1,6 +1,6 @@
 # Evidence for Dr. Noor's revision plan
 
-22 November 2026; the Qwen rank section (point 1) and the S8 failure check updated 24 November 2026 with the lr 2e-4 rank and alpha grid (`final_runs/final_02`, 27 new adapters). Apart from that grid, this note answers the revision plan from results that already existed. Every number comes from `finetuning/paper_tables/output/revision_analysis/` (open `SUMMARY.md` there). Those tables are rebuilt from the saved per-image predictions by `build_revision_analysis.py` and `build_image_audits.py` (see `finetuning/paper_tables/README.md`).
+22 November 2026; the Qwen rank section (point 1) and the S8 failure check updated 24 November 2026 with the lr 2e-4 rank and alpha grid (`final_runs/final_02`, 27 new adapters); the verified Messidor-2 section (point 5) and the timing rows of point 3 added 25 November 2026 from the revision GPU queue (`finetuning/revision_jobs/`, 28 scoring jobs, no training). Every number comes from `finetuning/paper_tables/output/revision_analysis/` (open `SUMMARY.md` there). Those tables are rebuilt from the saved per-image predictions by `build_revision_analysis.py` and `build_image_audits.py` (see `finetuning/paper_tables/README.md`).
 
 All results are on the 361 clean APTOS test images and give the mean ± SD over three seeds, unless stated otherwise. CIs are 95% bootstrap intervals. "Δ" is a hierarchical bootstrap over images and seeds.
 
@@ -8,8 +8,9 @@ All results are on the 361 clean APTOS test images and give the mean ± SD over 
 
 | Check | Result | File |
 |---|---|---|
-| Recompute every run's accuracy, QWK and macro AUC from its predictions | All 85 runs with a stored reference match the committed tables or the saved run summaries (tolerance 1e-8). The 27 runs of the lr 2e-4 grid have no stored reference in this check; they match the queue's own `final_runs/final_02/summary.csv` to within 1e-10 (checked separately, 24 November 2026). | `reproduction_check.csv` |
-| Same images, order and labels for every run in a cohort | All runs on APTOS-361, APTOS-367 and Messidor agree | `image_alignment_check.csv` |
+| Recompute every run's accuracy, QWK and macro AUC from its predictions | All 148 runs match their stored reference (tolerance 1e-8): 58 against the committed tables, 27 lr 2e-4 grid runs against the queue's own `final_runs/final_02/summary.csv`, and 63 against the saved run summaries | `reproduction_check.csv` |
+| Same images, order and labels for every run in a cohort | All runs on APTOS-361, APTOS-367, archived Messidor and verified Messidor-2 (1,744 images) agree | `image_alignment_check.csv` |
+| Revision GPU queue | All 28 jobs passed and wrote one prediction per image. All 7 timing jobs reproduce their run's saved predictions (0 grade mismatches). None of the 221,818 result files that existed before the queue changed. | `final_runs/final_02/revision_notebook_logs/` |
 | ROC-AUC uses each grade's own probability column | An independent scipy Mann-Whitney computation agrees exactly (max difference 0) for every run and grade | `reproduction_check.csv` |
 | Messidor labels | All 1,057 archived labels equal the Krause 2018 adjudicated ICDR grades. The 1,058th Messidor-Original PNG is the only ungradable PNG. The eye pairing agrees for all 528 complete exams. | `messidor_label_audit.csv` |
 
@@ -109,6 +110,11 @@ Every row was measured on the same PC: one NVIDIA RTX 5070 Ti 16 GB (`efficiency
 
 Notes to state:
 - Qwen's inference time is for the likelihood scorer, which runs five forward passes per image. Greedy generation takes 1.57 s per image.
+- **Timing across Qwen configurations** (25 November 2026, `timing_and_energy_final_02.csv`). The 7 configurations without a timing record were timed on the 361 APTOS test images, one seed each:
+  - r16, r8 and r32 CLAHE-off; r16 previous-split; r16 at lr 1e-4 and 2e-4; r16 with alpha 8
+  - all take 0.756–0.766 s per image (about 1.31 images/s, warm median, batch 1)
+  - about 0.09 Wh per image (whole-card GPU power)
+  - So inference cost does not depend on rank, learning rate, alpha or CLAHE. The 0.861 s above is the earlier measurement of the three lr 5e-4 headline runs (`efficiency_comparison.csv`). Quote the range 0.76–0.86 s, or state which measurement is used.
 - RetiZero trains every weight. Its training memory is therefore higher than 4-bit Qwen's even though the model is 29 times smaller.
 
 ## 4. Evaluation checks and misclassification (reviewer comments 10–12; S11, S13)
@@ -183,15 +189,63 @@ That is why QWK (0.894) is high while accuracy is about 78%.
 - All 1,057 archived 512 px images are **pixel-identical** to the raw rebuild.
 - So the archived inputs Qwen was scored on are exactly what the raw pipeline produces.
 - Only RetiZero's archived route (raw → 512 → 224) differs from the direct raw → 224 build.
+- Scoring confirms it: on the 1,057 shared images, every Qwen run gives the **same grade for all 1,057** on the archived and on the verified inputs, with identical accuracy and QWK.
+- RetiZero agrees on 1,031–1,042 of 1,057, and accuracy changes by at most 0.5 pt (`messidor_archived_vs_verified.csv`).
+
+## 5. External validation on verified Messidor-2 (S10; reviewer comments on generalisation)
+
+The cohort:
+- all **1,744 gradable Messidor-2 images**, both the PNG and the JPG half
+- **874 exams**
+- adjudicated ICDR grades (Krause 2018): 1,017 / 270 / 347 / 75 / 35 for grades 0–4
+- each image preprocessed straight from the raw photo, with the same code as the APTOS builds (`datasets/messidor2_verified/manifest.json`)
+
+Every model was trained on APTOS only. CIs come from a hierarchical bootstrap over exams (both eyes resampled together) and seeds.
+
+| Model (3 seeds unless stated) | Accuracy | QWK | Macro AUC | Referable sens / spec | Referable AUC |
+|---|---|---|---|---|---|
+| **Qwen r16 CLAHE-on, lr 2e-4** (headline) | **55.4 ± 3.0%** | **0.588 ± 0.028** | **0.791** | 0.33 / 0.97 | 0.851 |
+| Qwen r16 CLAHE-off, lr 2e-4 | 55.7 ± 3.2% | 0.553 ± 0.024 | 0.774 | 0.30 / 0.97 | 0.845 |
+| Qwen r16 CLAHE-on, lr 5e-4 | 55.4 ± 0.7% | 0.424 ± 0.216 | 0.751 | 0.28 / 0.97 | 0.830 |
+| Qwen r16 CLAHE-off, lr 5e-4 | 57.0 ± 3.1% | 0.507 ± 0.055 | 0.736 | 0.23 / 0.99 | 0.792 |
+| Qwen zero-shot, CLAHE-on (1 run) | 43.8% | 0.288 | 0.702 | 0.69 / 0.59 | 0.708 |
+| Qwen zero-shot, CLAHE-off (1 run) | 51.7% | 0.355 | 0.681 | 0.48 / 0.79 | 0.686 |
+| **RetiZero CLAHE-off** (matched, native) | **40.2 ± 10.9%** | **0.453 ± 0.057** | **0.723** | 0.34 / 0.97 | 0.728 |
+| RetiZero CLAHE-on | 47.4 ± 1.3% | 0.454 ± 0.014 | 0.738 | 0.35 / 0.96 | 0.751 |
+| RetiZero saved app checkpoint (1 run) | 54.1% | 0.562 | 0.749 | 0.50 / 0.95 | 0.783 |
+
+| Comparison (exam-clustered) | Δ accuracy [95% CI] | Δ QWK [95% CI] | Δ macro AUC [95% CI] | Per-seed McNemar, Holm p < 0.05 |
+|---|---|---|---|---|
+| **Qwen lr 2e-4 − RetiZero, native preprocessing (H1)** | **+15.1 pt [+5.6, +27.2]** | **+0.134 [+0.063, +0.208]** | **+0.068 [+0.041, +0.096]** | 3 of 3 |
+| Qwen lr 5e-4 − RetiZero, native | +15.2 pt [+6.1, +27.2] | −0.029 [−0.259, +0.157] | +0.027 [−0.007, +0.068] | 3 of 3 |
+| Both CLAHE-off, Qwen lr 2e-4 | +15.4 pt [+6.0, +27.5] | +0.099 [+0.031, +0.172] | +0.051 [+0.027, +0.076] | 3 of 3 |
+| Both CLAHE-off, Qwen lr 5e-4 | +16.8 pt [+6.9, +28.9] | +0.053 [−0.027, +0.139] | +0.013 [−0.018, +0.046] | 3 of 3 |
+| Both CLAHE-on | +8.0 pt [+4.1, +12.3] | +0.134 [+0.084, +0.186] | +0.053 [+0.028, +0.079] | 3 of 3 |
+| Qwen adapter (lr 2e-4) − zero-shot, CLAHE-on | +11.5 pt [+7.4, +15.8] | +0.299 [+0.247, +0.349] | +0.089 [+0.065, +0.114] | 3 of 3 |
+| RetiZero CLAHE on − off | +7.1 pt [−1.9, +19.3] | +0.001 [−0.056, +0.065] | +0.014 [−0.003, +0.033] | 2 of 3 |
+
+(`messidor2_aggregate.csv`, `messidor2_pairs.csv`, `condition_summary.csv`.)
+
+**Answer.**
+- On the standard external benchmark, Qwen at the validation-selected rate transfers better than RetiZero on every metric. The intervals exclude zero, and every per-seed test agrees.
+- This confirms the archived-Messidor result (+8.1 pt) on a cohort 1.65 times larger, with exam-level clustering.
+- CLAHE again makes no clear difference. RetiZero's on − off interval includes zero. Qwen lr 2e-4 with CLAHE on and off is within 0.3 pt in accuracy; that difference was not formally tested.
+- The lr 2e-4 adapter is more stable than lr 5e-4 (QWK SD 0.028 against 0.216).
+
+**Caveats to state.**
+- **Both models lose about 20–40 pt against APTOS.** In-domain accuracy is about 78–79%; on Messidor-2 it is 55% for Qwen and 40–47% for RetiZero.
+- **Referable-DR sensitivity is only about 0.3 for every fine-tuned model, at specificity about 0.97.** The models under-grade Messidor-2; they are not safe as screening tools on this domain without recalibration. This must be reported as a limitation.
+- **Mild → Normal** is the main failure mode:
+  - Qwen lr 2e-4 calls 71% of Mild eyes Normal; RetiZero calls 55% (CLAHE-off) or 67% (CLAHE-on) Normal.
+  - Mild-vs-Normal AUC is 0.57 for Qwen and 0.47 for RetiZero, so neither model separates Mild from Normal on this dataset (`mild_vs_normal.csv`).
+- **RetiZero CLAHE-off is seed-sensitive on Messidor-2.** Seed 43 scores 28.1%, because it calls 74% of Normal eyes Mild. Seeds 42 and 44 score 43.2% and 49.3%.
+- **The saved RetiZero app checkpoint (54.1%) transfers better than the three retrained RetiZero seeds.** It is a single model with a different training history, so it is not a fair stand-in for the matched comparison. It should be reported separately, if at all.
+- Zero-shot Qwen has the highest referable sensitivity (0.69 with CLAHE) only because it over-calls disease (specificity 0.59).
 
 ## Still open
 
-1. **Decision:** the primary comparison and endpoint. Proposed: H1, Qwen at the validation-selected lr 2e-4 against RetiZero, each with its native preprocessing, on accuracy and QWK.
-2. **GPU queue, ready to run.** `finetuning/revision_jobs/` (see its README) runs in one command:
-   - every model on the full verified Messidor-2 cohort: 1,744 gradable images, the standard external benchmark, about 6 h
-   - timing and power for the 7 Qwen configurations without a timing record, about 2 h
-
-   The rank sweep at lr 2e-4, including alpha = rank, is done (point 1; `final_runs/final_02`), so the runner's `--rank-sweep` option is not needed.
-
-   The analysis picks the new results up automatically: Messidor-2 head-to-head with exam-clustered CIs, the archived-vs-verified agreement check, and timing and energy.
-3. Manuscript text for G1–G3 and S1–S14. The tables above are ready to cite.
+1. **Decision:** the primary comparison and endpoint. Proposed: H1, Qwen at the validation-selected lr 2e-4 against RetiZero, each with its native preprocessing, on accuracy and QWK. It now holds on both APTOS-361 (no difference) and verified Messidor-2 (Qwen better).
+2. **GPU work: none left.** The revision queue ran on 25 November 2026: 28 scoring jobs, no training (`finetuning/revision_jobs/revision_gpu_jobs.ipynb`). The rank sweep at lr 2e-4 was done by the lr 2e-4 training queue (`final_runs/final_02`).
+3. **Figures** for the revision (`finetuning/paper_figures/`).
+4. **Manuscript text** for G1–G3 and S1–S14. The tables above are ready to cite.
+5. **Recalibration** (optional, CPU only): the low referable sensitivity on Messidor-2 could be shown with a threshold sweep on the referable score, if the reviewers want a clinical operating point.

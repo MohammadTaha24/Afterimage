@@ -1,15 +1,15 @@
 {
-  "built_utc": "2026-11-25T06:19:52+00:00",
+  "built_utc": "2026-11-25T15:16:13+00:00",
   "script_sha256": "6d3adc6b07f13141f6e8fefe0c18f37c6a58a24fb72499b14d8fb18371349546",
   "metric_source_sha256": "58b4a471f7d435c6f323128227697e52ab01ba1249dd35be84f3926c16f21b49",
   "arguments": {
     "experiments_root": "D:\\Afterimage_Experiments",
     "messidor_grades": "D:\\Afterimage_data_share\\Messidor-2\\02_adjudicated_grades\\messidor_data.csv",
     "messidor_pairs": "D:\\Afterimage_data_share\\Messidor-2\\03_eye_pairing\\pairs.csv",
-    "messidor_duplicates": "finetuning\\paper_tables\\output\\revision_analysis\\image_audits\\messidor_duplicate_pairs.csv",
+    "messidor_duplicates": "D:\\Afterimage_Reproduction\\finetuning\\paper_tables\\output\\revision_analysis\\image_audits\\messidor_duplicate_pairs.csv",
     "original_split": "D:\\Afterimage_Experiments\\reference\\aptos_split",
-    "near_duplicates": "finetuning\\paper_tables\\output\\revision_analysis\\image_audits\\near_duplicate_test_ids.csv",
-    "out": "D:\\Afterimage_worktrees\\qwen-rank-lr2e-4\\finetuning\\paper_tables\\output\\revision_analysis"
+    "near_duplicates": "D:\\Afterimage_Reproduction\\finetuning\\paper_tables\\output\\revision_analysis\\image_audits\\near_duplicate_test_ids.csv",
+    "out": "D:\\Afterimage_Reproduction\\finetuning\\paper_tables\\output\\revision_analysis"
   },
   "bootstrap": {
     "n": 2000,
@@ -18,11 +18,11 @@
   },
   "environment": {
     "python": "3.11.18",
-    "numpy": "2.2.6",
-    "pandas": "2.3.3",
+    "numpy": "2.4.6",
+    "pandas": "3.0.6",
     "scipy": "1.17.1"
   },
-  "runs": 127,
+  "runs": 148,
   "inputs": {
     "D:\\Afterimage_Experiments\\final_runs\\final_01\\scores\\bf16_r16_on_p1__messidor_archived\\predictions.csv": "cc547fb2711fd4305d193f0717594ae5b4780651288af315204ff79a4a824dd2",
     "D:\\Afterimage_Experiments\\final_runs\\final_01\\scores\\bf16_r16_on_p2__messidor_archived\\predictions.csv": "7c9b8b5d0c8f651017adaf706173f3cea4ad41f31bea8d0034245bb00926deb0",
@@ -77,15 +77,40 @@
     "D:\\Afterimage_Experiments\\final_runs\\final_01\\train\\r16_on_lr0p0002_t44_a3409\\latest_attempt.json": "0d36906546577e27676f80f4827973ea15e48b15ce65892d7807b933c69def98",
     "D:\\Afterimage_Experiments\\final_runs\\final_01\\train\\r16_on_lr0p0002_t44_a3409\\train_result.json": "1d61511defd1b4bbfc3d95b3e9569849ba73d2fd90c888f6425b26ccaa85ef74",
     "D:\\Afterimage_Experiments\\final_runs\\final_02\\energy_per_job.csv": "b34bddf8095fdd4920ed0358ea96bc8eb5d63fc7fa70a58d29da68bd6aeac31e",
+    "D:\\Afterimage_Experiments\\final_runs\\final_02\\revision_energy_per_job.csv": "54cfc276ef353ae081707c6fd72fbbb368420d33a43b190381b2f32bc324287e",
     "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r16_off_alpha16_lr0p0002_t42_a3407__aptos361_off\\summary.json": "ccd48ae812c5842f5e9bbf65238852509f346701fae0320e290d446a821f681a",
+    "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r16_off_alpha16_lr0p0002_t42_a3407__messidor2_off\\predictions.csv": "ed1f031c78e4544aa68896e3bd06a711d34149bcb54ee539a07a4ee669673121",
+    "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r16_off_alpha16_lr0p0002_t42_a3407__messidor2_off\\summary.json": "16e3a727fb0425bc9355c4a44b5e75e8d34ad0829e137bad500635df2e12ccab",
     "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r16_off_alpha16_lr0p0002_t42_a3407__messidor_archived_off\\predictions.csv": "4c32ab6518f9ec67b1875fe5df78a2b4c0ac95c3e940c13e6c29dc0838da40ac",
     "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r16_off_alpha16_lr0p0002_t42_a3407__messidor_archived_off\\summary.json": "26695146405a2f34d9cc3e93c203d80078a16f562963dd25bd8f4c7fc6b67176",
     "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r16_off_alpha16_lr0p0002_t43_a3408__aptos361_off\\summary.json": "ef5c3a0b4b4d8bb8408297871b528d5d573949b838ed3f9b2d51c37ffb3e9b67",
+    "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r16_off_alpha16_lr0p0002_t43_a3408__messidor2_off\\predictions.csv": "e54a0dcc89c224f8400f8358d6f2fe035684452dbe3126a97fae0e6923446bb2",
+    "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r16_off_alpha16_lr0p0002_t43_a3408__messidor2_off\\summary.json": "1daac1e90558b8d41c58ad4cc3b0740dfc366c934418d4fb3be48e363a72dae7",
     "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r16_off_alpha16_lr0p0002_t43_a3408__messidor_archived_off\\predictions.csv": "9e8134a2e25e725b8ac60490e3c3a5c982546e72d9e646bf8108e5ea5a4e4272",
     "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r16_off_alpha16_lr0p0002_t43_a3408__messidor_archived_off\\summary.json": "504feffc85ca39cfc1ba157c285ea9908fcba6dfb693f21a76014d3e9852b1ab",
     "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r16_off_alpha16_lr0p0002_t44_a3409__aptos361_off\\summary.json": "917a56a74bde85db40260963c8e2712431c92a48830f868e9479b33167bdc16d",
+    "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r16_off_alpha16_lr0p0002_t44_a3409__messidor2_off\\predictions.csv": "d1b60b8859425a8bdc8757757a90ded98f015c01af51a9d120c7e32ff61d2647",
+    "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r16_off_alpha16_lr0p0002_t44_a3409__messidor2_off\\summary.json": "3e62adc4581b43ad73df647ae3418f0a643db821e48f7498703353ad45772eed",
     "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r16_off_alpha16_lr0p0002_t44_a3409__messidor_archived_off\\predictions.csv": "712756fb42e2c323f008893a5302b87a87de66ba6ac26cf2c08bdc7d2ecfcfe9",
     "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r16_off_alpha16_lr0p0002_t44_a3409__messidor_archived_off\\summary.json": "2ccf21590671b602780543b54433b5aeca650ca350045b4acbf65b6440432718",
+    "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r16_off_p1__messidor2_off\\predictions.csv": "3c7569d82dc49ec7cb5354c08cb773491f0d3d7727df009f29cdfd51e86d9d89",
+    "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r16_off_p1__messidor2_off\\summary.json": "39e086b4af37382b1a391e4e62ec548bca6b952da40e94c096729a9656969faf",
+    "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r16_off_p2__messidor2_off\\predictions.csv": "0e505f6e5ca664b4be9ec576361c27f364fe6449c122d3f73361b0b9b1cef619",
+    "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r16_off_p2__messidor2_off\\summary.json": "dde11992fa968f4fab3fa0913391a1d7403a506eb22a93ce1f823c0476995f75",
+    "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r16_off_p3__messidor2_off\\predictions.csv": "e98b70c9e297551c1c632ccde22199868ba46a8fac21464bb3b18814de270d41",
+    "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r16_off_p3__messidor2_off\\summary.json": "0e430ac8054fdf306cee31285211397224aeee6c1b5241cc3c24609f69852b32",
+    "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r16_on_lr0p0002_t42_a3407__messidor2_on\\predictions.csv": "560f2d7a5d82a692736466fa5ed8657b4c70aa83035f3f8fb75f596f5893f207",
+    "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r16_on_lr0p0002_t42_a3407__messidor2_on\\summary.json": "bb01803ad04e0a213d88ed431664c026bc57e4528c83f7b3977d0b7c1dcc0c1d",
+    "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r16_on_lr0p0002_t43_a3408__messidor2_on\\predictions.csv": "8a9c06722b3b41d4d05e73882c9d7806fd84214770fd3dabd1c013e344a65e20",
+    "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r16_on_lr0p0002_t43_a3408__messidor2_on\\summary.json": "def7736490fd728ed731b115d83b01c27e855c7c008fa86fad0ad490b80021ba",
+    "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r16_on_lr0p0002_t44_a3409__messidor2_on\\predictions.csv": "bf58a34115339f00d969db0f615ff0d402ddbda5bf951881e94dadc9da2ec12d",
+    "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r16_on_lr0p0002_t44_a3409__messidor2_on\\summary.json": "8611e3906350be4d211e0ee1639bd033d734fda6caf9417eb46249b28cbc4c51",
+    "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r16_on_p1__messidor2_on\\predictions.csv": "18bee5a640dc26b83148032b71636ebdfab4643f234232be1467743b9300f601",
+    "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r16_on_p1__messidor2_on\\summary.json": "243c38bd0e6e545baf48abc9cac93fc7671dfcf6b3afaf7fce17822002eb925c",
+    "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r16_on_p2__messidor2_on\\predictions.csv": "be274a7e825c477d03c18302fd92d79ce648e57f4cbc5633d7307b2e167a2ced",
+    "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r16_on_p2__messidor2_on\\summary.json": "26e2b28386c1e1e13e99fcfc65bc9d1b49f9fb0cf6e64ef5fa79f53a669de40e",
+    "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r16_on_p3__messidor2_on\\predictions.csv": "df5eed242e96fea9900637ec3fed614e95d530045fe68a520285ffcf81966c4d",
+    "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r16_on_p3__messidor2_on\\summary.json": "b1fa58d115f22107b6c7730e6f85d6e9cf8a6d9a231e80f00309d2153630614c",
     "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r32_off_alpha16_lr0p0002_t42_a3407__aptos361_off\\summary.json": "7acc31b79f529b910dce012bc9291ab9530193414fcf2499c0f5f101a6460590",
     "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r32_off_alpha16_lr0p0002_t42_a3407__messidor_archived_off\\predictions.csv": "3cf59b470143102bfbf1eb98ea48472b17628db0ae475eb7ca82c686392cc133",
     "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r32_off_alpha16_lr0p0002_t42_a3407__messidor_archived_off\\summary.json": "ed536ca96dbe1bbd1f15dc36f919d277574807f97daf73cb104a82e07f4aa6ce",
@@ -158,6 +183,17 @@
     "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r8_on_alpha8_lr0p0002_t44_a3409__aptos361_on\\summary.json": "79442018d0e6f6b6fb7ef10c980cf4046fced0d2aac6e44b440252828793c710",
     "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r8_on_alpha8_lr0p0002_t44_a3409__messidor_archived\\predictions.csv": "a0539edcb41d235ae90a91c16867a34169cab7b65578dba8aa0e91f17593220c",
     "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\r8_on_alpha8_lr0p0002_t44_a3409__messidor_archived\\summary.json": "d53ef65968d12a8a32c17d0c57fe73121eb58ee30d2ea75acace75ca1964de61",
+    "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\timing_r16_off_p1__aptos361_off\\summary.json": "60c7c3cd1241b95a8ecc29f4593d04aa58b4624c750d9753e48abfdc3eee3760",
+    "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\timing_r16_on_alpha8_t42_a3407__aptos361_on\\summary.json": "3c618ef7458f712ea724485d0aca32350773949384985a35ed3e1b5ae1db3bab",
+    "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\timing_r16_on_lr0p0001_t42_a3407__aptos361_on\\summary.json": "f55d1e74127c656029c01fc499a6ad5b23c62cbcde648ca23d4097caf79744c2",
+    "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\timing_r16_on_lr0p0002_t42_a3407__aptos361_on\\summary.json": "cbc5608fd848ed138754fc66371d0373a4dd6b9f112376d15e0c4b9952daa1b7",
+    "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\timing_r16_on_previous_split_p1__aptos361_on\\summary.json": "7ab3535b0fdf5155c088828bfc7374a2ad84ac7c9df14654d486582dbe1ef6f4",
+    "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\timing_r32_off_p1__aptos361_off\\summary.json": "3d774c7f88dbd26229e41eb71cd5cd0486d16da846b06461029002703f4284c5",
+    "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\timing_r8_off_p1__aptos361_off\\summary.json": "1cee2023ec411c00eb92191d27bb2d6c614d2d24c000b8e3b688fb1f22579be2",
+    "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\zeroshot_4bit__messidor2_off\\predictions.csv": "1a16bb04c307307544c2be35f99346d90ef98223c1cbb160bee87bce9001b443",
+    "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\zeroshot_4bit__messidor2_off\\summary.json": "2772122e3c484d41d6b4795401bf7cfa2b87e3b0e8b71a52ba64bf8850cf86a1",
+    "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\zeroshot_4bit__messidor2_on\\predictions.csv": "dfb0dfd9db12c13945cfa5c181a1d86319f41de489c969b9bd658cce74e8b20c",
+    "D:\\Afterimage_Experiments\\final_runs\\final_02\\scores\\zeroshot_4bit__messidor2_on\\summary.json": "5a592aa927c3bdcdd23ce31c236e21e8ef84c023a088e20bc123719a59154eb8",
     "D:\\Afterimage_Experiments\\final_runs\\final_02\\summary.csv": "4c6c75bb30e6ff2e4a760a18ef47fec888f3cc8d804cabd2f74b343382481242",
     "D:\\Afterimage_Experiments\\final_runs\\final_02\\train\\r16_off_alpha16_lr0p0002_t42_a3407\\aptos_test.predictions.csv": "ae02c8d446875c5745e2522b84b1783dc3d9670b5b305d51a8e6d1246e4a730a",
     "D:\\Afterimage_Experiments\\final_runs\\final_02\\train\\r16_off_alpha16_lr0p0002_t42_a3407\\train_result.json": "18e30ec47ea080d7cb4d54d3b6f649edef95770c6d0982a2b0fc133007432ab1",
@@ -261,6 +297,20 @@
     "D:\\Afterimage_Experiments\\retizero_runs\\retizero_01\\train\\matched_t44\\evaluation\\aptos_test.predictions.csv": "cb6175524709142e70ac29c458f4fe047d8348165fe9def88974be20eadc62ad",
     "D:\\Afterimage_Experiments\\retizero_runs\\retizero_01\\train\\matched_t44\\evaluation\\aptos_test.summary.json": "fc4917ba9792afa10a4a079c1e7643b5231ad37287e2c2646ccefca084576c4c",
     "D:\\Afterimage_Experiments\\retizero_runs\\retizero_01\\train\\matched_t44\\train_result.json": "fd800679aa0085d73d17f3b6f28bf3fa060f979db8181effb2a5776344ae2c78",
+    "D:\\Afterimage_Experiments\\retizero_runs\\retizero_02\\scores\\clahe_t42__messidor2_224_on\\predictions.csv": "c3e940ca004d8a97a8a0ac51a292afd83843cc0362f4a544d224b306e55442d0",
+    "D:\\Afterimage_Experiments\\retizero_runs\\retizero_02\\scores\\clahe_t42__messidor2_224_on\\summary.json": "40bd40f11645a4b13f66cc4174f9a88c760e205aa1047cf2535ff397dccfa5bb",
+    "D:\\Afterimage_Experiments\\retizero_runs\\retizero_02\\scores\\clahe_t43__messidor2_224_on\\predictions.csv": "76c8feae06344e67d352d0b14b7bda4afe5e200881a0b2d0df7238b31756064b",
+    "D:\\Afterimage_Experiments\\retizero_runs\\retizero_02\\scores\\clahe_t43__messidor2_224_on\\summary.json": "b12a1fee45086668fdc9b9a41325ae18c35e44216cb2d8329791d2363c08a951",
+    "D:\\Afterimage_Experiments\\retizero_runs\\retizero_02\\scores\\clahe_t44__messidor2_224_on\\predictions.csv": "80dd79540fdbddbd6304cb0b5df30140346c25a430dfe1be1cc048906eaf55c1",
+    "D:\\Afterimage_Experiments\\retizero_runs\\retizero_02\\scores\\clahe_t44__messidor2_224_on\\summary.json": "0180b2a4db446a910311bac71eed7a117dc4cfbaf6c1590c5247944c22884dd5",
+    "D:\\Afterimage_Experiments\\retizero_runs\\retizero_02\\scores\\matched_t42__messidor2_224_off\\predictions.csv": "85b09122dbc8aad921cabca66f1ff891714cf62463d0d3a49b1f9e0b282c6796",
+    "D:\\Afterimage_Experiments\\retizero_runs\\retizero_02\\scores\\matched_t42__messidor2_224_off\\summary.json": "df78f49dc3a41c324ecee030b8a11086b849bec5d8d4cd24707615ec17359e64",
+    "D:\\Afterimage_Experiments\\retizero_runs\\retizero_02\\scores\\matched_t43__messidor2_224_off\\predictions.csv": "97fec178b2899fcb4d2dc9f145e9ab1f358b014843a7d11948ebaee0d817af72",
+    "D:\\Afterimage_Experiments\\retizero_runs\\retizero_02\\scores\\matched_t43__messidor2_224_off\\summary.json": "c4e2be4c085025c8500a6d122dab20ac703d0f7de9c049082559dd2335208032",
+    "D:\\Afterimage_Experiments\\retizero_runs\\retizero_02\\scores\\matched_t44__messidor2_224_off\\predictions.csv": "bac5fc8b7dbd8701dff7435855407eab96e2f27d86e439dcdb2ea6862bf96cb6",
+    "D:\\Afterimage_Experiments\\retizero_runs\\retizero_02\\scores\\matched_t44__messidor2_224_off\\summary.json": "6891a40864124499c2b3b0e7599bb2b17d5a6b0059c35d4bf00b39f7f4817b09",
+    "D:\\Afterimage_Experiments\\retizero_runs\\retizero_02\\scores\\saved_checkpoint__messidor2_224_off\\predictions.csv": "59cd26b377982e10b0eac3a5192e800371ccb56514a82bd87de7f734237028eb",
+    "D:\\Afterimage_Experiments\\retizero_runs\\retizero_02\\scores\\saved_checkpoint__messidor2_224_off\\summary.json": "ee1e0212c0acba5fa8ad7bebd14f3d90b1990f71614ef1188295ab4a115db4fa",
     "D:\\Afterimage_Experiments\\runs\\full_bf16_r16_on_duplicate_excluded_t42_a3407_paper_controls_01\\aptos_test.predictions.csv": "9deed2ffe7ee84c2a8f018ea48ab5fa3c6d8893f60b55f18b53c6f55c53e91bf",
     "D:\\Afterimage_Experiments\\runs\\full_bf16_r16_on_duplicate_excluded_t42_a3407_paper_controls_01\\train_result.json": "275adc6902decbcf5ffad6cf482fe4b48e19dba4f8b17f04ecb26f60c1ca7985",
     "D:\\Afterimage_Experiments\\runs\\full_bf16_r16_on_duplicate_excluded_t43_a3408_paper_controls_01\\aptos_test.predictions.csv": "d4fd81bd2f77316db2b032a042fd851264297a8c2c6a58e00510bdae4f4206e8",
@@ -312,13 +362,13 @@
     "D:\\Afterimage_Experiments\\runs\\full_r8_on_duplicate_excluded_t43_a3408_01\\train_result.json": "01e6c9fa4cf9f79f5f9b73f3efbfcd19bd884f8e2feb9b96e858181a8e31a755",
     "D:\\Afterimage_Experiments\\runs\\full_r8_on_duplicate_excluded_t44_a3409_01\\aptos_test.predictions.csv": "9677e3fcf29d345740f8f0af235749109fb8935be5d687d45e40d06d7d36f4bf",
     "D:\\Afterimage_Experiments\\runs\\full_r8_on_duplicate_excluded_t44_a3409_01\\train_result.json": "f2c933430ffe509bd595eb214bcdcdeaa321d2ed0f9ba3c34dae85d424e5c661",
+    "D:\\Afterimage_Reproduction\\finetuning\\paper_tables\\output\\aptos_361_clean\\per_run_metrics.csv": "2197ee14f01b5ee8739a81750903fe6de1aae0d4486dc1cf148ee55b85ac3304",
+    "D:\\Afterimage_Reproduction\\finetuning\\paper_tables\\output\\efficiency\\efficiency_comparison.csv": "4fe71176705313e39d1ac4ce94da8779b9268090bdcbf96b9874cb580cf9fc8e",
+    "D:\\Afterimage_Reproduction\\finetuning\\paper_tables\\output\\final_01\\per_job_metrics.csv": "62ca140fed68046cb67aba8dc07eb3bb1ff06baeed233616fd3d01d8620352e6",
+    "D:\\Afterimage_Reproduction\\finetuning\\paper_tables\\output\\revision_analysis\\image_audits\\messidor_duplicate_pairs.csv": "df35ce2a0cc3ded2e493d9000a5ee06aa42859127df94b1c5b6b65fefc7d0e33",
+    "D:\\Afterimage_Reproduction\\finetuning\\paper_tables\\output\\revision_analysis\\image_audits\\near_duplicate_test_ids.csv": "1410a00df024c48cfde89b5e7919b72f8dececd31bd64a544dbe0ecbb37908a1",
     "D:\\Afterimage_data_share\\Messidor-2\\02_adjudicated_grades\\messidor_data.csv": "bb8bbd82eb4bfddc8a0eb9aa45d84274d814e913534f8027f6a4ff0a310fda72",
-    "D:\\Afterimage_data_share\\Messidor-2\\03_eye_pairing\\pairs.csv": "d52696ff9e289feb9cf08a7f1ccc5e9a8f63bb5d6a305cc55f5b873fa06d22d3",
-    "D:\\Afterimage_worktrees\\qwen-rank-lr2e-4\\finetuning\\paper_tables\\output\\aptos_361_clean\\per_run_metrics.csv": "2197ee14f01b5ee8739a81750903fe6de1aae0d4486dc1cf148ee55b85ac3304",
-    "D:\\Afterimage_worktrees\\qwen-rank-lr2e-4\\finetuning\\paper_tables\\output\\efficiency\\efficiency_comparison.csv": "4fe71176705313e39d1ac4ce94da8779b9268090bdcbf96b9874cb580cf9fc8e",
-    "D:\\Afterimage_worktrees\\qwen-rank-lr2e-4\\finetuning\\paper_tables\\output\\final_01\\per_job_metrics.csv": "62ca140fed68046cb67aba8dc07eb3bb1ff06baeed233616fd3d01d8620352e6",
-    "finetuning\\paper_tables\\output\\revision_analysis\\image_audits\\messidor_duplicate_pairs.csv": "df35ce2a0cc3ded2e493d9000a5ee06aa42859127df94b1c5b6b65fefc7d0e33",
-    "finetuning\\paper_tables\\output\\revision_analysis\\image_audits\\near_duplicate_test_ids.csv": "1410a00df024c48cfde89b5e7919b72f8dececd31bd64a544dbe0ecbb37908a1"
+    "D:\\Afterimage_data_share\\Messidor-2\\03_eye_pairing\\pairs.csv": "d52696ff9e289feb9cf08a7f1ccc5e9a8f63bb5d6a305cc55f5b873fa06d22d3"
   },
   "outputs": {
     "calibration_reliability_bins.csv": {
@@ -338,28 +388,28 @@
       "sha256": "c5c74b1c55b87ae8c29f755f24f57ef5d7a5a7e4aa3d4bb834077fdad8890c46"
     },
     "classwise_condition_mean.csv": {
-      "rows": 235,
-      "sha256": "4e51eb147087852825ee9d4869bb6d47eff60b2a96939fb639473580e4dbdaf6"
+      "rows": 280,
+      "sha256": "e224a7052d2a640b92f0431315cbd38953cec5d1b88c8487713eff5ecf159643"
     },
     "classwise_per_run.csv": {
-      "rows": 635,
-      "sha256": "7d7c13f3c856b0749e9dce918a3f3be90daf782c6e5bf0feba6656e42ec4f985"
+      "rows": 740,
+      "sha256": "c2da5ba7ba464820ee14cf9f4e28d431e3f38025486b474e3d9d2e84661c6816"
     },
     "collapse_vs_validation.csv": {
       "rows": 63,
       "sha256": "715a789d677c9fe1f5bea42c7ab8af6907092ac209c523739a18656ff1881100"
     },
     "condition_summary.csv": {
-      "rows": 47,
-      "sha256": "58c0fd03bc3acc858e6c58136293d0b5986d8dae8655abef9173455cd1cb7431"
+      "rows": 56,
+      "sha256": "91f61f4c10a58680cd9844964e2c0654795d638cb1194c0f72fa76d1b975c03e"
     },
     "efficiency_final.csv": {
       "rows": 42,
       "sha256": "18f7ad4d8832ef0eb21076783e0b99159d2d54da3e3e63466cdaa047f18f389b"
     },
     "error_structure.csv": {
-      "rows": 47,
-      "sha256": "feb265c9faf208d47d7b6041c7692ed3d699e9319af84cb1c2253f4fa5061022"
+      "rows": 56,
+      "sha256": "703063ec1adcae9afcb437e50bb71d61e6b6538d10b3a498f4d280af731fcb6b"
     },
     "grade0_fallback_check.csv": {
       "rows": 10,
@@ -374,16 +424,28 @@
       "sha256": "1a411fa8b2c893099689a164dbe4f9ca04ee5cc6e2cbe0f3112a7484f8edb27f"
     },
     "image_alignment_check.csv": {
-      "rows": 127,
-      "sha256": "de4fdaf2ad7ac7f17a60799d146cb371d6438cb8933baad992868928f5a27dc5"
+      "rows": 148,
+      "sha256": "a4c06d23fe17dbe62d36cae609f6cf68d5470a3d789d880675d98bce2d621e55"
     },
     "lr_selection_by_validation_loss.csv": {
       "rows": 3,
       "sha256": "b24790c66ff458c7e8a194f940ef0f0de82d1cf95a5e956981091eb8ab6f87e9"
     },
+    "messidor2_aggregate.csv": {
+      "rows": 7,
+      "sha256": "28dab55637955cbb5efa72c85d7caa4ebde9b2a5d27fb30f603b89ef0c48b274"
+    },
+    "messidor2_pairs.csv": {
+      "rows": 21,
+      "sha256": "b40181ea6d196a6dc8c3dca6491d7377ce441e1a5909132cdf4455dddf8b522c"
+    },
     "messidor_aggregate.csv": {
       "rows": 2,
       "sha256": "9396bf7db82ee186df7374e3f9da39eac22af96ef90fa37739951b8331776c7a"
+    },
+    "messidor_archived_vs_verified.csv": {
+      "rows": 14,
+      "sha256": "7d6323b27ec815b2a21d98a44f2d0e48c7eee0153ef90617f8cf352ece281d31"
     },
     "messidor_label_audit.csv": {
       "rows": 16,
@@ -394,20 +456,20 @@
       "sha256": "8cbfd711f313599410abda788251dee50d92e4a4b154eb8ae9b23af90c0e94c6"
     },
     "mild_vs_normal.csv": {
-      "rows": 127,
-      "sha256": "b18b6f558a256075f5ffe0f9b564b8f7c2962fe078808b02e4c9e1d16c21e8b5"
+      "rows": 148,
+      "sha256": "faf32fdcbf08be08610d87b924b43ab12abb59de3a1d8c08bf08c4dd7b2d9ffa"
     },
     "misclassified_headline.csv": {
-      "rows": 2579,
-      "sha256": "363188ba19e5bda26e09354fcaa305ee42a1b63258846ac4de5b8f308c37b906"
+      "rows": 6003,
+      "sha256": "191800a687985b740cce461f7e7676e47b8c4f38992c3489e361cfc0d7a0423a"
     },
     "near_duplicate_sensitivity.csv": {
       "rows": 36,
       "sha256": "9d7fe6d8f3906569a5bd09390f3a40b12e27ae2d7b0cdfdf1007ad4f314f07b5"
     },
     "per_run_metrics.csv": {
-      "rows": 127,
-      "sha256": "5a026c3f2792bff9612bcd3fe6ef2620019ea9924adef569d50e6d7cb581ca7b"
+      "rows": 148,
+      "sha256": "4b6efff5a183a2076f1bb87b74dc5193696e37fa05a5fadcce54d70344df44e8"
     },
     "rank_aggregate.csv": {
       "rows": 4,
@@ -426,12 +488,12 @@
       "sha256": "518d2735823c2a45d3499cdfa5b23910805d2332762d7515b4a7c2f584b9d239"
     },
     "reproduction_check.csv": {
-      "rows": 127,
-      "sha256": "1b62c487ed89523f28a763c52f7da64da80b4c06f9ca79ed2c87c5fa914302c8"
+      "rows": 148,
+      "sha256": "f9ab4ec9243aa061a905fbd12c721fee137abba5873635575c53da2577d9b1e9"
     },
     "timing_and_energy_final_02.csv": {
-      "rows": 54,
-      "sha256": "5845cf513b341e3dd6931033a33699f4c62cbc2b322bdcefd615bbb33366b4ff"
+      "rows": 75,
+      "sha256": "75433dc1386ac29151fa5a9abc0796bc0e9748f48e083683476e7944f2dc1c91"
     },
     "training_aggregate.csv": {
       "rows": 6,

@@ -1,0 +1,15 @@
+model,condition,seed,archived_job,verified_job,shared_images,same_predicted_grade,max_abs_probability_difference,accuracy_archived,accuracy_verified_same_images,qwk_archived,qwk_verified_same_images,accuracy_verified_all_1744
+Qwen,Qwen r16 CLAHE-off lr2e-4,42,r16_off_alpha16_lr0p0002_t42_a3407__messidor_archived_off,r16_off_alpha16_lr0p0002_t42_a3407__messidor2_off,1057,1057,0,0.5033112583,0.5033112583,0.5822796458,0.5822796458,0.5883027523
+Qwen,Qwen r16 CLAHE-off lr2e-4,43,r16_off_alpha16_lr0p0002_t43_a3408__messidor_archived_off,r16_off_alpha16_lr0p0002_t43_a3408__messidor2_off,1057,1057,0,0.481551561,0.481551561,0.5781985052,0.5781985052,0.557912844
+Qwen,Qwen r16 CLAHE-off lr2e-4,44,r16_off_alpha16_lr0p0002_t44_a3409__messidor_archived_off,r16_off_alpha16_lr0p0002_t44_a3409__messidor2_off,1057,1057,0,0.4654683065,0.4654683065,0.5605467903,0.5605467903,0.5235091743
+Qwen,Qwen r16 CLAHE-on lr2e-4,42,r16_on_lr0p0002_t42_a3407__messidor_archived,r16_on_lr0p0002_t42_a3407__messidor2_on,1057,1057,0,0.4957426679,0.4957426679,0.6277250238,0.6277250238,0.5865825688
+Qwen,Qwen r16 CLAHE-on lr2e-4,43,r16_on_lr0p0002_t43_a3408__messidor_archived,r16_on_lr0p0002_t43_a3408__messidor2_on,1057,1057,0,0.4995269631,0.4995269631,0.605487707,0.605487707,0.5298165138
+Qwen,Qwen r16 CLAHE-on lr2e-4,44,r16_on_lr0p0002_t44_a3409__messidor_archived,r16_on_lr0p0002_t44_a3409__messidor2_on,1057,1057,0,0.4607379376,0.4607379376,0.5754231434,0.5754231434,0.5441513761
+Qwen,Qwen r16 CLAHE-on lr5e-4,42,r16_on_p1__messidor_archived,r16_on_p1__messidor2_on,1057,1057,0,0.4351939451,0.4351939451,0.1828695359,0.1828695359,0.557912844
+Qwen,Qwen r16 CLAHE-on lr5e-4,43,r16_on_p2__messidor_archived,r16_on_p2__messidor2_on,1057,1057,0,0.481551561,0.481551561,0.5089742348,0.5089742348,0.5458715596
+Qwen,Qwen r16 CLAHE-on lr5e-4,44,r16_on_p3__messidor_archived,r16_on_p3__messidor2_on,1057,1057,0,0.5165562914,0.5165562914,0.6284560268,0.6284560268,0.5584862385
+Qwen,Qwen zero-shot 4bit CLAHE-on,,zeroshot_4bit__messidor_archived,zeroshot_4bit__messidor2_on,1057,1057,0,0.4597918638,0.4597918638,0.4536339629,0.4536339629,0.4380733945
+RetiZero,RetiZero CLAHE-off,42,matched_t42__messidor_archived,matched_t42__messidor2_224_off,1057,1031,0.167578429,0.4210028382,0.4257332072,0.5095890635,0.5160555497,0.4323394495
+RetiZero,RetiZero CLAHE-off,43,matched_t43__messidor_archived,matched_t43__messidor2_224_off,1057,1042,0.09914022684,0.3245033113,0.3273415326,0.4481484845,0.4557933413,0.2809633028
+RetiZero,RetiZero CLAHE-off,44,matched_t44__messidor_archived,matched_t44__messidor2_224_off,1057,1033,0.1779285967,0.4683065279,0.4664143803,0.5310017335,0.52912039,0.4931192661
+RetiZero,RetiZero saved app checkpoint,,saved_checkpoint__messidor_archived,saved_checkpoint__messidor2_224_off,1057,1033,0.2722888365,0.5023651845,0.5052034059,0.5849214811,0.5833570662,0.5407110092

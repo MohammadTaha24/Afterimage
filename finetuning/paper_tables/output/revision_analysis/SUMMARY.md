@@ -83,9 +83,13 @@ Rank means at lr 5e-4 (accuracy, mean ± SD; collapsed runs included):
 | Qwen r16 CLAHE-on lr2e-4 | aptos361 | 78.12% | 17.82% | 3.88% | 0.18% | 81.43% |
 | Qwen r16 CLAHE-on lr2e-4 | messidor | 48.53% | 42.95% | 7.85% | 0.66% | 83.46% |
 | Qwen r16 CLAHE-on lr5e-4 | messidor | 47.78% | 36.39% | 13.31% | 2.52% | 69.69% |
+| Qwen r16 CLAHE-on lr2e-4 | messidor2 | 55.35% | 36.45% | 7.38% | 0.82% | 81.64% |
+| Qwen r16 CLAHE-on lr5e-4 | messidor2 | 55.41% | 31.38% | 11.22% | 1.99% | 70.38% |
 | RetiZero CLAHE-on | aptos361 | 79.32% | 15.88% | 4.43% | 0.37% | 76.79% |
 | RetiZero CLAHE-off | aptos361 | 79.04% | 16.99% | 3.51% | 0.46% | 81.06% |
 | RetiZero CLAHE-off | messidor | 40.46% | 48.47% | 10.60% | 0.47% | 81.41% |
+| RetiZero CLAHE-on | messidor2 | 47.36% | 40.00% | 11.89% | 0.75% | 76.00% |
+| RetiZero CLAHE-off | messidor2 | 40.21% | 50.31% | 8.93% | 0.55% | 84.14% |
 
 ## Messidor-2 (archived 1,057-image cohort)
 
@@ -116,11 +120,16 @@ Mild → Normal (mean over seeds):
 | Qwen r16 CLAHE-on lr5e-4 | messidor | 83.57% | 15.30% | 10.40% | 0.538 |
 | Qwen zero-shot 4bit CLAHE-on | aptos361 | 20.00% | 5.71% | 1.10% | 0.855 |
 | Qwen zero-shot 4bit CLAHE-on | messidor | 66.18% | 0.48% | 2.35% | 0.547 |
+| Qwen r16 CLAHE-on lr2e-4 | messidor2 | 71.36% | 26.05% | 16.75% | 0.566 |
+| Qwen r16 CLAHE-on lr5e-4 | messidor2 | 83.21% | 15.06% | 12.72% | 0.487 |
+| Qwen zero-shot 4bit CLAHE-on | messidor2 | 60.00% | 1.48% | 2.56% | 0.473 |
 | RetiZero CLAHE-off | aptos361 | 5.71% | 74.29% | 2.95% | 0.987 |
 | RetiZero CLAHE-off | messidor | 61.67% | 36.55% | 38.96% | 0.500 |
 | RetiZero saved app checkpoint | aptos361 | 8.57% | 71.43% | 2.76% | 0.988 |
 | RetiZero saved app checkpoint | aptos367 | 8.11% | 70.27% | 2.76% | 0.989 |
 | RetiZero saved app checkpoint | messidor | 79.23% | 14.01% | 15.60% | 0.520 |
+| RetiZero CLAHE-off | messidor2 | 54.69% | 42.59% | 47.85% | 0.464 |
+| RetiZero saved app checkpoint | messidor2 | 73.33% | 21.11% | 22.62% | 0.477 |
 
 Messidor head-to-head (patient-clustered):
 
@@ -128,6 +137,18 @@ Messidor head-to-head (patient-clustered):
 |---|---|---|---|---|---|
 | Messidor: Qwen lr2e-4 vs RetiZero, native preprocessing | Qwen r16 CLAHE-on lr2e-4 | RetiZero CLAHE-off | +8.07 pt [+0.57, +16.75] | +0.107 [+0.045, +0.173] | +0.054 [+0.028, +0.083] |
 | Messidor: Qwen lr5e-4 vs RetiZero, native preprocessing | Qwen r16 CLAHE-on lr5e-4 | RetiZero CLAHE-off | +7.32 pt [-0.60, +16.40] | -0.056 [-0.300, +0.139] | +0.013 [-0.018, +0.047] |
+
+## Verified Messidor-2, 1,744 gradable images (exam-clustered)
+
+| Comparison | A | B | Δ accuracy [95% CI] | Δ QWK [95% CI] | Δ macro AUC [95% CI] |
+|---|---|---|---|---|---|
+| Messidor-2: Qwen lr2e-4 vs RetiZero, native preprocessing | Qwen r16 CLAHE-on lr2e-4 | RetiZero CLAHE-off | +15.14 pt [+5.57, +27.24] | +0.134 [+0.063, +0.208] | +0.068 [+0.041, +0.096] |
+| Messidor-2: Qwen lr5e-4 vs RetiZero, native preprocessing | Qwen r16 CLAHE-on lr5e-4 | RetiZero CLAHE-off | +15.19 pt [+6.07, +27.21] | -0.029 [-0.259, +0.157] | +0.027 [-0.007, +0.068] |
+| Messidor-2: both CLAHE-off | Qwen r16 CLAHE-off lr5e-4 | RetiZero CLAHE-off | +16.78 pt [+6.90, +28.92] | +0.053 [-0.027, +0.139] | +0.013 [-0.018, +0.046] |
+| Messidor-2: both CLAHE-off, Qwen lr2e-4 | Qwen r16 CLAHE-off lr2e-4 | RetiZero CLAHE-off | +15.44 pt [+5.95, +27.49] | +0.099 [+0.031, +0.172] | +0.051 [+0.027, +0.076] |
+| Messidor-2: both CLAHE-on | Qwen r16 CLAHE-on lr2e-4 | RetiZero CLAHE-on | +7.99 pt [+4.08, +12.34] | +0.134 [+0.084, +0.186] | +0.053 [+0.028, +0.079] |
+| Messidor-2: Qwen adapter (lr2e-4) vs zero-shot, CLAHE-on | Qwen r16 CLAHE-on lr2e-4 | Qwen zero-shot 4bit CLAHE-on | +11.54 pt [+7.38, +15.85] | +0.299 [+0.247, +0.349] | +0.089 [+0.065, +0.114] |
+| Messidor-2: RetiZero CLAHE on vs off | RetiZero CLAHE-on | RetiZero CLAHE-off | +7.15 pt [-1.87, +19.30] | +0.001 [-0.056, +0.065] | +0.014 [-0.003, +0.033] |
 
 ## LoRA rank at the validation-selected lr 2e-4
 
@@ -140,6 +161,25 @@ Messidor head-to-head (patient-clustered):
 | Qwen rank 8 vs 16 with alpha = rank (alpha/r = 1), CLAHE-on (lr2e-4) | Qwen r8 CLAHE-on lr2e-4 alpha8 | Qwen r16 CLAHE-on lr2e-4 | +0.55 pt [-3.14, +4.16] | +0.007 [-0.016, +0.032] | -0.003 [-0.016, +0.010] |
 | Qwen rank 32 vs 16 with alpha = rank (alpha/r = 1), CLAHE-on (lr2e-4) | Qwen r32 CLAHE-on lr2e-4 alpha32 | Qwen r16 CLAHE-on lr2e-4 | -5.36 pt [-11.45, +1.39] | -0.014 [-0.056, +0.023] | -0.017 [-0.039, +0.006] |
 | CLAHE on vs off, rank 16 (lr2e-4) | Qwen r16 CLAHE-on lr2e-4 | Qwen r16 CLAHE-off lr2e-4 | +2.31 pt [-3.33, +8.40] | -0.001 [-0.028, +0.025] | +0.002 [-0.011, +0.018] |
+
+## Archived 1,057 vs the same images rebuilt from raw
+
+| model | condition | seed | archived_job | verified_job | shared_images | same_predicted_grade | max_abs_probability_difference | accuracy_archived | accuracy_verified_same_images | qwk_archived | qwk_verified_same_images | accuracy_verified_all_1744 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Qwen | Qwen r16 CLAHE-off lr2e-4 | 42 | r16_off_alpha16_lr0p0002_t42_a3407__messidor_archived_off | r16_off_alpha16_lr0p0002_t42_a3407__messidor2_off | 1057 | 1057 | 0.0000 | 0.5033 | 0.5033 | 0.5823 | 0.5823 | 0.5883 |
+| Qwen | Qwen r16 CLAHE-off lr2e-4 | 43 | r16_off_alpha16_lr0p0002_t43_a3408__messidor_archived_off | r16_off_alpha16_lr0p0002_t43_a3408__messidor2_off | 1057 | 1057 | 0.0000 | 0.4816 | 0.4816 | 0.5782 | 0.5782 | 0.5579 |
+| Qwen | Qwen r16 CLAHE-off lr2e-4 | 44 | r16_off_alpha16_lr0p0002_t44_a3409__messidor_archived_off | r16_off_alpha16_lr0p0002_t44_a3409__messidor2_off | 1057 | 1057 | 0.0000 | 0.4655 | 0.4655 | 0.5605 | 0.5605 | 0.5235 |
+| Qwen | Qwen r16 CLAHE-on lr2e-4 | 42 | r16_on_lr0p0002_t42_a3407__messidor_archived | r16_on_lr0p0002_t42_a3407__messidor2_on | 1057 | 1057 | 0.0000 | 0.4957 | 0.4957 | 0.6277 | 0.6277 | 0.5866 |
+| Qwen | Qwen r16 CLAHE-on lr2e-4 | 43 | r16_on_lr0p0002_t43_a3408__messidor_archived | r16_on_lr0p0002_t43_a3408__messidor2_on | 1057 | 1057 | 0.0000 | 0.4995 | 0.4995 | 0.6055 | 0.6055 | 0.5298 |
+| Qwen | Qwen r16 CLAHE-on lr2e-4 | 44 | r16_on_lr0p0002_t44_a3409__messidor_archived | r16_on_lr0p0002_t44_a3409__messidor2_on | 1057 | 1057 | 0.0000 | 0.4607 | 0.4607 | 0.5754 | 0.5754 | 0.5442 |
+| Qwen | Qwen r16 CLAHE-on lr5e-4 | 42 | r16_on_p1__messidor_archived | r16_on_p1__messidor2_on | 1057 | 1057 | 0.0000 | 0.4352 | 0.4352 | 0.1829 | 0.1829 | 0.5579 |
+| Qwen | Qwen r16 CLAHE-on lr5e-4 | 43 | r16_on_p2__messidor_archived | r16_on_p2__messidor2_on | 1057 | 1057 | 0.0000 | 0.4816 | 0.4816 | 0.5090 | 0.5090 | 0.5459 |
+| Qwen | Qwen r16 CLAHE-on lr5e-4 | 44 | r16_on_p3__messidor_archived | r16_on_p3__messidor2_on | 1057 | 1057 | 0.0000 | 0.5166 | 0.5166 | 0.6285 | 0.6285 | 0.5585 |
+| Qwen | Qwen zero-shot 4bit CLAHE-on | <NA> | zeroshot_4bit__messidor_archived | zeroshot_4bit__messidor2_on | 1057 | 1057 | 0.0000 | 0.4598 | 0.4598 | 0.4536 | 0.4536 | 0.4381 |
+| RetiZero | RetiZero CLAHE-off | 42 | matched_t42__messidor_archived | matched_t42__messidor2_224_off | 1057 | 1031 | 0.1676 | 0.4210 | 0.4257 | 0.5096 | 0.5161 | 0.4323 |
+| RetiZero | RetiZero CLAHE-off | 43 | matched_t43__messidor_archived | matched_t43__messidor2_224_off | 1057 | 1042 | 0.0991 | 0.3245 | 0.3273 | 0.4481 | 0.4558 | 0.2810 |
+| RetiZero | RetiZero CLAHE-off | 44 | matched_t44__messidor_archived | matched_t44__messidor2_224_off | 1057 | 1033 | 0.1779 | 0.4683 | 0.4664 | 0.5310 | 0.5291 | 0.4931 |
+| RetiZero | RetiZero saved app checkpoint | <NA> | saved_checkpoint__messidor_archived | saved_checkpoint__messidor2_224_off | 1057 | 1033 | 0.2723 | 0.5024 | 0.5052 | 0.5849 | 0.5834 | 0.5407 |
 
 ## Near-duplicate sensitivity (S10)
 
