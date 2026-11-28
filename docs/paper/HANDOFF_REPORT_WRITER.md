@@ -8,9 +8,9 @@ Prepared 25 November 2026. **Read first:**
 
 You get either the report bundle (`paper_report_bundle_<date>.zip`) or the full results package (`afterimage_results_<date>.zip`). Both have these three folders:
 
-- `figures/`: 22 figures (PNG, PDF and the plotted numbers as CSV), plus `FIGURES.md` with draft captions. F20–F22 are training curves from the run logs.
+- `figures/`: 22 figures (PNG, PDF and the plotted numbers as CSV), plus `figure_index.csv` with draft captions. F20–F22 are training curves from the run logs.
 - `tables/`: every analysis table
-- `docs/`: the evidence note and the checklists
+- `docs/` (report bundle only): the evidence note and the checklists
 
 The results package also holds every run's logs, training histories and per-image predictions (`experiments/`), and the notebook that rebuilds the tables and figures from them. You do not need those to write the report.
 
@@ -41,7 +41,7 @@ The paper is under major revision. Since the review, the authors have rebuilt an
   - the evidence we now have, with numbers and figure IDs
   - whether the point is **answered**, **partly answered** or **open**
   - the sentence(s) the manuscript or response letter should say
-- Use the figures by ID (F01–F22) and propose which go in the main text and which in the supplement. `FIGURES.md` has a proposal.
+- Use the figures by ID (F01–F22) and propose which go in the main text and which in the supplement. `HANDOFF_FIGURES_GUIDE.md` has a proposal.
 
 **B. Finish-the-paper plan.** A prioritised list of everything still needed to resubmit. For each item give:
 - the owner type (author writing, literature search, computation, decision by supervisor)

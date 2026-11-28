@@ -16,7 +16,7 @@ Updated 25 November 2026. This is the one list of what is left before resubmissi
 - **Timing:** done for all Qwen configurations.
 - **Analysis tables:** `finetuning/paper_tables/output/revision_analysis/`, 148 runs, all reproducing their reference.
 - **Figures:** 22, in `finetuning/paper_figures/`. F20–F22 are training curves drawn from the run logs.
-- **Results package:** `D:\Afterimage_data_share\afterimage_results_20261125\` and its zip. It holds every run's logs, training histories, predictions and summaries, the analysis code, tables, figures, documents and the notebook, without weights or images. Run inside the package, the notebook rebuilds every table from the logs, checks them against the shipped tables, then draws all figures. It is built by `finetuning/paper_figures/build_results_package.py`.
+- **Results package:** `D:\Afterimage_data_share\afterimage_results_20261128\` and its zip. It holds every run's logs, training histories, predictions and summaries, the analysis code, tables, figures, documents and the notebook, without weights or images. Run inside the package, the notebook rebuilds every table from the logs, checks them against the shipped tables, then draws all figures. It is built by `finetuning/paper_figures/build_results_package.py`.
 - **Git:** everything is committed and pushed to GitHub branch `afterimage-re`, including the figure notebook and its output, the package builder and the handoffs.
 
 ## Done (for reference)
@@ -40,8 +40,8 @@ Owner types: **You** = the paper owner; **Noor** = supervisor decision; **Sinan*
 
 ### 1. Next steps (this week)
 
-- [ ] **Look through the figures** in `finetuning/paper_figures/output/`. The notebook was run on 25 November: 22 figures, and the layout check found no overlapping text. A person still needs to look at each figure. (You)
-- [ ] **Share the results package.** Upload `afterimage_results_20261125.zip` (with `SHA256SUMS.txt` and `README.txt` from `D:\Afterimage_data_share\`) to Drive or OneDrive. Share it with named people only, because it holds APTOS and Messidor-2 labels. (You)
+- [ ] **Look through the figures** in `finetuning/paper_figures/output/`. The notebook was run on 25 November: 25 figures (F23–F25 are the methodology and architecture diagrams), and the layout check found no overlapping text. A person still needs to look at each figure. (You)
+- [ ] **Share the results package with the team.** The folder `D:\Afterimage_data_share\afterimage_results_20261128\` is ready, unzipped. It starts with `Afterimage_revision_report.pdf` (results, reviewer-comment status, open points), `Afterimage_manuscript_material.pdf` (draft text for every open reviewer comment) and `README.txt`. Editable copies of both documents are in `D:\Afterimage_data_share\` as .docx. It has no Markdown files and no internal reviewer codes. Zip it when you decide (`build_results_package.py --zip`) and share it with named people only, because it holds APTOS and Messidor-2 labels. (You)
 - [ ] **Give ChatGPT the bundle.** The notebook's last cell makes `D:\Afterimage_data_share\paper_report_bundle_<date>.zip`. Add `EA_REVIEW.docx` and these handoffs. Ask for:
   - the results report
   - the finish plan
@@ -63,21 +63,24 @@ Owner types: **You** = the paper owner; **Noor** = supervisor decision; **Sinan*
 
 Per reviewer point; `REVIEWER_CHECKLIST.md` has the full wording.
 
-- [ ] **G1, S2:** novelty, research gap and contributions. Needs a recent literature search; nothing in the repo covers it.
-- [ ] **G3, S1:** review of recent ML, DL, LLM and VLM DR studies on APTOS and Messidor-2 (methods, cohorts, splits, metrics). Needs a literature search.
-- [ ] **S4:** why compare a general VLM with a retina-specific model, and what the comparison tests.
-- [ ] **S5:** methodology diagram and the two architecture diagrams, drawn by hand (draw.io or similar).
+Drafts for every point below are in `Afterimage_manuscript_material` (.pdf in the package, .docx in `D:\Afterimage_data_share\`). What is left is editing them into the manuscript.
+
+- [ ] **G1, S2:** novelty, research gap and contributions. Draft ready (material §1–2).
+- [ ] **G3, S1:** literature. A verified starting set of 13 studies with a related-work paragraph (material §1). Four details are marked [check]; widen the search if the reviewers expect a systematic review.
+- [ ] **S4:** why these two models. Draft rationale (material §3); add the authors' own reasons.
+- [x] **S5:** methodology and both architecture diagrams: F23, F24, F25, drawn by the figure notebook from the code and run records.
 - [ ] **S3:** BGR/RGB/LAB text in §3.2 (evidence: `REVISION_EVIDENCE.md` §2; pixel check).
-- [ ] **S6, S8, G2:** parameter justification (rank and alpha grid, lr on validation loss; F03, F04, F05). State which settings were inherited: dropout 0.05, bias none.
+- [ ] **S6, S8, G2:** parameter justification. Table of every setting with value and source, tested or inherited (material §4). Optional: dropout ablation, about 8 GPU hours.
 - [ ] **S7:** adapter ablation (F06).
 - [ ] **S9:** CLAHE and augmentation, with class counts (F01, F07).
-- [ ] **S10, S12:** fair comparison and external results (F02, F12, F18, F19). Explain the domain shift, all repeats and their spread.
-- [ ] **S11, S13:** misclassification and error structure (F08–F11, F13, F14). Label suspected causes as suspected.
-- [ ] **S14:** efficiency (F16).
+- [ ] **S10, S12:** fair comparison and external results (F02, F12, F18, F19). Draft comparison with published external results (material §6).
+- [ ] **S11, S13:** misclassification and error structure (F08–F11, F13, F14). New image-quality analysis, `finetuning/paper_tables/build_error_analysis.py` → `output/error_analysis/`; draft paragraph (material §5). Optional: grader review of misclassified Messidor-2 images.
+- [ ] **S14:** efficiency (F16), with an estimate of compute per image (material §7).
 - [ ] **Methods:**
   - how the 361 clean images arise
   - the five-answer likelihood scorer
   - checkpoint selection: Qwen by validation loss, RetiZero by validation accuracy
+  - how lr 2e-4 was chosen: on validation loss only, but the test scores of all three rates already existed, so do not claim the test set was unseen
   - preprocessing per model
   - class balancing
   - statistics
@@ -95,8 +98,8 @@ Per reviewer point; `REVIEWER_CHECKLIST.md` has the full wording.
 
 ### 4. Small CPU tasks (optional; ask Claude or Sinan)
 
+- [ ] **Internal codes in comparison names** (Sinan's `build_revision_analysis.py`): the tables name comparisons "H1 proposed primary: …", "H2 …" and "S7 …", and `SUMMARY.md` headings carry reviewer codes such as "(G2, S8)". The figures notebook strips them; the tables still have them.
 - [ ] **Efficiency table fixes:**
-  - RetiZero's "training wall time, all attempts" row reads only the first attempt; sum the attempts or rename the row
   - quote Qwen inference as 0.76–0.86 s per image
   - remove "LoRA r8" from RetiZero's name in tables and figures (it trains all weights)
 - [ ] **Referable-DR threshold analysis** on Messidor-2 (F12 shows there is room). Label any threshold chosen on Messidor-2 as post hoc.

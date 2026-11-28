@@ -44,7 +44,7 @@ Your last handoff was `.claude/handoffs/2026-11-15-182947-afterimage-paper-progr
 | 25 Nov | **Revision GPU queue**: 28 scoring jobs, no training. Every model on verified Messidor-2, plus warm timing for 7 Qwen configurations. All passed: timing reproduces saved predictions with 0 mismatches, and all 221,818 earlier result files are unchanged. | `finetuning/revision_jobs/revision_gpu_jobs.ipynb`, commit `6168da9` |
 | 25 Nov | Tables rebuilt: 148 runs, all reproducing their stored reference. Evidence note gained §5 (Messidor-2) and the timing rows. | `finetuning/paper_tables/output/revision_analysis/`, `REVISION_EVIDENCE.md` |
 | 25 Nov | **22 paper figures** (notebook; F20–F22 are training curves from the run logs), the report-writer handoff, and these handoffs | `finetuning/paper_figures/make_paper_figures.ipynb`, `docs/paper/HANDOFF_*.md` |
-| 25 Nov | **Results package:** all run records (logs, training histories, predictions, summaries; no weights or images), code, tables, figures and documents in one folder. Its notebook rebuilds every table from the logs, checks it, and draws every figure. | `D:\Afterimage_data_share\afterimage_results_20261125\` (+ `.zip`), built by `finetuning/paper_figures/build_results_package.py` |
+| 25 Nov | **Results package:** all run records (logs, training histories, predictions, summaries; no weights or images), code, tables, figures and a progress report in one folder. Its notebook rebuilds every table from the logs, checks it, and draws every figure. | `D:\Afterimage_data_share\afterimage_results_20261128\`, built by `finetuning/paper_figures/build_results_package.py` |
 
 **Changed since your handoff:**
 - **RetiZero:** no longer blocked; done.

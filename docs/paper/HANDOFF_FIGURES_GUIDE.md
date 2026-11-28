@@ -6,7 +6,7 @@ Written 25 November 2026. The figures come from `make_paper_figures.ipynb`. In t
 - `Fxx_*.pdf`: vector
 - `Fxx_*_data.csv`: the exact numbers plotted
 
-`FIGURES.md` there has the draft captions. Quote numbers from the `_data.csv` or the analysis tables, not from reading the image. `training_histories_all_runs.csv` holds the training history of all 72 trained runs (63 Qwen, 9 RetiZero).
+`figure_index.csv` there has the draft captions. Quote numbers from the `_data.csv` or the analysis tables, not from reading the image. `training_histories_all_runs.csv` holds the training history of all 72 trained runs (63 Qwen, 9 RetiZero).
 
 Conventions in every figure:
 - **Colours:** blue is the headline Qwen model (LoRA r16, lr 2e-4, CLAHE on). Pink is Qwen at the original lr 5e-4. Grey is zero-shot Qwen. Orange is RetiZero: light for CLAHE off (its native setting), dark for CLAHE on.
@@ -133,7 +133,7 @@ Proposed placement: **main text** F01, F02, F03, F06, F08, F12, F16; everything 
 - **Point:** shows the under-grading behind the low referable sensitivity in F12.
 
 ### F15. Calibration (robustness)
-- **Shows:** reliability diagrams (confidence against accuracy, 10 bins) and expected calibration error (ECE) per seed.
+- **Shows:** reliability diagrams (confidence against accuracy, 15 bins, the same bins as the ECE) and expected calibration error (ECE) per seed.
 - **Read it as:**
   - On APTOS, ECE is about 0.05–0.07 (0.15 at lr 5e-4).
   - On Messidor-2 it is about 0.24–0.32: both models are over-confident, with accuracy well below confidence in the middle bins.
